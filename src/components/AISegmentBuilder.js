@@ -150,52 +150,6 @@ const SearchContainer = styled.div`
 
 const FieldContainer = styled.div`
   margin-bottom: 0;
-  position: relative;
-`;
-
-const TreeFieldContainer = styled.div`
-  margin-bottom: 24px;
-  position: relative;
-  padding-left: ${props => props.level ? `${props.level * 32}px` : '0px'};
-  
-  ${props => props.level > 0 && `
-    &::before {
-      content: '';
-      position: absolute;
-      left: ${(props.level - 1) * 32 + 16}px;
-      top: -24px;
-      height: 40px;
-      width: 1px;
-      background-color: #d1d5db;
-    }
-    
-    &::after {
-      content: '';
-      position: absolute;
-      left: ${(props.level - 1) * 32 + 16}px;
-      top: 16px;
-      width: 16px;
-      height: 1px;
-      background-color: #d1d5db;
-    }
-  `}
-`;
-
-const InlineFieldContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  width: 100%;
-`;
-
-const InlineFieldContent = styled.div`
-  flex: 1;
-  min-width: 0;
-`;
-
-const InlineButtonContainer = styled.div`
-  flex-shrink: 0;
-  padding-top: 28px; /* Align with input field */
 `;
 
 const DropdownContainer = styled.div`
@@ -363,7 +317,7 @@ const LoaderTitle = styled.h3`
   font-size: 18px;
   font-weight: 600;
   color: #1f2937;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
 `;
 
 const LoaderSubtitle = styled.p`
@@ -1091,7 +1045,7 @@ const AISegmentBuilder = ({ onBack }) => {
                     <SectionTitle>Build</SectionTitle>
                   </SectionHeader>
                   <SectionContent>
-                    <TreeFieldContainer level={0}>
+                    <FieldContainer>
                       <SearchContainer>
                         <SearchLabel>Website</SearchLabel>
                         <SearchField ref={websiteRef}>
@@ -1117,9 +1071,9 @@ const AISegmentBuilder = ({ onBack }) => {
                           )}
                         </SearchField>
                       </SearchContainer>
-                    </TreeFieldContainer>
+                    </FieldContainer>
 
-                    <TreeFieldContainer level={1}>
+                    <FieldContainer>
                       <DropdownContainer>
                         <DropdownLabel>Parent Business Lines</DropdownLabel>
                         <DropdownField ref={dropdownRef}>
@@ -1238,45 +1192,42 @@ const AISegmentBuilder = ({ onBack }) => {
                           )}
                         </DropdownField>
                       </DropdownContainer>
-                    </TreeFieldContainer>
+                    </FieldContainer>
 
-                    <TreeFieldContainer level={2}>
-                      <InlineFieldContainer>
-                        <InlineFieldContent>
-                          <SearchContainer>
-                            <SearchLabel>Granular Business Lines</SearchLabel>
-                            <SearchField>
-                              <SearchInput 
-                                placeholder={selectedBusinessLines.length === 0 ? "Select business lines first..." : "Enter granular business lines..."}
-                                disabled={selectedBusinessLines.length === 0}
-                                value={granularBusinessLines}
-                                onChange={(e) => setGranularBusinessLines(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    if (!isLoading && websiteInput && selectedBusinessLines.length > 0 && granularBusinessLines) {
-                                      generateMetrics();
-                                    }
+                    <FieldContainer>
+                      <SearchContainer>
+                        <SearchLabel>Granular Business Lines</SearchLabel>
+                        <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                          <SearchField style={{ flex: 1 }}>
+                            <SearchInput 
+                              placeholder={selectedBusinessLines.length === 0 ? "Select business lines first..." : "Enter granular business lines..."}
+                              disabled={selectedBusinessLines.length === 0}
+                              value={granularBusinessLines}
+                              onChange={(e) => setGranularBusinessLines(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                  e.preventDefault();
+                                  if (!isLoading && websiteInput && selectedBusinessLines.length > 0 && granularBusinessLines) {
+                                    generateMetrics();
                                   }
-                                }}
-                              />
-                            </SearchField>
-                            <ExplainerText>
-                              Try using broad product categories or granular business lines • Avoid using: branded terms, funnel steps, mixing concepts
-                            </ExplainerText>
-                          </SearchContainer>
-                        </InlineFieldContent>
-                        <InlineButtonContainer>
+                                }
+                              }}
+                            />
+                          </SearchField>
                           <CTAButton 
                             disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged())}
                             onClick={generateMetrics}
+                            style={{ marginTop: '0' }}
                           >
                             <Sparkles size={14} />
                             Generate Segment
                           </CTAButton>
-                        </InlineButtonContainer>
-                      </InlineFieldContainer>
-                    </TreeFieldContainer>
+                        </div>
+                        <ExplainerText>
+                          Try using broad product categories or granular business lines • Avoid using: branded terms, funnel steps, mixing concepts
+                        </ExplainerText>
+                      </SearchContainer>
+                    </FieldContainer>
                   </SectionContent>
                 </LeftSection>
 
