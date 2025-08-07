@@ -154,41 +154,48 @@ const FieldContainer = styled.div`
 `;
 
 const TreeFieldContainer = styled.div`
-  margin-bottom: ${props => props.level > 0 ? '20px' : '24px'};
+  margin-bottom: 24px;
   position: relative;
-  padding-left: ${props => props.level ? `${props.level * 24}px` : '0px'};
+  padding-left: ${props => props.level ? `${props.level * 32}px` : '0px'};
   
   ${props => props.level > 0 && `
     &::before {
       content: '';
       position: absolute;
-      left: ${(props.level - 1) * 24 + 12}px;
-      top: -20px;
-      bottom: 50%;
+      left: ${(props.level - 1) * 32 + 16}px;
+      top: -24px;
+      height: 40px;
       width: 1px;
-      background-color: #e5e7eb;
+      background-color: #d1d5db;
     }
     
     &::after {
       content: '';
       position: absolute;
-      left: ${(props.level - 1) * 24 + 12}px;
-      top: 28px;
-      width: 12px;
+      left: ${(props.level - 1) * 32 + 16}px;
+      top: 16px;
+      width: 16px;
       height: 1px;
-      background-color: #e5e7eb;
+      background-color: #d1d5db;
     }
   `}
 `;
 
-const TreeConnector = styled.div`
-  position: absolute;
-  left: ${props => (props.level - 1) * 24 + 12}px;
-  top: -20px;
-  bottom: 0;
-  width: 1px;
-  background-color: #e5e7eb;
-  z-index: 0;
+const InlineFieldContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+`;
+
+const InlineFieldContent = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const InlineButtonContainer = styled.div`
+  flex-shrink: 0;
+  padding-top: 28px; /* Align with input field */
 `;
 
 const DropdownContainer = styled.div`
@@ -1234,38 +1241,41 @@ const AISegmentBuilder = ({ onBack }) => {
                     </TreeFieldContainer>
 
                     <TreeFieldContainer level={2}>
-                      <SearchContainer>
-                        <SearchLabel>Granular Business Lines</SearchLabel>
-                        <SearchField>
-                          <SearchInput 
-                            placeholder={selectedBusinessLines.length === 0 ? "Select business lines first..." : "Enter granular business lines..."}
-                            disabled={selectedBusinessLines.length === 0}
-                            value={granularBusinessLines}
-                            onChange={(e) => setGranularBusinessLines(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' && !e.shiftKey) {
-                                e.preventDefault();
-                                if (!isLoading && websiteInput && selectedBusinessLines.length > 0 && granularBusinessLines) {
-                                  generateMetrics();
-                                }
-                              }
-                            }}
-                          />
-                        </SearchField>
-                        <ExplainerText>
-                          Try using broad product categories or granular business lines • Avoid using: branded terms, funnel steps, mixing concepts
-                        </ExplainerText>
-                      </SearchContainer>
-                    </TreeFieldContainer>
-
-                    <TreeFieldContainer level={0} style={{ marginTop: '24px' }}>
-                      <CTAButton 
-                        disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged())}
-                        onClick={generateMetrics}
-                      >
-                        <Sparkles size={14} />
-                        Generate Segment
-                      </CTAButton>
+                      <InlineFieldContainer>
+                        <InlineFieldContent>
+                          <SearchContainer>
+                            <SearchLabel>Granular Business Lines</SearchLabel>
+                            <SearchField>
+                              <SearchInput 
+                                placeholder={selectedBusinessLines.length === 0 ? "Select business lines first..." : "Enter granular business lines..."}
+                                disabled={selectedBusinessLines.length === 0}
+                                value={granularBusinessLines}
+                                onChange={(e) => setGranularBusinessLines(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    if (!isLoading && websiteInput && selectedBusinessLines.length > 0 && granularBusinessLines) {
+                                      generateMetrics();
+                                    }
+                                  }
+                                }}
+                              />
+                            </SearchField>
+                            <ExplainerText>
+                              Try using broad product categories or granular business lines • Avoid using: branded terms, funnel steps, mixing concepts
+                            </ExplainerText>
+                          </SearchContainer>
+                        </InlineFieldContent>
+                        <InlineButtonContainer>
+                          <CTAButton 
+                            disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged())}
+                            onClick={generateMetrics}
+                          >
+                            <Sparkles size={14} />
+                            Generate Segment
+                          </CTAButton>
+                        </InlineButtonContainer>
+                      </InlineFieldContainer>
                     </TreeFieldContainer>
                   </SectionContent>
                 </LeftSection>
