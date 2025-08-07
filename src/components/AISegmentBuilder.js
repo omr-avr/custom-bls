@@ -1237,7 +1237,7 @@ const AISegmentBuilder = ({ onBack }) => {
                                               <LoaderContent>
                           <AIIcon>
                             <img 
-                              src="/resources/images/ai-loader.gif" 
+                              src="/ai-loader.gif" 
                               alt="AI Loading" 
                               style={{ width: '80px', height: '80px' }}
                             />
