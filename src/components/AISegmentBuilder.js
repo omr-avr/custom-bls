@@ -317,7 +317,7 @@ const LoaderTitle = styled.h3`
   font-size: 18px;
   font-weight: 600;
   color: #1f2937;
-  margin: 0 0 16px 0;
+  margin: 0 0 20px 0;
 `;
 
 const LoaderSubtitle = styled.p`
@@ -359,12 +359,12 @@ const LoaderProgressFill = styled.div`
 `;
 
 const AIIcon = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 160px;
+  height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
+  margin: 0 auto 32px;
 `;
 
 const StickyBanner = styled.div`
@@ -1239,7 +1239,7 @@ const AISegmentBuilder = ({ onBack }) => {
                             <img 
                               src="/ai-loader.gif" 
                               alt="AI Loading" 
-                              style={{ width: '80px', height: '80px' }}
+                              style={{ width: '160px', height: '160px' }}
                             />
                           </AIIcon>
                           <LoaderTitle>AI is analyzing your segment...</LoaderTitle>
