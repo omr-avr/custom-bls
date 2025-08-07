@@ -150,6 +150,45 @@ const SearchContainer = styled.div`
 
 const FieldContainer = styled.div`
   margin-bottom: 0;
+  position: relative;
+`;
+
+const TreeFieldContainer = styled.div`
+  margin-bottom: ${props => props.level > 0 ? '20px' : '24px'};
+  position: relative;
+  padding-left: ${props => props.level ? `${props.level * 24}px` : '0px'};
+  
+  ${props => props.level > 0 && `
+    &::before {
+      content: '';
+      position: absolute;
+      left: ${(props.level - 1) * 24 + 12}px;
+      top: -20px;
+      bottom: 50%;
+      width: 1px;
+      background-color: #e5e7eb;
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      left: ${(props.level - 1) * 24 + 12}px;
+      top: 28px;
+      width: 12px;
+      height: 1px;
+      background-color: #e5e7eb;
+    }
+  `}
+`;
+
+const TreeConnector = styled.div`
+  position: absolute;
+  left: ${props => (props.level - 1) * 24 + 12}px;
+  top: -20px;
+  bottom: 0;
+  width: 1px;
+  background-color: #e5e7eb;
+  z-index: 0;
 `;
 
 const DropdownContainer = styled.div`
@@ -1045,7 +1084,7 @@ const AISegmentBuilder = ({ onBack }) => {
                     <SectionTitle>Build</SectionTitle>
                   </SectionHeader>
                   <SectionContent>
-                    <FieldContainer>
+                    <TreeFieldContainer level={0}>
                       <SearchContainer>
                         <SearchLabel>Website</SearchLabel>
                         <SearchField ref={websiteRef}>
@@ -1071,9 +1110,9 @@ const AISegmentBuilder = ({ onBack }) => {
                           )}
                         </SearchField>
                       </SearchContainer>
-                    </FieldContainer>
+                    </TreeFieldContainer>
 
-                    <FieldContainer>
+                    <TreeFieldContainer level={1}>
                       <DropdownContainer>
                         <DropdownLabel>Parent Business Lines</DropdownLabel>
                         <DropdownField ref={dropdownRef}>
@@ -1192,9 +1231,9 @@ const AISegmentBuilder = ({ onBack }) => {
                           )}
                         </DropdownField>
                       </DropdownContainer>
-                    </FieldContainer>
+                    </TreeFieldContainer>
 
-                    <FieldContainer>
+                    <TreeFieldContainer level={2}>
                       <SearchContainer>
                         <SearchLabel>Granular Business Lines</SearchLabel>
                         <SearchField>
@@ -1217,9 +1256,9 @@ const AISegmentBuilder = ({ onBack }) => {
                           Try using broad product categories or granular business lines • Avoid using: branded terms, funnel steps, mixing concepts
                         </ExplainerText>
                       </SearchContainer>
-                    </FieldContainer>
+                    </TreeFieldContainer>
 
-                    <FieldContainer>
+                    <TreeFieldContainer level={0} style={{ marginTop: '24px' }}>
                       <CTAButton 
                         disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged())}
                         onClick={generateMetrics}
@@ -1227,7 +1266,7 @@ const AISegmentBuilder = ({ onBack }) => {
                         <Sparkles size={14} />
                         Generate Segment
                       </CTAButton>
-                    </FieldContainer>
+                    </TreeFieldContainer>
                   </SectionContent>
                 </LeftSection>
 
