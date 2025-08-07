@@ -166,7 +166,7 @@ const CTAButton = styled.button`
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  height: 36px;
+  height: 44px;
   width: fit-content;
   display: flex;
   align-items: center;
