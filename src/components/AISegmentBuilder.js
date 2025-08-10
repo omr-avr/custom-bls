@@ -254,6 +254,16 @@ const SearchField = styled.div`
   align-items: center;
 `;
 
+const InputFavicon = styled.img`
+  position: absolute;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  z-index: 1;
+  pointer-events: none;
+`;
+
 const SearchInput = styled.input`
   width: 100%;
   padding: 12px 16px;
@@ -262,6 +272,10 @@ const SearchInput = styled.input`
   font-size: 14px;
   background-color: #ffffff;
   height: 44px;
+  
+  ${props => props.hasFavicon && `
+    padding-left: 40px;
+  `}
 
   &::placeholder {
     color: #9ca3af;
@@ -891,6 +905,7 @@ const AISegmentBuilder = ({ onBack }) => {
   const [showEmptyState, setShowEmptyState] = useState(false);
   const [showSuggestionLoader, setShowSuggestionLoader] = useState(false);
   const [showBuildSuggestions, setShowBuildSuggestions] = useState(false);
+  const [selectedWebsiteFavicon, setSelectedWebsiteFavicon] = useState('');
 
   const businessLinesMap = {
     'www.nike.com': [
@@ -979,6 +994,12 @@ const AISegmentBuilder = ({ onBack }) => {
     setShowBuildSuggestions(false);
     setShowSuggestionLoader(false);
     
+    // Check if the entered value exactly matches one of our predefined websites
+    const exactMatch = websiteSuggestions.find(site => 
+      site.url.toLowerCase() === value.toLowerCase()
+    );
+    setSelectedWebsiteFavicon(exactMatch ? exactMatch.favicon : '');
+    
     if (value.length > 0) {
       const filtered = websiteSuggestions.filter(site => 
         site.url.toLowerCase().includes(value.toLowerCase())
@@ -993,6 +1014,7 @@ const AISegmentBuilder = ({ onBack }) => {
 
   const handleSuggestionClick = (suggestion) => {
     setWebsiteInput(suggestion.url);
+    setSelectedWebsiteFavicon(suggestion.favicon);
     setShowSuggestions(false);
     setFocusedSuggestionIndex(-1);
   };
@@ -1275,9 +1297,19 @@ const AISegmentBuilder = ({ onBack }) => {
                       <SearchContainer>
                         <SearchLabel>Website</SearchLabel>
                         <SearchField ref={websiteRef}>
+                          {selectedWebsiteFavicon && (
+                            <InputFavicon 
+                              src={selectedWebsiteFavicon} 
+                              alt="Website favicon"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                              }}
+                            />
+                          )}
                           <SearchInput 
                             placeholder="Enter website domain..." 
                             value={websiteInput}
+                            hasFavicon={!!selectedWebsiteFavicon}
                             onChange={(e) => handleWebsiteChange(e.target.value)}
                             onFocus={() => websiteInput.length > 0 && setShowSuggestions(true)}
                             onKeyDown={handleWebsiteKeyDown}
