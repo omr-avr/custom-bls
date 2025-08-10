@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus } from 'lucide-react';
+import emptyStateImage from '../empty-state.png';
 
 const MainContainer = styled.div`
   flex: 1;
@@ -1574,11 +1575,11 @@ const AISegmentBuilder = ({ onBack }) => {
                       <EmptyStateContainer>
                         <EmptyStateIcon>
                           <img 
-                            src="/Images/empty-state.png" 
+                            src={emptyStateImage} 
                             alt="Empty State" 
                             style={{ width: '160px', height: 'auto', opacity: 0.6 }}
                             onError={(e) => {
-                              console.error('Failed to load empty state image');
+                              console.error('Failed to load empty state image:', e);
                               e.target.style.display = 'none';
                             }}
                           />
