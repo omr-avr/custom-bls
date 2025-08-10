@@ -762,10 +762,11 @@ const EmptyStateContainer = styled.div`
 `;
 
 const EmptyStateIcon = styled.div`
-  width: 120px;
-  height: 120px;
+  width: 160px;
+  height: auto;
   margin-bottom: 24px;
-  opacity: 0.6;
+  display: flex;
+  justify-content: center;
 `;
 
 const EmptyStateTitle = styled.h3`
@@ -1573,9 +1574,9 @@ const AISegmentBuilder = ({ onBack }) => {
                       <EmptyStateContainer>
                         <EmptyStateIcon>
                           <img 
-                            src="/Images/empty-state.svg" 
+                            src="/Images/Empty state.png" 
                             alt="Empty State" 
-                            style={{ width: '120px', height: '120px', opacity: 0.6 }}
+                            style={{ width: '160px', height: 'auto', opacity: 0.6 }}
                           />
                         </EmptyStateIcon>
                         <EmptyStateTitle>No matching segments found</EmptyStateTitle>
