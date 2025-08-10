@@ -1574,9 +1574,13 @@ const AISegmentBuilder = ({ onBack }) => {
                       <EmptyStateContainer>
                         <EmptyStateIcon>
                           <img 
-                            src="/Images/Empty state.png" 
+                            src="/Images/empty-state.png" 
                             alt="Empty State" 
                             style={{ width: '160px', height: 'auto', opacity: 0.6 }}
+                            onError={(e) => {
+                              console.error('Failed to load empty state image');
+                              e.target.style.display = 'none';
+                            }}
                           />
                         </EmptyStateIcon>
                         <EmptyStateTitle>No matching segments found</EmptyStateTitle>
