@@ -1539,12 +1539,8 @@ const AISegmentBuilder = ({ onBack }) => {
                             {hasGenerated ? 'Regenerate' : 'Generate Segment'}
                           </CTAButton>
                         </div>
-                        <ExplainerText>
-                          Try using broad product categories or granular business lines • Avoid using: branded terms, funnel steps, mixing concepts
-                        </ExplainerText>
                         
                         {/* Build Section Suggestions */}
-                        
                         {showBuildSuggestions && (
                           <BuildSuggestionsContainer>
                             <BuildSuggestionsGrid>
