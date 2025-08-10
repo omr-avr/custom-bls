@@ -726,6 +726,72 @@ const SuggestionItem = styled.div`
   `}
 `;
 
+// Empty State Components
+const EmptyStateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  height: 100%;
+`;
+
+const EmptyStateIcon = styled.div`
+  width: 120px;
+  height: 120px;
+  margin-bottom: 24px;
+  opacity: 0.6;
+`;
+
+const EmptyStateTitle = styled.h3`
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 12px 0;
+`;
+
+const EmptyStateSubtitle = styled.p`
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 32px 0;
+  line-height: 1.5;
+  max-width: 320px;
+`;
+
+const SuggestionsTitle = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 16px;
+`;
+
+const SuggestionsGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 400px;
+`;
+
+const SuggestionChip = styled.button`
+  background-color: #f0f9ff;
+  color: #3E74FE;
+  border: 1px solid #e0f2fe;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #3E74FE;
+    color: #ffffff;
+    border-color: #3E74FE;
+  }
+`;
+
 const AISegmentBuilder = ({ onBack }) => {
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -752,6 +818,7 @@ const AISegmentBuilder = ({ onBack }) => {
     granular: ''
   });
   const [businessLineSearch, setBusinessLineSearch] = useState('');
+  const [showEmptyState, setShowEmptyState] = useState(false);
 
   const businessLinesMap = {
     'www.nike.com': [
@@ -923,9 +990,38 @@ const AISegmentBuilder = ({ onBack }) => {
     }
   };
 
+  // Validation function to check if granular business lines match context
+  const validateGranularBusinessLines = () => {
+    const granularLower = granularBusinessLines.toLowerCase();
+    const websiteLower = websiteInput.toLowerCase();
+    
+    // Check for common mismatches
+    const commonMismatches = [
+      // Netflix + Movies but user inputs clothing/fashion items
+      (websiteLower.includes('netflix') && selectedBusinessLines.includes('Movies') && 
+       (granularLower.includes('socks') || granularLower.includes('clothing') || 
+        granularLower.includes('fashion') || granularLower.includes('shoes'))),
+      
+      // Nike + Footwear but user inputs tech items
+      (websiteLower.includes('nike') && selectedBusinessLines.includes('Footwear') && 
+       (granularLower.includes('software') || granularLower.includes('laptops') || 
+        granularLower.includes('phones') || granularLower.includes('tech'))),
+      
+      // General mismatch patterns
+      (selectedBusinessLines.some(line => line.toLowerCase().includes('clothing')) && 
+       (granularLower.includes('cars') || granularLower.includes('automotive'))),
+       
+      (selectedBusinessLines.some(line => line.toLowerCase().includes('gaming')) && 
+       (granularLower.includes('medicine') || granularLower.includes('healthcare')))
+    ];
+    
+    return !commonMismatches.some(mismatch => mismatch);
+  };
+
   const generateMetrics = () => {
     setIsLoading(true);
     setLoadingProgress(0);
+    setShowEmptyState(false);
     
     // Save current form state
     setOriginalFormState({
@@ -933,6 +1029,9 @@ const AISegmentBuilder = ({ onBack }) => {
       businessLines: selectedBusinessLines,
       granular: granularBusinessLines
     });
+    
+    // Check validation
+    const isValid = validateGranularBusinessLines();
     
     // Random loading time between 15-30 seconds
     const loadingTime = Math.floor(Math.random() * (30000 - 15000 + 1)) + 15000;
@@ -951,34 +1050,45 @@ const AISegmentBuilder = ({ onBack }) => {
     }, progressInterval);
     
     setTimeout(() => {
-      // Generate random metrics for demonstration
-      setSegmentShare(Math.floor(Math.random() * 100) + 1);
-      setMonthlyVisits(Math.floor(Math.random() * 1000000) + 10000);
-      setMatchingUrls(Math.floor(Math.random() * 5000) + 100);
+      if (isValid) {
+        // Generate random metrics for demonstration
+        setSegmentShare(Math.floor(Math.random() * 100) + 1);
+        setMonthlyVisits(Math.floor(Math.random() * 1000000) + 10000);
+        setMatchingUrls(Math.floor(Math.random() * 5000) + 100);
+        
+        // Generate top 10 URLs with random share percentages
+        const urlTemplates = [
+          'www.example.com/product/shoes',
+          'www.example.com/product/clothing',
+          'www.example.com/category/accessories',
+          'www.example.com/brand/nike',
+          'www.example.com/sale/clearance',
+          'www.example.com/new-arrivals',
+          'www.example.com/featured-items',
+          'www.example.com/trending',
+          'www.example.com/bestsellers',
+          'www.example.com/limited-edition'
+        ];
+        
+        const generatedUrls = urlTemplates.map((url, index) => ({
+          url: url,
+          share: Math.floor(Math.random() * 25) + 1 // 1-25% share
+        }));
+        
+        // Sort by share percentage (biggest to smallest)
+        generatedUrls.sort((a, b) => b.share - a.share);
+        
+        setTopUrls(generatedUrls);
+        setShowEmptyState(false);
+      } else {
+        // Show empty state for invalid combinations
+        setSegmentShare(0);
+        setMonthlyVisits(0);
+        setMatchingUrls(0);
+        setTopUrls([]);
+        setShowEmptyState(true);
+      }
       
-      // Generate top 10 URLs with random share percentages
-      const urlTemplates = [
-        'www.example.com/product/shoes',
-        'www.example.com/product/clothing',
-        'www.example.com/category/accessories',
-        'www.example.com/brand/nike',
-        'www.example.com/sale/clearance',
-        'www.example.com/new-arrivals',
-        'www.example.com/featured-items',
-        'www.example.com/trending',
-        'www.example.com/bestsellers',
-        'www.example.com/limited-edition'
-      ];
-      
-      const generatedUrls = urlTemplates.map((url, index) => ({
-        url: url,
-        share: Math.floor(Math.random() * 25) + 1 // 1-25% share
-      }));
-      
-      // Sort by share percentage (biggest to smallest)
-      generatedUrls.sort((a, b) => b.share - a.share);
-      
-      setTopUrls(generatedUrls);
       setHasGenerated(true);
       setIsLoading(false);
       setLoadingProgress(0);
@@ -988,6 +1098,27 @@ const AISegmentBuilder = ({ onBack }) => {
 
   const removeBusinessLine = (line) => {
     setSelectedBusinessLines(selectedBusinessLines.filter(item => item !== line));
+  };
+
+  // Get relevant suggestions based on selected business lines
+  const getSuggestions = () => {
+    const suggestions = {
+      'Movies': ['Action Movies', 'Comedy Films', 'Drama Series', 'Documentaries', 'Horror Movies'],
+      'TV Shows': ['Drama Series', 'Comedy Shows', 'Reality TV', 'Kids Shows', 'News Programs'],
+      'Streaming Services': ['Video Streaming', 'Live TV', 'Premium Content', 'Original Series'],
+      'Footwear': ['Running Shoes', 'Basketball Shoes', 'Casual Sneakers', 'Athletic Footwear'],
+      'Men\'s Clothing': ['Athletic Wear', 'Casual Clothing', 'Sportswear', 'Activewear'],
+      'Women\'s Clothing': ['Athletic Wear', 'Casual Clothing', 'Sportswear', 'Activewear'],
+      'Gaming': ['Video Games', 'Gaming Hardware', 'Gaming Accessories', 'Console Games'],
+      'Technology': ['Software', 'Hardware', 'Cloud Services', 'Mobile Apps']
+    };
+    
+    const allSuggestions = selectedBusinessLines.flatMap(line => suggestions[line] || []);
+    return [...new Set(allSuggestions)]; // Remove duplicates
+  };
+
+  const handleEmptyStateSuggestionClick = (suggestion) => {
+    setGranularBusinessLines(suggestion);
   };
 
   // Check if form has changed since last generation
@@ -1220,7 +1351,7 @@ const AISegmentBuilder = ({ onBack }) => {
                             style={{ marginTop: '0' }}
                           >
                             <Sparkles size={14} />
-                            Generate Segment
+                            {hasGenerated ? 'Regenerate' : 'Generate Segment'}
                           </CTAButton>
                         </div>
                         <ExplainerText>
@@ -1256,7 +1387,29 @@ const AISegmentBuilder = ({ onBack }) => {
                     <SectionTitle>Segment Preview</SectionTitle>
                   </SectionHeader>
                   <SectionContent style={{ position: 'relative' }}>
-                    <MetricsContainer>
+                    {showEmptyState ? (
+                      <EmptyStateContainer>
+                        <EmptyStateIcon>
+                          <Brain size={120} color="#9ca3af" />
+                        </EmptyStateIcon>
+                        <EmptyStateTitle>No matching segments found</EmptyStateTitle>
+                        <EmptyStateSubtitle>
+                          The granular business lines you entered don't match the selected website and parent business lines. Try one of these suggestions instead.
+                        </EmptyStateSubtitle>
+                        <SuggestionsTitle>Try these instead:</SuggestionsTitle>
+                        <SuggestionsGrid>
+                          {getSuggestions().slice(0, 6).map((suggestion, index) => (
+                            <SuggestionChip
+                              key={index}
+                              onClick={() => handleEmptyStateSuggestionClick(suggestion)}
+                            >
+                              {suggestion}
+                            </SuggestionChip>
+                          ))}
+                        </SuggestionsGrid>
+                      </EmptyStateContainer>
+                    ) : (
+                      <MetricsContainer>
                       {/* Segment Share Metric */}
                       <MetricCard>
                         <MetricTitle>
@@ -1399,9 +1552,10 @@ const AISegmentBuilder = ({ onBack }) => {
                           )}
                         </div>
                       </MetricCard>
-                    </MetricsContainer>
+                      </MetricsContainer>
+                    )}
                     
-                    {hasGenerated && (
+                    {hasGenerated && !showEmptyState && (
                       <StickyBanner onClick={() => {
                         // Handle banner click - add segment to custom industry
                         console.log('Add segment to custom industry clicked');
