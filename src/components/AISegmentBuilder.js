@@ -843,10 +843,9 @@ const HelpText = styled.div`
 `;
 
 const Tooltip = styled.div`
-  position: absolute;
-  bottom: 100%;
-  right: 0;
-  margin-bottom: 8px;
+  position: fixed;
+  top: 50%;
+  right: 50px;
   background: #1f2937;
   color: #ffffff;
   border: 2px solid #3E74FE;
@@ -856,24 +855,25 @@ const Tooltip = styled.div`
   line-height: 1.4;
   width: 280px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  z-index: 9999;
+  z-index: 99999;
   opacity: ${props => props.show ? 1 : 0};
   visibility: ${props => props.show ? 'visible' : 'hidden'};
   display: ${props => props.show ? 'block' : 'none'};
-  transform: ${props => props.show ? 'translateY(0)' : 'translateY(8px)'};
+  transform: ${props => props.show ? 'translateY(-50%)' : 'translateY(-50%) translateX(8px)'};
   transition: all 0.2s ease-in-out;
   pointer-events: none;
   
-  &::after {
+  &::before {
     content: '';
     position: absolute;
-    bottom: -6px;
-    right: 20px;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
     width: 12px;
     height: 12px;
     background: #1f2937;
-    transform: rotate(45deg);
-    z-index: -1;
+    border-left: 2px solid #3E74FE;
+    border-bottom: 2px solid #3E74FE;
   }
 `;
 
