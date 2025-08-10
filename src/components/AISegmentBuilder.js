@@ -764,10 +764,11 @@ const EmptyStateContainer = styled.div`
 
 const EmptyStateIcon = styled.div`
   width: 160px;
-  height: auto;
+  height: 96px;
   margin-bottom: 24px;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 
 const EmptyStateTitle = styled.h3`
@@ -1577,7 +1578,7 @@ const AISegmentBuilder = ({ onBack }) => {
                           <img 
                             src={emptyStateImage} 
                             alt="Empty State" 
-                            style={{ width: '160px', height: 'auto', opacity: 0.6 }}
+                            style={{ width: '160px', height: '96px', opacity: 1 }}
                             onError={(e) => {
                               console.error('Failed to load empty state image:', e);
                               e.target.style.display = 'none';
