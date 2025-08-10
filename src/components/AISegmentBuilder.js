@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus } from 'lucide-react';
-import emptyStateImage from '../empty-state.png';
 
 const MainContainer = styled.div`
   flex: 1;
@@ -760,15 +759,6 @@ const EmptyStateContainer = styled.div`
   text-align: center;
   padding: 40px 20px;
   height: 100%;
-`;
-
-const EmptyStateIcon = styled.div`
-  width: 520px;
-  height: 312px;
-  margin-bottom: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const EmptyStateTitle = styled.h3`
@@ -1574,17 +1564,6 @@ const AISegmentBuilder = ({ onBack }) => {
                   <SectionContent style={{ position: 'relative' }}>
                     {showEmptyState ? (
                       <EmptyStateContainer>
-                        <EmptyStateIcon>
-                          <img 
-                            src={emptyStateImage} 
-                            alt="Empty State" 
-                            style={{ width: '520px', height: '312px', opacity: 1 }}
-                            onError={(e) => {
-                              console.error('Failed to load empty state image:', e);
-                              e.target.style.display = 'none';
-                            }}
-                          />
-                        </EmptyStateIcon>
                         <EmptyStateTitle>No matching segments found</EmptyStateTitle>
                         <EmptyStateSubtitle>
                           The granular business lines you entered don't match the selected website and parent business lines. Please try a different input.
