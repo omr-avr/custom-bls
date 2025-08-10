@@ -835,9 +835,69 @@ const HelpText = styled.div`
   font-size: 12px;
   color: #6b7280;
   cursor: pointer;
+  position: relative;
   
   &:hover {
     color: #374151;
+  }
+`;
+
+const Tooltip = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: #1f2937;
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  width: 280px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  opacity: ${props => props.show ? 1 : 0};
+  visibility: ${props => props.show ? 'visible' : 'hidden'};
+  transform: ${props => props.show ? 'translateY(0)' : 'translateY(-8px)'};
+  transition: all 0.2s ease-in-out;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    background: #1f2937;
+    transform: rotate(45deg);
+  }
+`;
+
+const TooltipSection = styled.div`
+  margin-bottom: 12px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const TooltipTitle = styled.div`
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #ffffff;
+`;
+
+const TooltipList = styled.ul`
+  margin: 0;
+  padding-left: 16px;
+  
+  li {
+    margin-bottom: 2px;
+    color: #d1d5db;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 `;
 
@@ -919,6 +979,7 @@ const AISegmentBuilder = ({ onBack }) => {
   const [showSuggestionLoader, setShowSuggestionLoader] = useState(false);
   const [showBuildSuggestions, setShowBuildSuggestions] = useState(false);
   const [selectedWebsiteFavicon, setSelectedWebsiteFavicon] = useState('');
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const businessLinesMap = {
     'www.nike.com': [
@@ -1507,9 +1568,32 @@ const AISegmentBuilder = ({ onBack }) => {
                                 </>
                               )}
                             </div>
-                            <HelpText>
+                            <HelpText
+                              onMouseEnter={() => setShowTooltip(true)}
+                              onMouseLeave={() => setShowTooltip(false)}
+                            >
                               Need help?
                               <Info size={14} />
+                              <Tooltip show={showTooltip}>
+                                <TooltipSection>
+                                  <TooltipTitle>Use for:</TooltipTitle>
+                                  <TooltipList>
+                                    <li>Product categories</li>
+                                    <li>Granular business lines</li>
+                                    <li>Clear, focused terms</li>
+                                    <li>Write in the site's language</li>
+                                  </TooltipList>
+                                </TooltipSection>
+                                <TooltipSection>
+                                  <TooltipTitle>Avoid:</TooltipTitle>
+                                  <TooltipList>
+                                    <li>Brands</li>
+                                    <li>Funnel steps</li>
+                                    <li>Blog/content pages, logged-in areas, short-term campaigns</li>
+                                    <li>Don't use exclusions</li>
+                                  </TooltipList>
+                                </TooltipSection>
+                              </Tooltip>
                             </HelpText>
                           </LabelContainer>
                         </SearchLabel>
