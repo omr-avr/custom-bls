@@ -844,32 +844,36 @@ const HelpText = styled.div`
 
 const Tooltip = styled.div`
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   right: 0;
-  margin-top: 8px;
+  margin-bottom: 8px;
   background: #1f2937;
   color: #ffffff;
+  border: 2px solid #3E74FE;
   padding: 16px;
   border-radius: 8px;
   font-size: 12px;
   line-height: 1.4;
   width: 280px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  z-index: 9999;
   opacity: ${props => props.show ? 1 : 0};
   visibility: ${props => props.show ? 'visible' : 'hidden'};
-  transform: ${props => props.show ? 'translateY(0)' : 'translateY(-8px)'};
+  display: ${props => props.show ? 'block' : 'none'};
+  transform: ${props => props.show ? 'translateY(0)' : 'translateY(8px)'};
   transition: all 0.2s ease-in-out;
+  pointer-events: none;
   
-  &::before {
+  &::after {
     content: '';
     position: absolute;
-    top: -6px;
+    bottom: -6px;
     right: 20px;
     width: 12px;
     height: 12px;
     background: #1f2937;
     transform: rotate(45deg);
+    z-index: -1;
   }
 `;
 
@@ -1569,8 +1573,14 @@ const AISegmentBuilder = ({ onBack }) => {
                               )}
                             </div>
                             <HelpText
-                              onMouseEnter={() => setShowTooltip(true)}
-                              onMouseLeave={() => setShowTooltip(false)}
+                              onMouseEnter={() => {
+                                console.log('Hover enter - showing tooltip');
+                                setShowTooltip(true);
+                              }}
+                              onMouseLeave={() => {
+                                console.log('Hover leave - hiding tooltip');
+                                setShowTooltip(false);
+                              }}
                             >
                               Need help?
                               <Info size={14} />
