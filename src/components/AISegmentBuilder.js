@@ -828,36 +828,29 @@ const BuildSuggestionChip = styled.button`
   }
 `;
 
-const SuggestionLoader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  font-size: 12px;
-  color: #6b7280;
+const GeneratingSuggestionsText = styled.span`
+  background: linear-gradient(90deg, #3E74FE, #2AD3AB, #3E74FE);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 2s ease-in-out infinite;
+  font-weight: 600;
+  
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 0%;
+    }
+    100% {
+      background-position: 0% 0%;
+    }
+  }
 `;
 
-const LoaderDots = styled.div`
-  display: flex;
-  gap: 4px;
-  
-  div {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: #9ca3af;
-    animation: loading 1.5s infinite ease-in-out;
-    
-    &:nth-child(1) { animation-delay: 0s; }
-    &:nth-child(2) { animation-delay: 0.3s; }
-    &:nth-child(3) { animation-delay: 0.6s; }
-  }
-  
-  @keyframes loading {
-    0%, 60%, 100% { opacity: 0.3; }
-    30% { opacity: 1; }
-  }
-`;
+
 
 const AISegmentBuilder = ({ onBack }) => {
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
@@ -1421,7 +1414,15 @@ const AISegmentBuilder = ({ onBack }) => {
 
                     <FieldContainer>
                       <SearchContainer>
-                        <SearchLabel>Granular Business Lines</SearchLabel>
+                        <SearchLabel>
+                          Granular Business Lines
+                          {showSuggestionLoader && (
+                            <>
+                              <span> • </span>
+                              <GeneratingSuggestionsText>Generating suggestions</GeneratingSuggestionsText>
+                            </>
+                          )}
+                        </SearchLabel>
                         <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                           <SearchField style={{ flex: 1 }}>
                             <SearchInput 
@@ -1453,22 +1454,12 @@ const AISegmentBuilder = ({ onBack }) => {
                         </ExplainerText>
                         
                         {/* Build Section Suggestions */}
-                        {showSuggestionLoader && (
-                          <SuggestionLoader>
-                            <LoaderDots>
-                              <div></div>
-                              <div></div>
-                              <div></div>
-                            </LoaderDots>
-                            Getting suggestions...
-                          </SuggestionLoader>
-                        )}
                         
                         {showBuildSuggestions && (
                           <BuildSuggestionsContainer>
-                            <BuildSuggestionsTitle>Suggested granular business lines:</BuildSuggestionsTitle>
+                            <BuildSuggestionsTitle>Suggested granular business lines</BuildSuggestionsTitle>
                             <BuildSuggestionsGrid>
-                              {getSuggestions().slice(0, 8).map((suggestion, index) => (
+                              {getSuggestions().slice(0, 5).map((suggestion, index) => (
                                 <BuildSuggestionChip
                                   key={index}
                                   onClick={() => handleBuildSuggestionClick(suggestion)}
