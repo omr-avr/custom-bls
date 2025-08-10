@@ -1108,24 +1108,46 @@ const AISegmentBuilder = ({ onBack }) => {
     const granularLower = granularBusinessLines.toLowerCase();
     const websiteLower = websiteInput.toLowerCase();
     
+    // Define clothing/fashion keywords
+    const clothingKeywords = ['socks', 'clothing', 'fashion', 'shoes', 'shirt', 'pants', 'dress', 'jacket', 'hat', 'underwear', 'sweater'];
+    const techKeywords = ['software', 'laptops', 'phones', 'tech', 'computer', 'tablet', 'app', 'digital'];
+    const automotiveKeywords = ['cars', 'automotive', 'vehicle', 'truck', 'motorcycle', 'engine'];
+    const medicalKeywords = ['medicine', 'healthcare', 'medical', 'hospital', 'pharmacy', 'doctor'];
+    const foodKeywords = ['food', 'restaurant', 'cooking', 'recipe', 'kitchen', 'dining'];
+    
     // Check for common mismatches
     const commonMismatches = [
-      // Netflix + Movies but user inputs clothing/fashion items
-      (websiteLower.includes('netflix') && selectedBusinessLines.includes('Movies') && 
-       (granularLower.includes('socks') || granularLower.includes('clothing') || 
-        granularLower.includes('fashion') || granularLower.includes('shoes'))),
+      // Netflix + any entertainment business line but user inputs non-entertainment items
+      (websiteLower.includes('netflix') && 
+       (selectedBusinessLines.includes('Movies') || selectedBusinessLines.includes('TV Shows') || selectedBusinessLines.includes('Streaming Services')) && 
+       (clothingKeywords.some(keyword => granularLower.includes(keyword)) ||
+        automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
+        techKeywords.some(keyword => granularLower.includes(keyword)) ||
+        medicalKeywords.some(keyword => granularLower.includes(keyword)) ||
+        foodKeywords.some(keyword => granularLower.includes(keyword)))),
       
-      // Nike + Footwear but user inputs tech items
-      (websiteLower.includes('nike') && selectedBusinessLines.includes('Footwear') && 
-       (granularLower.includes('software') || granularLower.includes('laptops') || 
-        granularLower.includes('phones') || granularLower.includes('tech'))),
+      // Nike + clothing/footwear but user inputs non-fashion items
+      (websiteLower.includes('nike') && 
+       (selectedBusinessLines.includes('Footwear') || selectedBusinessLines.includes('Men\'s Clothing') || selectedBusinessLines.includes('Women\'s Clothing')) && 
+       (techKeywords.some(keyword => granularLower.includes(keyword)) ||
+        automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
+        medicalKeywords.some(keyword => granularLower.includes(keyword)) ||
+        foodKeywords.some(keyword => granularLower.includes(keyword)))),
+      
+      // Nintendo + gaming but user inputs non-gaming items
+      (websiteLower.includes('nintendo') && 
+       selectedBusinessLines.some(line => line.toLowerCase().includes('gaming')) && 
+       (clothingKeywords.some(keyword => granularLower.includes(keyword)) ||
+        automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
+        medicalKeywords.some(keyword => granularLower.includes(keyword)) ||
+        foodKeywords.some(keyword => granularLower.includes(keyword)))),
       
       // General mismatch patterns
       (selectedBusinessLines.some(line => line.toLowerCase().includes('clothing')) && 
-       (granularLower.includes('cars') || granularLower.includes('automotive'))),
+       automotiveKeywords.some(keyword => granularLower.includes(keyword))),
        
       (selectedBusinessLines.some(line => line.toLowerCase().includes('gaming')) && 
-       (granularLower.includes('medicine') || granularLower.includes('healthcare')))
+       medicalKeywords.some(keyword => granularLower.includes(keyword)))
     ];
     
     return !commonMismatches.some(mismatch => mismatch);
