@@ -844,9 +844,9 @@ const HelpText = styled.div`
 
 const HelpTooltip = styled.div`
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   right: 0;
-  transform: translateY(-8px);
+  transform: translateY(8px);
   background-color: #1f2937;
   color: white;
   padding: 16px;
@@ -864,10 +864,10 @@ const HelpTooltip = styled.div`
     visibility: visible;
   }
   
-  &::after {
+  &::before {
     content: '';
     position: absolute;
-    bottom: -6px;
+    top: -6px;
     right: 20px;
     width: 12px;
     height: 12px;
