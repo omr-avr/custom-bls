@@ -842,38 +842,37 @@ const HelpText = styled.div`
   }
 `;
 
-const Tooltip = styled.div`
-  position: fixed;
-  top: 50%;
-  right: 50px;
-  background: #1f2937;
-  color: #ffffff;
-  border: 2px solid #3E74FE;
+const HelpTooltip = styled.div`
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  transform: translateY(-8px);
+  background-color: #1f2937;
+  color: white;
   padding: 16px;
   border-radius: 8px;
   font-size: 12px;
   line-height: 1.4;
   width: 280px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  z-index: 99999;
-  opacity: ${props => props.show ? 1 : 0};
-  visibility: ${props => props.show ? 'visible' : 'hidden'};
-  display: ${props => props.show ? 'block' : 'none'};
-  transform: ${props => props.show ? 'translateY(-50%)' : 'translateY(-50%) translateX(8px)'};
-  transition: all 0.2s ease-in-out;
-  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
   
-  &::before {
+  ${HelpText}:hover & {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  &::after {
     content: '';
     position: absolute;
-    left: -6px;
-    top: 50%;
-    transform: translateY(-50%) rotate(45deg);
+    bottom: -6px;
+    right: 20px;
     width: 12px;
     height: 12px;
-    background: #1f2937;
-    border-left: 2px solid #3E74FE;
-    border-bottom: 2px solid #3E74FE;
+    background-color: #1f2937;
+    transform: rotate(45deg);
   }
 `;
 
@@ -983,7 +982,7 @@ const AISegmentBuilder = ({ onBack }) => {
   const [showSuggestionLoader, setShowSuggestionLoader] = useState(false);
   const [showBuildSuggestions, setShowBuildSuggestions] = useState(false);
   const [selectedWebsiteFavicon, setSelectedWebsiteFavicon] = useState('');
-  const [showTooltip, setShowTooltip] = useState(false);
+
 
   const businessLinesMap = {
     'www.nike.com': [
@@ -1572,19 +1571,10 @@ const AISegmentBuilder = ({ onBack }) => {
                                 </>
                               )}
                             </div>
-                            <HelpText
-                              onMouseEnter={() => {
-                                console.log('Hover enter - showing tooltip');
-                                setShowTooltip(true);
-                              }}
-                              onMouseLeave={() => {
-                                console.log('Hover leave - hiding tooltip');
-                                setShowTooltip(false);
-                              }}
-                            >
+                            <HelpText>
                               Need help?
                               <Info size={14} />
-                              <Tooltip show={showTooltip}>
+                              <HelpTooltip>
                                 <TooltipSection>
                                   <TooltipTitle>Use for:</TooltipTitle>
                                   <TooltipList>
@@ -1603,7 +1593,7 @@ const AISegmentBuilder = ({ onBack }) => {
                                     <li>Don't use exclusions</li>
                                   </TooltipList>
                                 </TooltipSection>
-                              </Tooltip>
+                              </HelpTooltip>
                             </HelpText>
                           </LabelContainer>
                         </SearchLabel>
