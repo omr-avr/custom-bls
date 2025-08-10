@@ -792,6 +792,73 @@ const SuggestionChip = styled.button`
   }
 `;
 
+// Build Section Suggestions Components
+const BuildSuggestionsContainer = styled.div`
+  margin-top: 16px;
+`;
+
+const BuildSuggestionsTitle = styled.div`
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 12px;
+`;
+
+const BuildSuggestionsGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const BuildSuggestionChip = styled.button`
+  background-color: #f9fafb;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #f0f9ff;
+    color: #3E74FE;
+    border-color: #3E74FE;
+  }
+`;
+
+const SuggestionLoader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #6b7280;
+`;
+
+const LoaderDots = styled.div`
+  display: flex;
+  gap: 4px;
+  
+  div {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #9ca3af;
+    animation: loading 1.5s infinite ease-in-out;
+    
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 0.3s; }
+    &:nth-child(3) { animation-delay: 0.6s; }
+  }
+  
+  @keyframes loading {
+    0%, 60%, 100% { opacity: 0.3; }
+    30% { opacity: 1; }
+  }
+`;
+
 const AISegmentBuilder = ({ onBack }) => {
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -819,6 +886,8 @@ const AISegmentBuilder = ({ onBack }) => {
   });
   const [businessLineSearch, setBusinessLineSearch] = useState('');
   const [showEmptyState, setShowEmptyState] = useState(false);
+  const [showSuggestionLoader, setShowSuggestionLoader] = useState(false);
+  const [showBuildSuggestions, setShowBuildSuggestions] = useState(false);
 
   const businessLinesMap = {
     'www.nike.com': [
@@ -905,6 +974,10 @@ const AISegmentBuilder = ({ onBack }) => {
     setWebsiteInput(value);
     // Reset selected business lines when website changes
     setSelectedBusinessLines([]);
+    // Reset suggestions when website changes
+    setShowBuildSuggestions(false);
+    setShowSuggestionLoader(false);
+    
     if (value.length > 0) {
       const filtered = websiteSuggestions.filter(site => 
         site.toLowerCase().includes(value.toLowerCase())
@@ -983,10 +1056,27 @@ const AISegmentBuilder = ({ onBack }) => {
   };
 
   const handleBusinessLineToggle = (line) => {
+    let newSelectedLines;
     if (selectedBusinessLines.includes(line)) {
-      setSelectedBusinessLines(selectedBusinessLines.filter(item => item !== line));
+      newSelectedLines = selectedBusinessLines.filter(item => item !== line);
     } else {
-      setSelectedBusinessLines([...selectedBusinessLines, line]);
+      newSelectedLines = [...selectedBusinessLines, line];
+    }
+    setSelectedBusinessLines(newSelectedLines);
+    
+    // Trigger suggestions loader if we have website + business lines
+    if (websiteInput && newSelectedLines.length > 0) {
+      setShowSuggestionLoader(true);
+      setShowBuildSuggestions(false);
+      
+      // Show suggestions after 5 seconds
+      setTimeout(() => {
+        setShowSuggestionLoader(false);
+        setShowBuildSuggestions(true);
+      }, 5000);
+    } else {
+      setShowBuildSuggestions(false);
+      setShowSuggestionLoader(false);
     }
   };
 
@@ -1118,6 +1208,10 @@ const AISegmentBuilder = ({ onBack }) => {
   };
 
   const handleEmptyStateSuggestionClick = (suggestion) => {
+    setGranularBusinessLines(suggestion);
+  };
+
+  const handleBuildSuggestionClick = (suggestion) => {
     setGranularBusinessLines(suggestion);
   };
 
@@ -1357,6 +1451,34 @@ const AISegmentBuilder = ({ onBack }) => {
                         <ExplainerText>
                           Try using broad product categories or granular business lines • Avoid using: branded terms, funnel steps, mixing concepts
                         </ExplainerText>
+                        
+                        {/* Build Section Suggestions */}
+                        {showSuggestionLoader && (
+                          <SuggestionLoader>
+                            <LoaderDots>
+                              <div></div>
+                              <div></div>
+                              <div></div>
+                            </LoaderDots>
+                            Getting suggestions...
+                          </SuggestionLoader>
+                        )}
+                        
+                        {showBuildSuggestions && (
+                          <BuildSuggestionsContainer>
+                            <BuildSuggestionsTitle>Suggested granular business lines:</BuildSuggestionsTitle>
+                            <BuildSuggestionsGrid>
+                              {getSuggestions().slice(0, 8).map((suggestion, index) => (
+                                <BuildSuggestionChip
+                                  key={index}
+                                  onClick={() => handleBuildSuggestionClick(suggestion)}
+                                >
+                                  {suggestion}
+                                </BuildSuggestionChip>
+                              ))}
+                            </BuildSuggestionsGrid>
+                          </BuildSuggestionsContainer>
+                        )}
                       </SearchContainer>
                     </FieldContainer>
                   </SectionContent>
@@ -1390,23 +1512,16 @@ const AISegmentBuilder = ({ onBack }) => {
                     {showEmptyState ? (
                       <EmptyStateContainer>
                         <EmptyStateIcon>
-                          <Brain size={120} color="#9ca3af" />
+                          <img 
+                            src="/empty-state.svg" 
+                            alt="Empty State" 
+                            style={{ width: '120px', height: '120px', opacity: 0.6 }}
+                          />
                         </EmptyStateIcon>
                         <EmptyStateTitle>No matching segments found</EmptyStateTitle>
                         <EmptyStateSubtitle>
-                          The granular business lines you entered don't match the selected website and parent business lines. Try one of these suggestions instead.
+                          The granular business lines you entered don't match the selected website and parent business lines. Please try a different input.
                         </EmptyStateSubtitle>
-                        <SuggestionsTitle>Try these instead:</SuggestionsTitle>
-                        <SuggestionsGrid>
-                          {getSuggestions().slice(0, 6).map((suggestion, index) => (
-                            <SuggestionChip
-                              key={index}
-                              onClick={() => handleEmptyStateSuggestionClick(suggestion)}
-                            >
-                              {suggestion}
-                            </SuggestionChip>
-                          ))}
-                        </SuggestionsGrid>
                       </EmptyStateContainer>
                     ) : (
                       <MetricsContainer>
@@ -1575,7 +1690,7 @@ const AISegmentBuilder = ({ onBack }) => {
                   </SectionContent>
                   <SectionFooter>
                     <HugButton
-                      disabled={!hasGenerated}
+                      disabled={!hasGenerated || showEmptyState}
                     >
                       Save Segment
                     </HugButton>
