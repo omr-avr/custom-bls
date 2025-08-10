@@ -711,6 +711,9 @@ const SuggestionItem = styled.div`
   font-size: 14px;
   color: #374151;
   border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   
   &:hover {
     background-color: #f9fafb;
@@ -724,6 +727,13 @@ const SuggestionItem = styled.div`
     background-color: #f0f9ff;
     color: #3E74FE;
   `}
+`;
+
+const SuggestionFavicon = styled.img`
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
 `;
 
 // Empty State Components
@@ -953,14 +963,12 @@ const AISegmentBuilder = ({ onBack }) => {
   const businessLines = getBusinessLinesForWebsite(websiteInput);
 
   const websiteSuggestions = [
-    'www.nike.com',
-    'www.nintendo.com',
-    'www.nissan.com',
-    'www.nvidia.com',
-    'www.netflix.com',
-    'www.nordstrom.com',
-    'www.nike.com',
-    'www.nintendo.com'
+    { url: 'www.nike.com', favicon: 'https://www.nike.com/favicon.ico' },
+    { url: 'www.nintendo.com', favicon: 'https://www.nintendo.com/favicon.ico' },
+    { url: 'www.nissan.com', favicon: 'https://www.nissan.com/favicon.ico' },
+    { url: 'www.nvidia.com', favicon: 'https://www.nvidia.com/favicon.ico' },
+    { url: 'www.netflix.com', favicon: 'https://www.netflix.com/favicon.ico' },
+    { url: 'www.nordstrom.com', favicon: 'https://www.nordstrom.com/favicon.ico' }
   ];
 
   const handleWebsiteChange = (value) => {
@@ -973,7 +981,7 @@ const AISegmentBuilder = ({ onBack }) => {
     
     if (value.length > 0) {
       const filtered = websiteSuggestions.filter(site => 
-        site.toLowerCase().includes(value.toLowerCase())
+        site.url.toLowerCase().includes(value.toLowerCase())
       );
       setSuggestions(filtered);
       setShowSuggestions(true);
@@ -984,7 +992,7 @@ const AISegmentBuilder = ({ onBack }) => {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setWebsiteInput(suggestion);
+    setWebsiteInput(suggestion.url);
     setShowSuggestions(false);
     setFocusedSuggestionIndex(-1);
   };
@@ -1282,7 +1290,14 @@ const AISegmentBuilder = ({ onBack }) => {
                                   onClick={() => handleSuggestionClick(suggestion)}
                                   focused={focusedSuggestionIndex === index}
                                 >
-                                  {suggestion}
+                                  <SuggestionFavicon 
+                                    src={suggestion.favicon} 
+                                    alt={`${suggestion.url} favicon`}
+                                    onError={(e) => {
+                                      e.target.style.display = 'none';
+                                    }}
+                                  />
+                                  {suggestion.url}
                                 </SuggestionItem>
                               ))}
                             </SuggestionsContainer>
