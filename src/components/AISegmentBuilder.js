@@ -821,6 +821,26 @@ const BuildSuggestionsTitle = styled.div`
   margin-bottom: 12px;
 `;
 
+const LabelContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const HelpText = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  cursor: pointer;
+  
+  &:hover {
+    color: #374151;
+  }
+`;
+
 const BuildSuggestionsGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -1477,13 +1497,21 @@ const AISegmentBuilder = ({ onBack }) => {
                     <FieldContainer>
                       <SearchContainer>
                         <SearchLabel>
-                          Granular Business Lines
-                          {showSuggestionLoader && (
-                            <>
-                              <span> • </span>
-                              <GeneratingSuggestionsText>Generating suggestions</GeneratingSuggestionsText>
-                            </>
-                          )}
+                          <LabelContainer>
+                            <div>
+                              Granular Business Lines
+                              {showSuggestionLoader && (
+                                <>
+                                  <span> • </span>
+                                  <GeneratingSuggestionsText>Generating suggestions</GeneratingSuggestionsText>
+                                </>
+                              )}
+                            </div>
+                            <HelpText>
+                              Need help?
+                              <Info size={14} />
+                            </HelpText>
+                          </LabelContainer>
                         </SearchLabel>
                         <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                           <SearchField style={{ flex: 1 }}>
@@ -1519,7 +1547,6 @@ const AISegmentBuilder = ({ onBack }) => {
                         
                         {showBuildSuggestions && (
                           <BuildSuggestionsContainer>
-                            <BuildSuggestionsTitle>Suggested granular business lines</BuildSuggestionsTitle>
                             <BuildSuggestionsGrid>
                               {getSuggestions().slice(0, 5).map((suggestion, index) => (
                                 <BuildSuggestionChip
