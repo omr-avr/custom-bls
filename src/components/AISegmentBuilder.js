@@ -1573,7 +1573,7 @@ const AISegmentBuilder = ({ onBack }) => {
                       <EmptyStateContainer>
                         <EmptyStateIcon>
                           <img 
-                            src="/empty-state.svg" 
+                            src="/Images/empty-state.svg" 
                             alt="Empty State" 
                             style={{ width: '120px', height: '120px', opacity: 0.6 }}
                           />
