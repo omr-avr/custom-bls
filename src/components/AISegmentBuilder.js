@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus } from 'lucide-react';
+import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus, Check } from 'lucide-react';
 
 const MainContainer = styled.div`
   flex: 1;
@@ -381,55 +381,7 @@ const AIIcon = styled.div`
   margin: 0 auto 32px;
 `;
 
-const StickyBanner = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(240, 249, 255, 0.95);
-  backdrop-filter: blur(8px);
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 5;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin: 20px;
 
-  &:hover {
-    background: rgba(240, 249, 255, 1);
-  }
-`;
-
-const BannerText = styled.div`
-  font-size: 14px;
-  color: #374151;
-  font-weight: 500;
-`;
-
-const AddSegmentButton = styled.button`
-  background-color: transparent;
-  color: #3E74FE;
-  border: none;
-  padding: 8px;
-  border-radius: 100px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-
-  ${StickyBanner}:hover & {
-    background-color: #3E74FE;
-    color: #ffffff;
-  }
-`;
 
 const SearchIcon = styled.div`
   position: absolute;
@@ -950,7 +902,125 @@ const GeneratingSuggestionsText = styled.span`
   }
 `;
 
+// Modal Styled Components
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
 
+const ModalContent = styled.div`
+  background-color: white;
+  border-radius: 12px;
+  padding: 32px;
+  width: 90%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 32px;
+`;
+
+const SuccessIcon = styled.div`
+  width: 64px;
+  height: 64px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+`;
+
+const ModalForm = styled.div`
+  margin-bottom: 32px;
+`;
+
+const ModalLabel = styled.label`
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+`;
+
+const ModalInput = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #111827;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+`;
+
+const ModalButton = styled.button`
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const PrimaryButton = styled(ModalButton)`
+  background-color: #3b82f6;
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background-color: #2563eb;
+  }
+`;
+
+const SecondaryButton = styled(ModalButton)`
+  background-color: white;
+  color: #374151;
+  border-color: #d1d5db;
+  
+  &:hover:not(:disabled) {
+    background-color: #f9fafb;
+  }
+`;
 
 const AISegmentBuilder = ({ onBack }) => {
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
@@ -982,6 +1052,8 @@ const AISegmentBuilder = ({ onBack }) => {
   const [showSuggestionLoader, setShowSuggestionLoader] = useState(false);
   const [showBuildSuggestions, setShowBuildSuggestions] = useState(false);
   const [selectedWebsiteFavicon, setSelectedWebsiteFavicon] = useState('');
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [segmentName, setSegmentName] = useState('');
 
 
   // CSV Data Mapping - Parent Business Lines from BLS column
@@ -1551,12 +1623,46 @@ const AISegmentBuilder = ({ onBack }) => {
     return [...new Set(allSuggestions)]; // Remove duplicates
   };
 
+  // Generate segment name from website + business lines + granular input
+  const generateSegmentName = () => {
+    const website = websiteInput.replace('www.', '').replace('.com', '');
+    const websiteName = website.charAt(0).toUpperCase() + website.slice(1);
+    const primaryBusinessLine = selectedBusinessLines[0] || 'General';
+    const granular = granularBusinessLines || 'Products';
+    
+    return `${websiteName} - ${primaryBusinessLine} - ${granular}`;
+  };
+
   const handleEmptyStateSuggestionClick = (suggestion) => {
     setGranularBusinessLines(suggestion);
   };
 
   const handleBuildSuggestionClick = (suggestion) => {
     setGranularBusinessLines(suggestion);
+  };
+
+  // Handle Save Segment button click
+  const handleSaveSegment = () => {
+    const generatedName = generateSegmentName();
+    setSegmentName(generatedName);
+    setShowSaveModal(true);
+  };
+
+  // Handle modal actions
+  const handleAnalyzeSegment = () => {
+    console.log('Analyzing segment:', segmentName);
+    setShowSaveModal(false);
+    // TODO: Navigate to segment analysis
+  };
+
+  const handleAddToCustomIndustry = () => {
+    console.log('Adding segment to custom industry:', segmentName);
+    setShowSaveModal(false);
+    // TODO: Open custom industry modal
+  };
+
+  const handleCloseModal = () => {
+    setShowSaveModal(false);
   };
 
   // Check if form has changed since last generation
@@ -2045,27 +2151,12 @@ const AISegmentBuilder = ({ onBack }) => {
                       </MetricsContainer>
                     )}
                     
-                    {hasGenerated && !showEmptyState && (
-                      <StickyBanner onClick={() => {
-                        // Handle banner click - add segment to custom industry
-                        console.log('Add segment to custom industry clicked');
-                      }}>
-                        <BannerText>
-                          Add this segment to a custom industry
-                        </BannerText>
-                        <AddSegmentButton onClick={(e) => {
-                          e.stopPropagation();
-                          // Handle button click - add segment to custom industry
-                          console.log('Add segment to custom industry clicked');
-                        }}>
-                          <Plus size={16} />
-                        </AddSegmentButton>
-                      </StickyBanner>
-                    )}
+
                   </SectionContent>
                   <SectionFooter>
                     <HugButton
                       disabled={!hasGenerated || showEmptyState}
+                      onClick={handleSaveSegment}
                     >
                       Save Segment
                     </HugButton>
@@ -2076,6 +2167,39 @@ const AISegmentBuilder = ({ onBack }) => {
           </Card>
         </Section>
       </Content>
+
+      {/* Save Segment Modal */}
+      {showSaveModal && (
+        <ModalOverlay onClick={handleCloseModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              <SuccessIcon>
+                <Check size={32} color="white" />
+              </SuccessIcon>
+              <ModalTitle>Segment created successfully</ModalTitle>
+            </ModalHeader>
+            
+            <ModalForm>
+              <ModalLabel>Segment Name</ModalLabel>
+              <ModalInput
+                type="text"
+                value={segmentName}
+                onChange={(e) => setSegmentName(e.target.value)}
+                placeholder="Enter segment name"
+              />
+            </ModalForm>
+            
+            <ModalActions>
+              <SecondaryButton onClick={handleAddToCustomIndustry}>
+                Add segment to a custom industry
+              </SecondaryButton>
+              <PrimaryButton onClick={handleAnalyzeSegment}>
+                Analyze segment
+              </PrimaryButton>
+            </ModalActions>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </MainContainer>
   );
 };
