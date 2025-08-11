@@ -938,7 +938,7 @@ const ModalHeader = styled.div`
 const SuccessIcon = styled.div`
   width: 64px;
   height: 64px;
-  background-color: #10b981;
+  background-color: #dbeafe;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1009,11 +1009,11 @@ const ModalButton = styled.button`
 `;
 
 const PrimaryButton = styled(ModalButton)`
-  background: linear-gradient(90deg, #3E74FE 0%, #2AD3AB 100%);
+  background-color: #3E74FE;
   color: #ffffff;
   
   &:hover:not(:disabled) {
-    opacity: 0.9;
+    background-color: #1d4ed8;
   }
 `;
 
@@ -1635,7 +1635,7 @@ const AISegmentBuilder = ({ onBack }) => {
     const primaryBusinessLine = selectedBusinessLines[0] || 'General';
     const granular = granularBusinessLines || 'Products';
     
-    return `${websiteName} - ${primaryBusinessLine} - ${granular}`;
+    return `${websiteName} ${granular}`;
   };
 
   const handleEmptyStateSuggestionClick = (suggestion) => {
@@ -2179,7 +2179,7 @@ const AISegmentBuilder = ({ onBack }) => {
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalHeader>
               <SuccessIcon>
-                <PieChart size={32} color="white" />
+                <PieChart size={32} color="#3E74FE" />
               </SuccessIcon>
               <ModalTitle>Create Segment</ModalTitle>
             </ModalHeader>
