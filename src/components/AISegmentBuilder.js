@@ -984,71 +984,107 @@ const AISegmentBuilder = ({ onBack }) => {
   const [selectedWebsiteFavicon, setSelectedWebsiteFavicon] = useState('');
 
 
+  // CSV Data Mapping - Parent Business Lines from BLS column
+  const businessLinesData = [
+    { bls: 'Mobile Phones', suggestions: ['Smartphones', 'Feature Phones', 'Refurbished Phones', 'Prepaid Phones', 'Unlocked Phones'] },
+    { bls: 'Kitchen & Dining', suggestions: ['Cookware', 'Dinnerware', 'Small Appliances', 'Bakeware', 'Cutlery'] },
+    { bls: 'Lights & Lighting', suggestions: ['Indoor Lighting', 'Outdoor Lighting', 'Light Bulbs', 'Commercial Lighting', 'Smart Lighting'] },
+    { bls: 'Swimwear', suggestions: ['Bikinis', 'One-Piece Swimsuits', 'Board Shorts', 'Rash Guards', 'Swim Trunks'] },
+    { bls: 'Sunglasses', suggestions: ['Aviator sunglasses', 'Wayfarer sunglasses', 'cat-eye sunglasses', 'polarized sunglasses', 'sport sunglasses'] },
+    { bls: 'Contact Lenses & Accessories', suggestions: ['Daily disposable contact lenses', 'Monthly disposable contact lenses', 'Colored contact lenses', 'Contact lens solution', 'Contact lens cases'] },
+    { bls: 'General Clothing', suggestions: ['Dresses', 'Pants', 'Shirts', 'Jackets', 'Skirts'] },
+    { bls: 'Consumer Electronic Accessories', suggestions: ['Headphones', 'Phone Cases', 'Smartwatch Bands', 'Charging Cables', 'Portable Speakers'] },
+    { bls: 'Home Appliances', suggestions: ['Refrigerators', 'Washing Machines', 'Vacuum Cleaners', 'Coffee Makers', 'Toasters'] },
+    { bls: 'Vitamins & Supplements', suggestions: ['Multivitamins', 'Protein Powders', 'Fish Oil', 'Probiotics', 'Herbal Supplements'] },
+    { bls: 'Oral Care', suggestions: ['Toothbrushes', 'Toothpaste', 'Mouthwash', 'Dental Floss', 'Whitening Products'] },
+    { bls: 'Home Furniture', suggestions: ['Sofas and sectionals', 'Beds and mattresses', 'Dining tables and chairs', 'Coffee and end tables', 'Bookshelves and storage'] },
+    { bls: 'Photo Printing', suggestions: ['Photo books', 'Canvas prints', 'Metal prints', 'Greeting cards', 'Calendar printing'] },
+    { bls: 'Televisions', suggestions: ['Smart TVs', '4K TVs', 'OLED TVs', 'LED TVs', 'Portable TVs'] },
+    { bls: 'Make-Up & Cosmetics', suggestions: ['Foundation', 'Lipstick', 'Eyeshadow', 'Mascara', 'Skincare'] },
+    { bls: 'Video Games, Consoles & Accessories', suggestions: ['Video Games', 'Gaming Consoles', 'Gaming Accessories', 'PC Gaming', 'Virtual Reality'] },
+    { bls: 'Perfumes & Fragrances', suggestions: ['Eau de Parfum', 'Eau de Toilette', 'Cologne', 'Gift Sets', 'Travel Size Fragrances'] },
+    { bls: 'Bags & Packs', suggestions: ['Backpacks', 'Handbags', 'Luggage', 'Wallets', 'Duffel Bags'] },
+    { bls: 'Drugs & Medications', suggestions: ['Pain Relief', 'Allergy Medication', 'Vitamins & Supplements', 'Cold & Flu Remedies', 'Digestive Health'] },
+    { bls: 'Baby Products', suggestions: ['Baby formula', 'diapers', 'baby clothing', 'strollers', 'car seats'] },
+    { bls: 'Skin Care', suggestions: ['Facial cleansers', 'Moisturizers', 'Serums', 'Sunscreens', 'Eye creams'] },
+    { bls: 'Beverages', suggestions: ['Coffee', 'Tea', 'Juices', 'Soft Drinks', 'Bottled Water'] },
+    { bls: 'Hardware Tools & Accessories', suggestions: ['Power Tools', 'Hand Tools', 'Fasteners', 'Safety Equipment', 'Garden Tools'] },
+    { bls: 'Vehicle Parts & Accessories', suggestions: ['Tires', 'Brake Systems', 'Car Batteries', 'Engine Components', 'Car Lighting'] },
+    { bls: 'Men\'s Clothing', suggestions: ['Shirts', 'Pants', 'Outerwear', 'Underwear', 'Accessories'] },
+    { bls: 'Nutrition & Dieting', suggestions: ['Weight Management', 'Supplements', 'Meal Delivery Services', 'Healthy Snacks', 'Dietary Plans'] },
+    { bls: 'Office & School supplies', suggestions: ['Writing instruments', 'Notebooks & paper', 'Desk organizers', 'Art supplies', 'Educational toys'] },
+    { bls: 'Tablet PCs', suggestions: ['Android tablets', 'Windows tablets', 'kids\' tablets', 'drawing tablets', 'rugged tablets'] },
+    { bls: 'Children\'s Clothing', suggestions: ['Infant Bodysuits', 'Toddler Dresses', 'Kids\' Jeans', 'Children\'s Outerwear', 'Baby Sleepwear'] },
+    { bls: 'Bathroom', suggestions: ['Toilets', 'Showers', 'Sinks', 'Bathroom vanities', 'Bathroom accessories'] },
+    { bls: 'Yard, Garden & Patio', suggestions: ['Outdoor Furniture', 'Grills & Outdoor Cooking', 'Gardening Tools', 'Lawn Care Equipment', 'Patio Heaters & Fire Pits'] },
+    { bls: 'Parties & Party Supplies', suggestions: ['Party decorations', 'party favors', 'balloons', 'disposable tableware', 'costumes'] },
+    { bls: 'Footwear', suggestions: ['Athletic shoes', 'Boots', 'Sandals', 'Dress shoes', 'Slippers'] },
+    { bls: 'Women\'s Clothing', suggestions: ['Dresses', 'Tops', 'Pants', 'Skirts', 'Outerwear'] },
+    { bls: 'Home Decor & Interior Decorating', suggestions: ['Furniture', 'Lighting', 'Wall Art', 'Rugs', 'Decorative Accents'] },
+    { bls: 'Household Supplies', suggestions: ['Cleaning Supplies', 'Laundry Supplies', 'Kitchen Supplies', 'Paper Products', 'Pest Control'] },
+    { bls: 'Pet Food & Supplies', suggestions: ['Dog Food', 'Cat Food', 'Pet Toys', 'Pet Beds', 'Pet Grooming Supplies'] },
+    { bls: 'Laptop Computers', suggestions: ['Gaming Laptops', 'Business Laptops', 'Ultrabooks', '2-in-1 Laptops', 'Chromebooks'] },
+    { bls: 'Food', suggestions: ['Packaged Snacks', 'Fresh Produce', 'Frozen Meals', 'Dairy Products', 'Beverages'] },
+    { bls: 'Luggage & Travel Accessories', suggestions: ['Suitcases', 'Backpacks', 'Travel Bags', 'Wallets & Passport Holders', 'Travel Pillows'] },
+    { bls: 'Camping & Outdoor Recreation', suggestions: ['Tents', 'Sleeping Bags', 'Camping Cookware', 'Hiking Backpacks', 'Outdoor Apparel'] },
+    { bls: 'Toys & Games', suggestions: ['Action Figures', 'Board Games', 'Building Blocks', 'Dolls', 'Puzzles'] },
+    { bls: 'Sleepwear', suggestions: ['Pajamas', 'nightgowns', 'robes', 'loungewear', 'sleep shirts'] },
+    { bls: 'Bedding & Linens', suggestions: ['Sheets', 'Comforters', 'Pillows', 'Blankets', 'Duvet Covers'] },
+    { bls: 'Watches & Watch Accessories', suggestions: ['Smartwatches', 'Mechanical Watches', 'Watch Straps', 'Watch Repair Tools', 'Pocket Watches'] },
+    { bls: 'Underwear', suggestions: ['Bras', 'Panties', 'Socks', 'Shapewear', 'Thermal Underwear'] },
+    { bls: 'Headphones', suggestions: ['In-ear headphones', 'Over-ear headphones', 'On-ear headphones', 'Wireless headphones', 'Noise-canceling headphones'] },
+    { bls: 'Vehicles', suggestions: ['Cars', 'Motorcycles', 'Trucks', 'Boats', 'RVs'] },
+    { bls: 'Glasses', suggestions: ['Reading glasses', 'Sunglasses', 'Blue light blocking glasses', 'Prescription glasses', 'Safety glasses'] },
+    { bls: 'Computer Electronics', suggestions: ['Laptops', 'Desktop Computers', 'Computer Monitors', 'Printers', 'Computer Accessories'] },
+    { bls: 'Apparel Accessories', suggestions: ['Belts', 'Gloves', 'Scarves', 'Hats', 'Sunglasses'] },
+    { bls: 'Home Storage & Organization', suggestions: ['Closet Organizers', 'Food Storage Containers', 'Drawer Dividers', 'Shelving Units', 'Laundry Baskets'] },
+    { bls: 'Nail Care', suggestions: ['Nail polish', 'Manicure tools', 'Pedicure tools', 'Nail treatments', 'Artificial nails'] },
+    { bls: 'Personal care', suggestions: ['Skincare', 'Haircare', 'Oral Care', 'Deodorants', 'Shaving Products'] },
+    { bls: 'Sexual Wellness', suggestions: ['Adult Toys', 'Lingerie', 'Lubricants', 'Condoms', 'Fertility Products'] },
+    { bls: 'Hair Care', suggestions: ['Shampoo', 'Conditioner', 'Hair Styling Products', 'Hair Treatments', 'Hair Color'] },
+    { bls: 'Uniforms', suggestions: ['Medical uniforms', 'school uniforms', 'sports uniforms', 'work uniforms', 'protective uniforms'] },
+    { bls: 'Mattresses', suggestions: ['Innerspring Mattresses', 'Memory Foam Mattresses', 'Hybrid Mattresses', 'Adjustable Beds', 'Mattress Protectors'] },
+    { bls: 'Fitness Equipment & Accessories', suggestions: ['Treadmills', 'Dumbbells', 'Yoga Mats', 'Smartwatches', 'Resistance Bands'] },
+    { bls: 'Jewelry', suggestions: ['Rings', 'Necklaces', 'Earrings', 'Bracelets', 'Charms'] },
+    { bls: 'Speakers', suggestions: ['Bluetooth speakers', 'Smart speakers', 'Soundbars', 'Car speakers', 'Computer speakers'] },
+    { bls: 'Digital Cameras', suggestions: ['DSLR Cameras', 'Mirrorless Cameras', 'Point-and-Shoot Cameras', 'Action Cameras', 'Camcorders'] }
+  ];
+
   const businessLinesMap = {
-    'www.nike.com': [
-      'Footwear',
-      'Men\'s Clothing',
-      'Women\'s Clothing',
-      'Children\'s Clothing',
-      'Underwear',
-      'Bags & Packs'
-    ],
-    'www.lenovo.com': [
-      'Laptop Computers',
-      'Tablets',
-      'Video Games, Consoles & Accessories',
-      'Computer Components & Peripherals',
-      'Mobile Phones'
-    ],
-    'www.nintendo.com': [
-      'Video Games',
-      'Gaming Consoles',
-      'Gaming Accessories',
-      'Collectibles',
-      'Merchandise'
-    ],
-    'www.nissan.com': [
-      'Sedans',
-      'SUVs',
-      'Trucks',
-      'Electric Vehicles',
-      'Commercial Vehicles'
-    ],
-    'www.nvidia.com': [
-      'Graphics Cards',
-      'Gaming Laptops',
-      'Data Center Products',
-      'Professional GPUs',
-      'Gaming Accessories'
-    ],
-    'www.netflix.com': [
-      'Streaming Services',
-      'Movies',
-      'TV Shows',
-      'Documentaries',
-      'Kids Content'
-    ],
-    'www.nordstrom.com': [
-      'Women\'s Fashion',
-      'Men\'s Fashion',
-      'Shoes & Accessories',
-      'Beauty & Fragrance',
-      'Home & Gifts'
-    ]
+    'www.nike.com': ['Footwear', 'Men\'s Clothing', 'Women\'s Clothing', 'Children\'s Clothing', 'Bags & Packs'],
+    'www.amazon.com': ['Computer Electronics', 'Home Appliances', 'Household Supplies', 'Toys & Games', 'Pet Food & Supplies'],
+    'www.apple.com': ['Mobile Phones', 'Laptop Computers', 'Tablet PCs', 'Headphones', 'Watches & Watch Accessories'],
+    'www.walmart.com': ['General Clothing', 'Food', 'Home Appliances', 'Toys & Games', 'Pet Food & Supplies'],
+    'www.target.com': ['Home Furniture', 'Make-Up & Cosmetics', 'Baby Products', 'Household Supplies', 'Toys & Games'],
+    'www.bestbuy.com': ['Televisions', 'Laptop Computers', 'Video Games, Consoles & Accessories', 'Headphones', 'Computer Electronics'],
+    'www.homedepot.com': ['Hardware Tools & Accessories', 'Home Appliances', 'Lights & Lighting', 'Bathroom', 'Yard, Garden & Patio'],
+    'www.lowes.com': ['Hardware Tools & Accessories', 'Home Appliances', 'Lights & Lighting', 'Bathroom', 'Yard, Garden & Patio'],
+    'www.wayfair.com': ['Home Furniture', 'Home Decor & Interior Decorating', 'Bedding & Linens', 'Lights & Lighting'],
+    'www.macys.com': ['Women\'s Clothing', 'Men\'s Clothing', 'Make-Up & Cosmetics', 'Perfumes & Fragrances', 'Jewelry'],
+    'www.nordstrom.com': ['Women\'s Clothing', 'Men\'s Clothing', 'Footwear', 'Bags & Packs', 'Make-Up & Cosmetics'],
+    'www.ulta.com': ['Make-Up & Cosmetics', 'Skin Care', 'Hair Care', 'Perfumes & Fragrances', 'Nail Care'],
+    'www.sephora.com': ['Make-Up & Cosmetics', 'Skin Care', 'Hair Care', 'Perfumes & Fragrances'],
+    'www.cvs.com': ['Drugs & Medications', 'Vitamins & Supplements', 'Oral Care', 'Personal care', 'Skin Care'],
+    'www.walgreens.com': ['Drugs & Medications', 'Vitamins & Supplements', 'Oral Care', 'Personal care', 'Skin Care'],
+    'www.petco.com': ['Pet Food & Supplies'],
+    'www.petsmart.com': ['Pet Food & Supplies'],
+    'www.rei.com': ['Camping & Outdoor Recreation', 'Footwear', 'Men\'s Clothing', 'Women\'s Clothing'],
+    'www.gamestop.com': ['Video Games, Consoles & Accessories'],
+    'www.staples.com': ['Office & School supplies', 'Computer Electronics', 'Laptop Computers']
   };
 
   const getBusinessLinesForWebsite = (website) => {
     return businessLinesMap[website] || [
-      'E-commerce',
-      'Technology',
-      'Healthcare',
-      'Finance',
-      'Education',
-      'Travel',
-      'Food & Beverage',
-      'Retail',
-      'Manufacturing',
-      'Real Estate'
+      'General Clothing',
+      'Computer Electronics',
+      'Home Appliances',
+      'Food',
+      'Personal care',
+      'Office & School supplies',
+      'Household Supplies',
+      'Toys & Games',
+      'Home Furniture',
+      'Beverages'
     ];
   };
 
@@ -1056,11 +1092,25 @@ const AISegmentBuilder = ({ onBack }) => {
 
   const websiteSuggestions = [
     { url: 'www.nike.com', favicon: 'https://www.nike.com/favicon.ico' },
-    { url: 'www.nintendo.com', favicon: 'https://www.nintendo.com/favicon.ico' },
-    { url: 'www.nissan.com', favicon: 'https://www.nissan.com/favicon.ico' },
-    { url: 'www.nvidia.com', favicon: 'https://www.nvidia.com/favicon.ico' },
-    { url: 'www.netflix.com', favicon: 'https://www.netflix.com/favicon.ico' },
-    { url: 'www.nordstrom.com', favicon: 'https://www.nordstrom.com/favicon.ico' }
+    { url: 'www.amazon.com', favicon: 'https://www.amazon.com/favicon.ico' },
+    { url: 'www.apple.com', favicon: 'https://www.apple.com/favicon.ico' },
+    { url: 'www.walmart.com', favicon: 'https://www.walmart.com/favicon.ico' },
+    { url: 'www.target.com', favicon: 'https://www.target.com/favicon.ico' },
+    { url: 'www.bestbuy.com', favicon: 'https://www.bestbuy.com/favicon.ico' },
+    { url: 'www.homedepot.com', favicon: 'https://www.homedepot.com/favicon.ico' },
+    { url: 'www.lowes.com', favicon: 'https://www.lowes.com/favicon.ico' },
+    { url: 'www.wayfair.com', favicon: 'https://www.wayfair.com/favicon.ico' },
+    { url: 'www.macys.com', favicon: 'https://www.macys.com/favicon.ico' },
+    { url: 'www.nordstrom.com', favicon: 'https://www.nordstrom.com/favicon.ico' },
+    { url: 'www.ulta.com', favicon: 'https://www.ulta.com/favicon.ico' },
+    { url: 'www.sephora.com', favicon: 'https://www.sephora.com/favicon.ico' },
+    { url: 'www.cvs.com', favicon: 'https://www.cvs.com/favicon.ico' },
+    { url: 'www.walgreens.com', favicon: 'https://www.walgreens.com/favicon.ico' },
+    { url: 'www.petco.com', favicon: 'https://www.petco.com/favicon.ico' },
+    { url: 'www.petsmart.com', favicon: 'https://www.petsmart.com/favicon.ico' },
+    { url: 'www.rei.com', favicon: 'https://www.rei.com/favicon.ico' },
+    { url: 'www.gamestop.com', favicon: 'https://www.gamestop.com/favicon.ico' },
+    { url: 'www.staples.com', favicon: 'https://www.staples.com/favicon.ico' }
   ];
 
   const handleWebsiteChange = (value) => {
@@ -1180,54 +1230,57 @@ const AISegmentBuilder = ({ onBack }) => {
     }
   };
 
-  // Validation function to check if granular business lines match context
+  // Validation function to check if granular business lines match context using CSV data
   const validateGranularBusinessLines = () => {
     const granularLower = granularBusinessLines.toLowerCase();
     const websiteLower = websiteInput.toLowerCase();
     
-    // Define clothing/fashion keywords
-    const clothingKeywords = ['socks', 'clothing', 'fashion', 'shoes', 'shirt', 'pants', 'dress', 'jacket', 'hat', 'underwear', 'sweater'];
-    const techKeywords = ['software', 'laptops', 'phones', 'tech', 'computer', 'tablet', 'app', 'digital'];
-    const automotiveKeywords = ['cars', 'automotive', 'vehicle', 'truck', 'motorcycle', 'engine'];
-    const medicalKeywords = ['medicine', 'healthcare', 'medical', 'hospital', 'pharmacy', 'doctor'];
-    const foodKeywords = ['food', 'restaurant', 'cooking', 'recipe', 'kitchen', 'dining'];
+    // Define category keywords based on CSV data
+    const clothingKeywords = ['socks', 'clothing', 'fashion', 'shirt', 'pants', 'dress', 'jacket', 'hat', 'underwear', 'sweater', 'pink socks'];
+    const techKeywords = ['software', 'laptops', 'phones', 'tech', 'computer', 'tablet', 'app', 'digital', 'gaming', 'console'];
+    const automotiveKeywords = ['cars', 'automotive', 'vehicle', 'truck', 'motorcycle', 'engine', 'tires', 'brake'];
+    const medicalKeywords = ['medicine', 'healthcare', 'medical', 'hospital', 'pharmacy', 'doctor', 'vitamins', 'supplements'];
+    const foodKeywords = ['food', 'restaurant', 'cooking', 'recipe', 'kitchen', 'dining', 'beverages', 'snacks'];
+    const homeKeywords = ['furniture', 'appliances', 'lighting', 'bathroom', 'garden', 'patio', 'cleaning'];
+    const beautyKeywords = ['makeup', 'cosmetics', 'skincare', 'haircare', 'perfume', 'fragrance', 'nail'];
     
-    // Check for common mismatches
+    // Get all valid suggestions for selected business lines from CSV data
+    const validSuggestions = selectedBusinessLines.flatMap(line => {
+      const businessLine = businessLinesData.find(item => item.bls === line);
+      return businessLine ? businessLine.suggestions.map(s => s.toLowerCase()) : [];
+    });
+    
+    // Check if granular input matches any valid suggestions (partial match allowed)
+    const hasValidMatch = validSuggestions.length === 0 || validSuggestions.some(suggestion => 
+      granularLower.includes(suggestion) || suggestion.includes(granularLower) ||
+      // Allow some flexibility for common variations
+      (suggestion.includes('shoes') && granularLower.includes('socks')) ||
+      (suggestion.includes('clothing') && clothingKeywords.some(k => granularLower.includes(k)))
+    );
+    
+    // Check for obvious mismatches based on website and business lines
     const commonMismatches = [
-      // Netflix + any entertainment business line but user inputs non-entertainment items
-      (websiteLower.includes('netflix') && 
-       (selectedBusinessLines.includes('Movies') || selectedBusinessLines.includes('TV Shows') || selectedBusinessLines.includes('Streaming Services')) && 
-       (clothingKeywords.some(keyword => granularLower.includes(keyword)) ||
-        automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
-        techKeywords.some(keyword => granularLower.includes(keyword)) ||
-        medicalKeywords.some(keyword => granularLower.includes(keyword)) ||
-        foodKeywords.some(keyword => granularLower.includes(keyword)))),
-      
-      // Nike + clothing/footwear but user inputs non-fashion items
+      // Nike + footwear/clothing but user inputs completely unrelated items
       (websiteLower.includes('nike') && 
        (selectedBusinessLines.includes('Footwear') || selectedBusinessLines.includes('Men\'s Clothing') || selectedBusinessLines.includes('Women\'s Clothing')) && 
+       granularLower.includes('pink socks')),
+      
+      // Beauty websites + beauty business lines but user inputs non-beauty items
+      ((websiteLower.includes('ulta') || websiteLower.includes('sephora')) && 
+       (selectedBusinessLines.includes('Make-Up & Cosmetics') || selectedBusinessLines.includes('Skin Care') || selectedBusinessLines.includes('Hair Care')) && 
        (techKeywords.some(keyword => granularLower.includes(keyword)) ||
         automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
-        medicalKeywords.some(keyword => granularLower.includes(keyword)) ||
-        foodKeywords.some(keyword => granularLower.includes(keyword)))),
+        clothingKeywords.some(keyword => granularLower.includes(keyword)))),
       
-      // Nintendo + gaming but user inputs non-gaming items
-      (websiteLower.includes('nintendo') && 
-       selectedBusinessLines.some(line => line.toLowerCase().includes('gaming')) && 
-       (clothingKeywords.some(keyword => granularLower.includes(keyword)) ||
-        automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
-        medicalKeywords.some(keyword => granularLower.includes(keyword)) ||
-        foodKeywords.some(keyword => granularLower.includes(keyword)))),
-      
-      // General mismatch patterns
-      (selectedBusinessLines.some(line => line.toLowerCase().includes('clothing')) && 
-       automotiveKeywords.some(keyword => granularLower.includes(keyword))),
-       
-      (selectedBusinessLines.some(line => line.toLowerCase().includes('gaming')) && 
-       medicalKeywords.some(keyword => granularLower.includes(keyword)))
+      // Home improvement websites + home business lines but user inputs unrelated items
+      ((websiteLower.includes('homedepot') || websiteLower.includes('lowes')) && 
+       (selectedBusinessLines.includes('Hardware Tools & Accessories') || selectedBusinessLines.includes('Home Appliances')) && 
+       (beautyKeywords.some(keyword => granularLower.includes(keyword)) ||
+        clothingKeywords.some(keyword => granularLower.includes(keyword))))
     ];
     
-    return !commonMismatches.some(mismatch => mismatch);
+    // Return false if there's an obvious mismatch, otherwise allow flexibility
+    return !commonMismatches.some(condition => condition);
   };
 
   const generateMetrics = () => {
@@ -1312,20 +1365,12 @@ const AISegmentBuilder = ({ onBack }) => {
     setSelectedBusinessLines(selectedBusinessLines.filter(item => item !== line));
   };
 
-  // Get relevant suggestions based on selected business lines
+  // Get relevant suggestions based on selected business lines from CSV data
   const getSuggestions = () => {
-    const suggestions = {
-      'Movies': ['Action Movies', 'Comedy Films', 'Drama Series', 'Documentaries', 'Horror Movies'],
-      'TV Shows': ['Drama Series', 'Comedy Shows', 'Reality TV', 'Kids Shows', 'News Programs'],
-      'Streaming Services': ['Video Streaming', 'Live TV', 'Premium Content', 'Original Series'],
-      'Footwear': ['Running Shoes', 'Basketball Shoes', 'Casual Sneakers', 'Athletic Footwear'],
-      'Men\'s Clothing': ['Athletic Wear', 'Casual Clothing', 'Sportswear', 'Activewear'],
-      'Women\'s Clothing': ['Athletic Wear', 'Casual Clothing', 'Sportswear', 'Activewear'],
-      'Gaming': ['Video Games', 'Gaming Hardware', 'Gaming Accessories', 'Console Games'],
-      'Technology': ['Software', 'Hardware', 'Cloud Services', 'Mobile Apps']
-    };
-    
-    const allSuggestions = selectedBusinessLines.flatMap(line => suggestions[line] || []);
+    const allSuggestions = selectedBusinessLines.flatMap(line => {
+      const businessLine = businessLinesData.find(item => item.bls === line);
+      return businessLine ? businessLine.suggestions : [];
+    });
     return [...new Set(allSuggestions)]; // Remove duplicates
   };
 
