@@ -1321,21 +1321,192 @@ const AISegmentBuilder = ({ onBack }) => {
         setMonthlyVisits(Math.floor(Math.random() * 1000000) + 10000);
         setMatchingUrls(Math.floor(Math.random() * 5000) + 100);
         
-        // Generate top 10 URLs with random share percentages
-        const urlTemplates = [
-          'www.example.com/product/shoes',
-          'www.example.com/product/clothing',
-          'www.example.com/category/accessories',
-          'www.example.com/brand/nike',
-          'www.example.com/sale/clearance',
-          'www.example.com/new-arrivals',
-          'www.example.com/featured-items',
-          'www.example.com/trending',
-          'www.example.com/bestsellers',
-          'www.example.com/limited-edition'
-        ];
+        // Generate contextual URLs based on input combination
+        const generateContextualUrls = () => {
+          const website = websiteInput.toLowerCase().replace('www.', '').replace('.com', '');
+          const primaryCategory = selectedBusinessLines[0]?.toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, '-') || 'products';
+          const granularSlug = granularBusinessLines.toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, '-');
+          
+          // Get related suggestions for additional URL variations
+          const relatedSuggestions = selectedBusinessLines.flatMap(line => {
+            const businessLine = businessLinesData.find(item => item.bls === line);
+            return businessLine ? businessLine.suggestions : [];
+          }).slice(0, 4);
+          
+          // Website-specific URL patterns
+          const getWebsiteSpecificPatterns = () => {
+            if (website.includes('amazon')) {
+              return [
+                `${websiteInput}/s?k=${granularBusinessLines.replace(/\s+/g, '+')}`,
+                `${websiteInput}/b?node=${Math.floor(Math.random() * 9000000) + 1000000}`,
+                `${websiteInput}/gp/bestsellers/${primaryCategory}`,
+                `${websiteInput}/deal/${granularSlug}`,
+                `${websiteInput}/prime/${granularSlug}`
+              ];
+            } else if (website.includes('nike')) {
+              return [
+                `${websiteInput}/${granularSlug}`,
+                `${websiteInput}/w/${granularSlug}`,
+                `${websiteInput}/m/${granularSlug}`,
+                `${websiteInput}/jordan/${granularSlug}`,
+                `${websiteInput}/clearance/${granularSlug}`
+              ];
+            } else if (website.includes('target')) {
+              return [
+                `${websiteInput}/s/${granularBusinessLines.replace(/\s+/g, '+')}`,
+                `${websiteInput}/c/${primaryCategory}`,
+                `${websiteInput}/p/${granularSlug}`,
+                `${websiteInput}/b/${granularSlug}`,
+                `${websiteInput}/clearance/${primaryCategory}`
+              ];
+            } else if (website.includes('walmart')) {
+              return [
+                `${websiteInput}/search/?query=${granularBusinessLines.replace(/\s+/g, '+')}`,
+                `${websiteInput}/browse/${primaryCategory}`,
+                `${websiteInput}/cp/${granularSlug}`,
+                `${websiteInput}/rollback/${primaryCategory}`,
+                `${websiteInput}/grocery/${granularSlug}`
+              ];
+            } else if (website.includes('bestbuy')) {
+              return [
+                `${websiteInput}/site/searchpage.jsp?st=${granularBusinessLines.replace(/\s+/g, '+')}`,
+                `${websiteInput}/site/category.jsp?cat=${granularSlug}`,
+                `${websiteInput}/site/brands/${granularSlug}`,
+                `${websiteInput}/site/deals/${primaryCategory}`,
+                `${websiteInput}/site/open-box/${granularSlug}`
+              ];
+            } else if (website.includes('apple')) {
+              return [
+                `${websiteInput}/${granularSlug}`,
+                `${websiteInput}/shop/${granularSlug}`,
+                `${websiteInput}/buy/${granularSlug}`,
+                `${websiteInput}/compare/${primaryCategory}`,
+                `${websiteInput}/refurbished/${granularSlug}`
+              ];
+            } else if (website.includes('homedepot')) {
+              return [
+                `${websiteInput}/b/${granularSlug}`,
+                `${websiteInput}/c/${primaryCategory}`,
+                `${websiteInput}/p/${granularSlug}`,
+                `${websiteInput}/specials/${granularSlug}`,
+                `${websiteInput}/ideas/${primaryCategory}`
+              ];
+            } else if (website.includes('lowes')) {
+              return [
+                `${websiteInput}/c/${granularSlug}`,
+                `${websiteInput}/pd/${granularSlug}`,
+                `${websiteInput}/pl/${primaryCategory}`,
+                `${websiteInput}/savings/${granularSlug}`,
+                `${websiteInput}/ideas/${primaryCategory}`
+              ];
+            } else if (website.includes('wayfair')) {
+              return [
+                `${websiteInput}/keyword.php?keyword=${granularBusinessLines.replace(/\s+/g, '+')}`,
+                `${websiteInput}/category/c${Math.floor(Math.random() * 900000) + 100000}.html`,
+                `${websiteInput}/${primaryCategory}/${granularSlug}`,
+                `${websiteInput}/daily-sales/${granularSlug}`,
+                `${websiteInput}/brands/${granularSlug}`
+              ];
+            } else if (website.includes('macys')) {
+              return [
+                `${websiteInput}/shop/${granularSlug}`,
+                `${websiteInput}/shop/product/${granularSlug}`,
+                `${websiteInput}/shop/sale/${primaryCategory}`,
+                `${websiteInput}/shop/clearance/${granularSlug}`,
+                `${websiteInput}/shop/brands/${granularSlug}`
+              ];
+            } else if (website.includes('nordstrom')) {
+              return [
+                `${websiteInput}/browse/${granularSlug}`,
+                `${websiteInput}/category/${primaryCategory}`,
+                `${websiteInput}/sale/${granularSlug}`,
+                `${websiteInput}/brands/${granularSlug}`,
+                `${websiteInput}/clearance/${primaryCategory}`
+              ];
+            } else if (website.includes('ulta') || website.includes('sephora')) {
+              return [
+                `${websiteInput}/${granularSlug}`,
+                `${websiteInput}/category/${primaryCategory}`,
+                `${websiteInput}/brand/${granularSlug}`,
+                `${websiteInput}/sale/${granularSlug}`,
+                `${websiteInput}/new/${primaryCategory}`
+              ];
+            } else if (website.includes('cvs') || website.includes('walgreens')) {
+              return [
+                `${websiteInput}/shop/${granularSlug}`,
+                `${websiteInput}/pharmacy/${granularSlug}`,
+                `${websiteInput}/health/${primaryCategory}`,
+                `${websiteInput}/beauty/${granularSlug}`,
+                `${websiteInput}/deals/${primaryCategory}`
+              ];
+            } else if (website.includes('petco') || website.includes('petsmart')) {
+              return [
+                `${websiteInput}/shop/en/${granularSlug}`,
+                `${websiteInput}/category/${primaryCategory}`,
+                `${websiteInput}/brand/${granularSlug}`,
+                `${websiteInput}/deals/${granularSlug}`,
+                `${websiteInput}/services/${primaryCategory}`
+              ];
+            } else if (website.includes('rei')) {
+              return [
+                `${websiteInput}/c/${granularSlug}`,
+                `${websiteInput}/category/${primaryCategory}`,
+                `${websiteInput}/brand/${granularSlug}`,
+                `${websiteInput}/deals/${granularSlug}`,
+                `${websiteInput}/used/${primaryCategory}`
+              ];
+            } else if (website.includes('gamestop')) {
+              return [
+                `${websiteInput}/${granularSlug}`,
+                `${websiteInput}/category/${primaryCategory}`,
+                `${websiteInput}/brand/${granularSlug}`,
+                `${websiteInput}/trade/${granularSlug}`,
+                `${websiteInput}/collectibles/${primaryCategory}`
+              ];
+            } else if (website.includes('staples')) {
+              return [
+                `${websiteInput}/${granularSlug}`,
+                `${websiteInput}/category/${primaryCategory}`,
+                `${websiteInput}/brand/${granularSlug}`,
+                `${websiteInput}/deals/${granularSlug}`,
+                `${websiteInput}/services/${primaryCategory}`
+              ];
+            }
+            return [];
+          };
+          
+          const websiteSpecific = getWebsiteSpecificPatterns();
+          
+          const genericPatterns = [
+            // Primary category and granular combination
+            `${websiteInput}/${primaryCategory}/${granularSlug}`,
+            `${websiteInput}/shop/${granularSlug}`,
+            `${websiteInput}/category/${granularSlug}`,
+            `${websiteInput}/products/${granularSlug}`,
+            
+            // Category-focused URLs
+            `${websiteInput}/${primaryCategory}`,
+            `${websiteInput}/shop/${primaryCategory}`,
+            `${websiteInput}/collection/${granularSlug}`,
+            
+            // Related product URLs using suggestions
+            ...relatedSuggestions.slice(0, 2).map(suggestion => 
+              `${websiteInput}/product/${suggestion.toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, '-')}`
+            ),
+            
+            // Common e-commerce patterns with context
+            `${websiteInput}/sale/${granularSlug}`,
+            `${websiteInput}/deals/${primaryCategory}`,
+            `${websiteInput}/trending/${granularSlug}`
+          ];
+          
+          // Combine website-specific and generic patterns, prioritizing website-specific
+          const combinedPatterns = [...websiteSpecific, ...genericPatterns];
+          return combinedPatterns.slice(0, 10);
+        };
         
-        const generatedUrls = urlTemplates.map((url, index) => ({
+        const contextualUrls = generateContextualUrls();
+        const generatedUrls = contextualUrls.map((url, index) => ({
           url: url,
           share: Math.floor(Math.random() * 25) + 1 // 1-25% share
         }));
