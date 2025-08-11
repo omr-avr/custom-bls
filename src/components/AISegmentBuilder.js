@@ -1288,6 +1288,12 @@ const AISegmentBuilder = ({ onBack }) => {
     setLoadingProgress(0);
     setShowEmptyState(false);
     
+    // Clear previous results
+    setTopUrls([]);
+    setSegmentShare(0);
+    setMonthlyVisits(0);
+    setMatchingUrls(0);
+    
     // Save current form state
     setOriginalFormState({
       website: websiteInput,
@@ -1323,9 +1329,11 @@ const AISegmentBuilder = ({ onBack }) => {
         
         // Generate contextual URLs based on input combination
         const generateContextualUrls = () => {
+          console.log('Generating URLs for:', { websiteInput, selectedBusinessLines, granularBusinessLines });
           const website = websiteInput.toLowerCase().replace('www.', '').replace('.com', '');
           const primaryCategory = selectedBusinessLines[0]?.toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, '-') || 'products';
           const granularSlug = granularBusinessLines.toLowerCase().replace(/[^a-z\s]/g, '').replace(/\s+/g, '-');
+          console.log('URL generation variables:', { website, primaryCategory, granularSlug });
           
           // Get related suggestions for additional URL variations
           const relatedSuggestions = selectedBusinessLines.flatMap(line => {
@@ -1502,7 +1510,9 @@ const AISegmentBuilder = ({ onBack }) => {
           
           // Combine website-specific and generic patterns, prioritizing website-specific
           const combinedPatterns = [...websiteSpecific, ...genericPatterns];
-          return combinedPatterns.slice(0, 10);
+          const finalUrls = combinedPatterns.slice(0, 10);
+          console.log('Generated URLs:', finalUrls);
+          return finalUrls;
         };
         
         const contextualUrls = generateContextualUrls();
@@ -1510,6 +1520,7 @@ const AISegmentBuilder = ({ onBack }) => {
           url: url,
           share: Math.floor(Math.random() * 25) + 1 // 1-25% share
         }));
+        console.log('Final URL objects:', generatedUrls);
         
         // Sort by share percentage (biggest to smallest)
         generatedUrls.sort((a, b) => b.share - a.share);
