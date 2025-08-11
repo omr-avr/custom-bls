@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus, Check } from 'lucide-react';
+import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus, Check, PieChart } from 'lucide-react';
 
 const MainContainer = styled.div`
   flex: 1;
@@ -989,13 +989,18 @@ const ModalActions = styled.div`
 `;
 
 const ModalButton = styled.button`
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid transparent;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
   
   &:disabled {
     opacity: 0.5;
@@ -1004,18 +1009,18 @@ const ModalButton = styled.button`
 `;
 
 const PrimaryButton = styled(ModalButton)`
-  background-color: #3b82f6;
-  color: white;
+  background: linear-gradient(90deg, #3E74FE 0%, #2AD3AB 100%);
+  color: #ffffff;
   
   &:hover:not(:disabled) {
-    background-color: #2563eb;
+    opacity: 0.9;
   }
 `;
 
 const SecondaryButton = styled(ModalButton)`
-  background-color: white;
+  background-color: #ffffff;
   color: #374151;
-  border-color: #d1d5db;
+  border: 1px solid #d1d5db;
   
   &:hover:not(:disabled) {
     background-color: #f9fafb;
@@ -2158,7 +2163,7 @@ const AISegmentBuilder = ({ onBack }) => {
                       disabled={!hasGenerated || showEmptyState}
                       onClick={handleSaveSegment}
                     >
-                      Save Segment
+                      Create Segment
                     </HugButton>
                   </SectionFooter>
                 </RightSection>
@@ -2174,9 +2179,9 @@ const AISegmentBuilder = ({ onBack }) => {
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalHeader>
               <SuccessIcon>
-                <Check size={32} color="white" />
+                <PieChart size={32} color="white" />
               </SuccessIcon>
-              <ModalTitle>Segment created successfully</ModalTitle>
+              <ModalTitle>Create Segment</ModalTitle>
             </ModalHeader>
             
             <ModalForm>
@@ -2191,10 +2196,10 @@ const AISegmentBuilder = ({ onBack }) => {
             
             <ModalActions>
               <SecondaryButton onClick={handleAddToCustomIndustry}>
-                Add segment to a custom industry
+                Add to custom industry
               </SecondaryButton>
               <PrimaryButton onClick={handleAnalyzeSegment}>
-                Analyze segment
+                Save & Analyze
               </PrimaryButton>
             </ModalActions>
           </ModalContent>
