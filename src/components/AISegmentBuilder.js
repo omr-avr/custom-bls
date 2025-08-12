@@ -1036,6 +1036,14 @@ const AISegmentBuilder = ({ onBack }) => {
   const dropdownRef = useRef(null);
   const websiteRef = useRef(null);
   const [focusedSuggestionIndex, setFocusedSuggestionIndex] = useState(-1);
+
+  // Load recent searches from localStorage on component mount
+  useEffect(() => {
+    const savedRecentSearches = localStorage.getItem('aiSegmentBuilder_recentSearches');
+    if (savedRecentSearches) {
+      setRecentSearches(JSON.parse(savedRecentSearches));
+    }
+  }, []);
   const [focusedBusinessLineIndex, setFocusedBusinessLineIndex] = useState(-1);
   const [granularBusinessLines, setGranularBusinessLines] = useState('');
   const [hasGenerated, setHasGenerated] = useState(false);
@@ -1059,6 +1067,7 @@ const AISegmentBuilder = ({ onBack }) => {
   const [selectedWebsiteFavicon, setSelectedWebsiteFavicon] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [segmentName, setSegmentName] = useState('');
+  const [recentSearches, setRecentSearches] = useState([]);
 
 
   // CSV Data Mapping - Parent Business Lines from BLS column
@@ -1165,6 +1174,15 @@ const AISegmentBuilder = ({ onBack }) => {
     ];
   };
 
+  // Save recent search to localStorage
+  const saveRecentSearch = (website) => {
+    if (!website || website.length < 3) return; // Don't save very short searches
+    
+    const newRecentSearches = [website, ...recentSearches.filter(search => search !== website)].slice(0, 5);
+    setRecentSearches(newRecentSearches);
+    localStorage.setItem('aiSegmentBuilder_recentSearches', JSON.stringify(newRecentSearches));
+  };
+
   const businessLines = getBusinessLinesForWebsite(websiteInput);
 
   const websiteSuggestions = [
@@ -1205,14 +1223,28 @@ const AISegmentBuilder = ({ onBack }) => {
     setSelectedWebsiteFavicon(exactMatch ? exactMatch.favicon : '');
     
     if (value.length > 0) {
+      // Filter predefined website suggestions
       const filtered = websiteSuggestions.filter(site => 
         site.url.toLowerCase().includes(value.toLowerCase())
       );
-      setSuggestions(filtered);
+      
+      // Filter recent searches that match the input
+      const filteredRecentSearches = recentSearches
+        .filter(search => search.toLowerCase().includes(value.toLowerCase()))
+        .map(search => ({ url: search, favicon: '' })); // Recent searches don't have favicons initially
+      
+      // Combine suggestions: predefined websites first, then recent searches
+      const combinedSuggestions = [...filtered, ...filteredRecentSearches.filter(recent => 
+        !filtered.some(suggestion => suggestion.url.toLowerCase() === recent.url.toLowerCase())
+      )];
+      
+      setSuggestions(combinedSuggestions);
       setShowSuggestions(true);
     } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
+      // Show recent searches when input is empty
+      const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: '' }));
+      setSuggestions(recentSuggestions);
+      setShowSuggestions(recentSuggestions.length > 0);
     }
   };
 
@@ -1221,6 +1253,8 @@ const AISegmentBuilder = ({ onBack }) => {
     setSelectedWebsiteFavicon(suggestion.favicon);
     setShowSuggestions(false);
     setFocusedSuggestionIndex(-1);
+    // Save to recent searches
+    saveRecentSearch(suggestion.url);
   };
 
   const handleWebsiteKeyDown = (e) => {
@@ -1744,7 +1778,15 @@ const AISegmentBuilder = ({ onBack }) => {
                             value={websiteInput}
                             hasFavicon={!!selectedWebsiteFavicon}
                             onChange={(e) => handleWebsiteChange(e.target.value)}
-                            onFocus={() => websiteInput.length > 0 && setShowSuggestions(true)}
+                            onFocus={() => {
+                              if (websiteInput.length > 0) {
+                                setShowSuggestions(true);
+                              } else if (recentSearches.length > 0) {
+                                const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: '' }));
+                                setSuggestions(recentSuggestions);
+                                setShowSuggestions(true);
+                              }
+                            }}
                             onKeyDown={handleWebsiteKeyDown}
                           />
                           {showSuggestions && suggestions.length > 0 && (
