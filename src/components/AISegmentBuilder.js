@@ -1018,12 +1018,12 @@ const PrimaryButton = styled(ModalButton)`
 `;
 
 const SecondaryButton = styled(ModalButton)`
-  background-color: #ffffff;
+  background-color: #f3f4f6;
   color: #374151;
   border: 1px solid #d1d5db;
   
   &:hover:not(:disabled) {
-    background-color: #f9fafb;
+    background-color: #e5e7eb;
   }
 `;
 
@@ -2197,7 +2197,7 @@ const AISegmentBuilder = ({ onBack }) => {
             
             <ModalActions>
               <SecondaryButton onClick={handleAddToCustomIndustry}>
-                Add to custom industry
+                Save & Add to custom industry
               </SecondaryButton>
               <PrimaryButton onClick={handleAnalyzeSegment}>
                 Save & Analyze
