@@ -1018,12 +1018,12 @@ const PrimaryButton = styled(ModalButton)`
 `;
 
 const SecondaryButton = styled(ModalButton)`
-  background-color: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background-color: transparent;
+  color: #3E74FE;
+  border: 1px solid #3E74FE;
   
   &:hover:not(:disabled) {
-    background-color: #e5e7eb;
+    background-color: #f0f9ff;
   }
 `;
 
