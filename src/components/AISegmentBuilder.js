@@ -1320,6 +1320,7 @@ const AISegmentBuilder = ({ onBack }) => {
     const foodKeywords = ['food', 'restaurant', 'cooking', 'recipe', 'kitchen', 'dining', 'beverages', 'snacks'];
     const homeKeywords = ['furniture', 'appliances', 'lighting', 'bathroom', 'garden', 'patio', 'cleaning'];
     const beautyKeywords = ['makeup', 'cosmetics', 'skincare', 'haircare', 'perfume', 'fragrance', 'nail'];
+    const entertainmentKeywords = ['movies', 'films', 'shows', 'tv', 'entertainment', 'streaming', 'series', 'action movies', 'comedy', 'drama'];
     
     // Get all valid suggestions for selected business lines from CSV data
     const validSuggestions = selectedBusinessLines.flatMap(line => {
@@ -1340,23 +1341,37 @@ const AISegmentBuilder = ({ onBack }) => {
       // Nike + footwear/clothing but user inputs completely unrelated items
       (websiteLower.includes('nike') && 
        (selectedBusinessLines.includes('Footwear') || selectedBusinessLines.includes('Men\'s Clothing') || selectedBusinessLines.includes('Women\'s Clothing')) && 
-       granularLower.includes('pink socks')),
+       (entertainmentKeywords.some(keyword => granularLower.includes(keyword)) ||
+        techKeywords.some(keyword => granularLower.includes(keyword)) ||
+        automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
+        medicalKeywords.some(keyword => granularLower.includes(keyword)) ||
+        foodKeywords.some(keyword => granularLower.includes(keyword)) ||
+        homeKeywords.some(keyword => granularLower.includes(keyword)) ||
+        beautyKeywords.some(keyword => granularLower.includes(keyword)))),
       
       // Beauty websites + beauty business lines but user inputs non-beauty items
       ((websiteLower.includes('ulta') || websiteLower.includes('sephora')) && 
        (selectedBusinessLines.includes('Make-Up & Cosmetics') || selectedBusinessLines.includes('Skin Care') || selectedBusinessLines.includes('Hair Care')) && 
        (techKeywords.some(keyword => granularLower.includes(keyword)) ||
         automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
-        clothingKeywords.some(keyword => granularLower.includes(keyword)))),
+        clothingKeywords.some(keyword => granularLower.includes(keyword)) ||
+        entertainmentKeywords.some(keyword => granularLower.includes(keyword)))),
       
       // Home improvement websites + home business lines but user inputs unrelated items
       ((websiteLower.includes('homedepot') || websiteLower.includes('lowes')) && 
        (selectedBusinessLines.includes('Hardware Tools & Accessories') || selectedBusinessLines.includes('Home Appliances')) && 
        (beautyKeywords.some(keyword => granularLower.includes(keyword)) ||
-        clothingKeywords.some(keyword => granularLower.includes(keyword))))
+        clothingKeywords.some(keyword => granularLower.includes(keyword)) ||
+        entertainmentKeywords.some(keyword => granularLower.includes(keyword)))),
+      
+      // General mismatch: if input doesn't match valid suggestions AND contains obviously unrelated keywords
+      (!hasValidMatch && 
+       (entertainmentKeywords.some(keyword => granularLower.includes(keyword)) ||
+        (selectedBusinessLines.includes('Footwear') && (techKeywords.some(keyword => granularLower.includes(keyword)) || entertainmentKeywords.some(keyword => granularLower.includes(keyword)))) ||
+        (selectedBusinessLines.includes('Make-Up & Cosmetics') && automotiveKeywords.some(keyword => granularLower.includes(keyword)))))
     ];
     
-    // Return false if there's an obvious mismatch, otherwise allow flexibility
+    // Return false if there's an obvious mismatch
     return !commonMismatches.some(condition => condition);
   };
 
