@@ -1186,6 +1186,19 @@ const AISegmentBuilder = ({ onBack }) => {
 
   const businessLines = getBusinessLinesForWebsite(websiteInput);
 
+  // Get favicon URL for any website
+  const getFaviconUrl = (url) => {
+    // Check if it's in our predefined list first
+    const predefinedSite = websiteSuggestions.find(site => site.url.toLowerCase() === url.toLowerCase());
+    if (predefinedSite) {
+      return predefinedSite.favicon;
+    }
+    
+    // Generate favicon URL for any website
+    const cleanUrl = url.replace(/^www\./, '').replace(/\/$/, '');
+    return `https://www.google.com/s2/favicons?domain=${cleanUrl}&sz=16`;
+  };
+
   // Save recent search to localStorage
   const saveRecentSearch = (website) => {
     if (!website || website.length < 3) return; // Don't save very short searches
@@ -1196,26 +1209,26 @@ const AISegmentBuilder = ({ onBack }) => {
   };
 
   const websiteSuggestions = [
-    { url: 'www.nike.com', favicon: 'https://www.nike.com/favicon.ico' },
-    { url: 'www.amazon.com', favicon: 'https://www.amazon.com/favicon.ico' },
-    { url: 'www.apple.com', favicon: 'https://www.apple.com/favicon.ico' },
-    { url: 'www.walmart.com', favicon: 'https://www.walmart.com/favicon.ico' },
-    { url: 'www.target.com', favicon: 'https://www.target.com/favicon.ico' },
-    { url: 'www.bestbuy.com', favicon: 'https://www.bestbuy.com/favicon.ico' },
-    { url: 'www.homedepot.com', favicon: 'https://www.homedepot.com/favicon.ico' },
-    { url: 'www.lowes.com', favicon: 'https://www.lowes.com/favicon.ico' },
-    { url: 'www.wayfair.com', favicon: 'https://www.wayfair.com/favicon.ico' },
-    { url: 'www.macys.com', favicon: 'https://www.macys.com/favicon.ico' },
-    { url: 'www.nordstrom.com', favicon: 'https://www.nordstrom.com/favicon.ico' },
-    { url: 'www.ulta.com', favicon: 'https://www.ulta.com/favicon.ico' },
-    { url: 'www.sephora.com', favicon: 'https://www.sephora.com/favicon.ico' },
-    { url: 'www.cvs.com', favicon: 'https://www.cvs.com/favicon.ico' },
-    { url: 'www.walgreens.com', favicon: 'https://www.walgreens.com/favicon.ico' },
-    { url: 'www.petco.com', favicon: 'https://www.petco.com/favicon.ico' },
-    { url: 'www.petsmart.com', favicon: 'https://www.petsmart.com/favicon.ico' },
-    { url: 'www.rei.com', favicon: 'https://www.rei.com/favicon.ico' },
-    { url: 'www.gamestop.com', favicon: 'https://www.gamestop.com/favicon.ico' },
-    { url: 'www.staples.com', favicon: 'https://www.staples.com/favicon.ico' }
+    { url: 'www.nike.com', favicon: 'https://www.google.com/s2/favicons?domain=nike.com&sz=16' },
+    { url: 'www.amazon.com', favicon: 'https://www.google.com/s2/favicons?domain=amazon.com&sz=16' },
+    { url: 'www.apple.com', favicon: 'https://www.google.com/s2/favicons?domain=apple.com&sz=16' },
+    { url: 'www.walmart.com', favicon: 'https://www.google.com/s2/favicons?domain=walmart.com&sz=16' },
+    { url: 'www.target.com', favicon: 'https://www.google.com/s2/favicons?domain=target.com&sz=16' },
+    { url: 'www.bestbuy.com', favicon: 'https://www.google.com/s2/favicons?domain=bestbuy.com&sz=16' },
+    { url: 'www.homedepot.com', favicon: 'https://www.google.com/s2/favicons?domain=homedepot.com&sz=16' },
+    { url: 'www.lowes.com', favicon: 'https://www.google.com/s2/favicons?domain=lowes.com&sz=16' },
+    { url: 'www.wayfair.com', favicon: 'https://www.google.com/s2/favicons?domain=wayfair.com&sz=16' },
+    { url: 'www.macys.com', favicon: 'https://www.google.com/s2/favicons?domain=macys.com&sz=16' },
+    { url: 'www.nordstrom.com', favicon: 'https://www.google.com/s2/favicons?domain=nordstrom.com&sz=16' },
+    { url: 'www.ulta.com', favicon: 'https://www.google.com/s2/favicons?domain=ulta.com&sz=16' },
+    { url: 'www.sephora.com', favicon: 'https://www.google.com/s2/favicons?domain=sephora.com&sz=16' },
+    { url: 'www.cvs.com', favicon: 'https://www.google.com/s2/favicons?domain=cvs.com&sz=16' },
+    { url: 'www.walgreens.com', favicon: 'https://www.google.com/s2/favicons?domain=walgreens.com&sz=16' },
+    { url: 'www.petco.com', favicon: 'https://www.google.com/s2/favicons?domain=petco.com&sz=16' },
+    { url: 'www.petsmart.com', favicon: 'https://www.google.com/s2/favicons?domain=petsmart.com&sz=16' },
+    { url: 'www.rei.com', favicon: 'https://www.google.com/s2/favicons?domain=rei.com&sz=16' },
+    { url: 'www.gamestop.com', favicon: 'https://www.google.com/s2/favicons?domain=gamestop.com&sz=16' },
+    { url: 'www.staples.com', favicon: 'https://www.google.com/s2/favicons?domain=staples.com&sz=16' }
   ];
 
   const handleWebsiteChange = (value) => {
@@ -1241,7 +1254,7 @@ const AISegmentBuilder = ({ onBack }) => {
       // Filter recent searches that match the input
       const filteredRecentSearches = recentSearches
         .filter(search => search.toLowerCase().includes(value.toLowerCase()))
-        .map(search => ({ url: search, favicon: '', isRecent: true }));
+        .map(search => ({ url: search, favicon: getFaviconUrl(search), isRecent: true }));
       
       // Combine suggestions: predefined websites first, then recent searches
       const combinedSuggestions = [...filtered, ...filteredRecentSearches.filter(recent => 
@@ -1252,7 +1265,7 @@ const AISegmentBuilder = ({ onBack }) => {
       setShowSuggestions(true);
     } else {
       // Show recent searches when input is empty
-      const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: '', isRecent: true }));
+      const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: getFaviconUrl(search), isRecent: true }));
       setSuggestions(recentSuggestions);
       setShowSuggestions(recentSuggestions.length > 0);
     }
@@ -1792,7 +1805,7 @@ const AISegmentBuilder = ({ onBack }) => {
                                if (websiteInput.length > 0) {
                                  setShowSuggestions(true);
                                } else if (recentSearches.length > 0) {
-                                 const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: '', isRecent: true }));
+                                 const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: getFaviconUrl(search), isRecent: true }));
                                  setSuggestions(recentSuggestions);
                                  setShowSuggestions(true);
                                }
