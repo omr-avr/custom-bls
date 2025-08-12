@@ -1019,11 +1019,12 @@ const PrimaryButton = styled(ModalButton)`
 
 const SecondaryButton = styled(ModalButton)`
   background-color: #ffffff;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  color: #3E74FE;
+  border: 1px solid #3E74FE;
   
   &:hover:not(:disabled) {
-    background-color: #f9fafb;
+    background-color: #3E74FE;
+    color: #ffffff;
   }
 `;
 
@@ -1414,11 +1415,11 @@ const AISegmentBuilder = ({ onBack }) => {
     
     setTimeout(() => {
       if (isValid) {
-        // Generate random metrics for demonstration
-        setSegmentShare(Math.floor(Math.random() * 100) + 1);
-        setMonthlyVisits(Math.floor(Math.random() * 1000000) + 10000);
-        setMatchingUrls(Math.floor(Math.random() * 5000) + 100);
-        
+      // Generate random metrics for demonstration
+      setSegmentShare(Math.floor(Math.random() * 100) + 1);
+      setMonthlyVisits(Math.floor(Math.random() * 1000000) + 10000);
+      setMatchingUrls(Math.floor(Math.random() * 5000) + 100);
+      
         // Generate contextual URLs based on input combination
         const generateContextualUrls = () => {
           const website = websiteInput.toLowerCase().replace('www.', '').replace('.com', '');
@@ -1605,14 +1606,14 @@ const AISegmentBuilder = ({ onBack }) => {
         
         const contextualUrls = generateContextualUrls();
         const generatedUrls = contextualUrls.map((url, index) => ({
-          url: url,
-          share: Math.floor(Math.random() * 25) + 1 // 1-25% share
-        }));
-        
-        // Sort by share percentage (biggest to smallest)
-        generatedUrls.sort((a, b) => b.share - a.share);
-        
-        setTopUrls(generatedUrls);
+        url: url,
+        share: Math.floor(Math.random() * 25) + 1 // 1-25% share
+      }));
+      
+      // Sort by share percentage (biggest to smallest)
+      generatedUrls.sort((a, b) => b.share - a.share);
+      
+      setTopUrls(generatedUrls);
         setShowEmptyState(false);
       } else {
         // Show empty state for invalid combinations
@@ -1947,29 +1948,29 @@ const AISegmentBuilder = ({ onBack }) => {
                         </SearchLabel>
                         <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                           <SearchField style={{ flex: 1 }}>
-                            <SearchInput 
-                              placeholder={selectedBusinessLines.length === 0 ? "Select business lines first..." : "Enter granular business lines..."}
-                              disabled={selectedBusinessLines.length === 0}
-                              value={granularBusinessLines}
-                              onChange={(e) => setGranularBusinessLines(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                  e.preventDefault();
-                                  if (!isLoading && websiteInput && selectedBusinessLines.length > 0 && granularBusinessLines) {
-                                    generateMetrics();
-                                  }
+                          <SearchInput 
+                            placeholder={selectedBusinessLines.length === 0 ? "Select business lines first..." : "Enter granular business lines..."}
+                            disabled={selectedBusinessLines.length === 0}
+                            value={granularBusinessLines}
+                            onChange={(e) => setGranularBusinessLines(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                if (!isLoading && websiteInput && selectedBusinessLines.length > 0 && granularBusinessLines) {
+                                  generateMetrics();
                                 }
-                              }}
-                            />
-                          </SearchField>
-                          <CTAButton 
-                            disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged())}
-                            onClick={generateMetrics}
+                              }
+                            }}
+                          />
+                        </SearchField>
+                      <CTAButton 
+                        disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged())}
+                        onClick={generateMetrics}
                             style={{ marginTop: '0' }}
-                          >
-                            <Sparkles size={14} />
+                      >
+                        <Sparkles size={14} />
                             {hasGenerated ? 'Regenerate' : 'Generate Segment'}
-                          </CTAButton>
+                      </CTAButton>
                         </div>
                         
                         {/* Build Section Suggestions */}
@@ -2025,7 +2026,7 @@ const AISegmentBuilder = ({ onBack }) => {
                         </EmptyStateSubtitle>
                       </EmptyStateContainer>
                     ) : (
-                      <MetricsContainer>
+                    <MetricsContainer>
                       {/* Segment Share Metric */}
                       <MetricCard>
                         <MetricTitle>
@@ -2168,7 +2169,7 @@ const AISegmentBuilder = ({ onBack }) => {
                           )}
                         </div>
                       </MetricCard>
-                      </MetricsContainer>
+                    </MetricsContainer>
                     )}
                     
 
@@ -2211,7 +2212,7 @@ const AISegmentBuilder = ({ onBack }) => {
             
             <ModalActions>
               <SecondaryButton onClick={handleAddToCustomIndustry}>
-                Add to custom industry
+                Save & Add to custom industry
               </SecondaryButton>
               <PrimaryButton onClick={handleAnalyzeSegment}>
                 Save & Analyze
