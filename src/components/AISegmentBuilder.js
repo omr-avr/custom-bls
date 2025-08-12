@@ -1019,12 +1019,11 @@ const PrimaryButton = styled(ModalButton)`
 
 const SecondaryButton = styled(ModalButton)`
   background-color: #ffffff;
-  color: #3E74FE;
-  border: 1px solid #3E74FE;
+  color: #374151;
+  border: 1px solid #d1d5db;
   
   &:hover:not(:disabled) {
-    background-color: #3E74FE;
-    color: #ffffff;
+    background-color: #f9fafb;
   }
 `;
 
@@ -1321,7 +1320,7 @@ const AISegmentBuilder = ({ onBack }) => {
     const foodKeywords = ['food', 'restaurant', 'cooking', 'recipe', 'kitchen', 'dining', 'beverages', 'snacks'];
     const homeKeywords = ['furniture', 'appliances', 'lighting', 'bathroom', 'garden', 'patio', 'cleaning'];
     const beautyKeywords = ['makeup', 'cosmetics', 'skincare', 'haircare', 'perfume', 'fragrance', 'nail'];
-    const entertainmentKeywords = ['movies', 'films', 'shows', 'tv', 'entertainment', 'streaming', 'series', 'action movies', 'comedy', 'drama'];
+    const entertainmentKeywords = ['movies', 'films', 'tv', 'television', 'shows', 'series', 'streaming', 'entertainment', 'action', 'comedy', 'drama', 'horror', 'documentary'];
     
     // Get all valid suggestions for selected business lines from CSV data
     const validSuggestions = selectedBusinessLines.flatMap(line => {
@@ -1329,26 +1328,18 @@ const AISegmentBuilder = ({ onBack }) => {
       return businessLine ? businessLine.suggestions.map(s => s.toLowerCase()) : [];
     });
     
-    // Check if granular input matches any valid suggestions (partial match allowed)
-    const hasValidMatch = validSuggestions.length === 0 || validSuggestions.some(suggestion => 
-      granularLower.includes(suggestion) || suggestion.includes(granularLower) ||
-      // Allow some flexibility for common variations
-      (suggestion.includes('shoes') && granularLower.includes('socks')) ||
-      (suggestion.includes('clothing') && clothingKeywords.some(k => granularLower.includes(k)))
-    );
+    // Check if granular input matches any valid suggestions (stricter matching)
+    const hasValidMatch = validSuggestions.length > 0 && validSuggestions.some(suggestion => {
+      // More strict matching - either exact match or suggestion contains the input
+      return suggestion.includes(granularLower) || granularLower.includes(suggestion);
+    });
     
     // Check for obvious mismatches based on website and business lines
     const commonMismatches = [
-      // Nike + footwear/clothing but user inputs completely unrelated items
+      // Nike + footwear/clothing but user inputs entertainment content
       (websiteLower.includes('nike') && 
        (selectedBusinessLines.includes('Footwear') || selectedBusinessLines.includes('Men\'s Clothing') || selectedBusinessLines.includes('Women\'s Clothing')) && 
-       (entertainmentKeywords.some(keyword => granularLower.includes(keyword)) ||
-        techKeywords.some(keyword => granularLower.includes(keyword)) ||
-        automotiveKeywords.some(keyword => granularLower.includes(keyword)) ||
-        medicalKeywords.some(keyword => granularLower.includes(keyword)) ||
-        foodKeywords.some(keyword => granularLower.includes(keyword)) ||
-        homeKeywords.some(keyword => granularLower.includes(keyword)) ||
-        beautyKeywords.some(keyword => granularLower.includes(keyword)))),
+       entertainmentKeywords.some(keyword => granularLower.includes(keyword))),
       
       // Beauty websites + beauty business lines but user inputs non-beauty items
       ((websiteLower.includes('ulta') || websiteLower.includes('sephora')) && 
@@ -1363,17 +1354,11 @@ const AISegmentBuilder = ({ onBack }) => {
        (selectedBusinessLines.includes('Hardware Tools & Accessories') || selectedBusinessLines.includes('Home Appliances')) && 
        (beautyKeywords.some(keyword => granularLower.includes(keyword)) ||
         clothingKeywords.some(keyword => granularLower.includes(keyword)) ||
-        entertainmentKeywords.some(keyword => granularLower.includes(keyword)))),
-      
-      // General mismatch: if input doesn't match valid suggestions AND contains obviously unrelated keywords
-      (!hasValidMatch && 
-       (entertainmentKeywords.some(keyword => granularLower.includes(keyword)) ||
-        (selectedBusinessLines.includes('Footwear') && (techKeywords.some(keyword => granularLower.includes(keyword)) || entertainmentKeywords.some(keyword => granularLower.includes(keyword)))) ||
-        (selectedBusinessLines.includes('Make-Up & Cosmetics') && automotiveKeywords.some(keyword => granularLower.includes(keyword)))))
+        entertainmentKeywords.some(keyword => granularLower.includes(keyword))))
     ];
     
-    // Return false if there's an obvious mismatch
-    return !commonMismatches.some(condition => condition);
+    // Return false if there's an obvious mismatch OR if no valid match found
+    return !commonMismatches.some(condition => condition) && hasValidMatch;
   };
 
   const generateMetrics = () => {
@@ -2212,7 +2197,7 @@ const AISegmentBuilder = ({ onBack }) => {
             
             <ModalActions>
               <SecondaryButton onClick={handleAddToCustomIndustry}>
-                Save & Add to custom industry
+                Add to custom industry
               </SecondaryButton>
               <PrimaryButton onClick={handleAnalyzeSegment}>
                 Save & Analyze
