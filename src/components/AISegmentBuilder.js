@@ -702,6 +702,17 @@ const SuggestionFavicon = styled.img`
   flex-shrink: 0;
 `;
 
+const SuggestionLabel = styled.div`
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #f3f4f6;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+`;
+
 // Empty State Components
 const EmptyStateContainer = styled.div`
   display: flex;
@@ -1036,14 +1047,6 @@ const AISegmentBuilder = ({ onBack }) => {
   const dropdownRef = useRef(null);
   const websiteRef = useRef(null);
   const [focusedSuggestionIndex, setFocusedSuggestionIndex] = useState(-1);
-
-  // Load recent searches from localStorage on component mount
-  useEffect(() => {
-    const savedRecentSearches = localStorage.getItem('aiSegmentBuilder_recentSearches');
-    if (savedRecentSearches) {
-      setRecentSearches(JSON.parse(savedRecentSearches));
-    }
-  }, []);
   const [focusedBusinessLineIndex, setFocusedBusinessLineIndex] = useState(-1);
   const [granularBusinessLines, setGranularBusinessLines] = useState('');
   const [hasGenerated, setHasGenerated] = useState(false);
@@ -1069,6 +1072,13 @@ const AISegmentBuilder = ({ onBack }) => {
   const [segmentName, setSegmentName] = useState('');
   const [recentSearches, setRecentSearches] = useState([]);
 
+  // Load recent searches from localStorage on component mount
+  useEffect(() => {
+    const savedRecentSearches = localStorage.getItem('aiSegmentBuilder_recentSearches');
+    if (savedRecentSearches) {
+      setRecentSearches(JSON.parse(savedRecentSearches));
+    }
+  }, []);
 
   // CSV Data Mapping - Parent Business Lines from BLS column
   const businessLinesData = [
@@ -1174,6 +1184,8 @@ const AISegmentBuilder = ({ onBack }) => {
     ];
   };
 
+  const businessLines = getBusinessLinesForWebsite(websiteInput);
+
   // Save recent search to localStorage
   const saveRecentSearch = (website) => {
     if (!website || website.length < 3) return; // Don't save very short searches
@@ -1182,8 +1194,6 @@ const AISegmentBuilder = ({ onBack }) => {
     setRecentSearches(newRecentSearches);
     localStorage.setItem('aiSegmentBuilder_recentSearches', JSON.stringify(newRecentSearches));
   };
-
-  const businessLines = getBusinessLinesForWebsite(websiteInput);
 
   const websiteSuggestions = [
     { url: 'www.nike.com', favicon: 'https://www.nike.com/favicon.ico' },
@@ -1231,7 +1241,7 @@ const AISegmentBuilder = ({ onBack }) => {
       // Filter recent searches that match the input
       const filteredRecentSearches = recentSearches
         .filter(search => search.toLowerCase().includes(value.toLowerCase()))
-        .map(search => ({ url: search, favicon: '' })); // Recent searches don't have favicons initially
+        .map(search => ({ url: search, favicon: '', isRecent: true }));
       
       // Combine suggestions: predefined websites first, then recent searches
       const combinedSuggestions = [...filtered, ...filteredRecentSearches.filter(recent => 
@@ -1242,7 +1252,7 @@ const AISegmentBuilder = ({ onBack }) => {
       setShowSuggestions(true);
     } else {
       // Show recent searches when input is empty
-      const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: '' }));
+      const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: '', isRecent: true }));
       setSuggestions(recentSuggestions);
       setShowSuggestions(recentSuggestions.length > 0);
     }
@@ -1778,19 +1788,23 @@ const AISegmentBuilder = ({ onBack }) => {
                             value={websiteInput}
                             hasFavicon={!!selectedWebsiteFavicon}
                             onChange={(e) => handleWebsiteChange(e.target.value)}
-                            onFocus={() => {
-                              if (websiteInput.length > 0) {
-                                setShowSuggestions(true);
-                              } else if (recentSearches.length > 0) {
-                                const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: '' }));
-                                setSuggestions(recentSuggestions);
-                                setShowSuggestions(true);
-                              }
-                            }}
+                                                         onFocus={() => {
+                               if (websiteInput.length > 0) {
+                                 setShowSuggestions(true);
+                               } else if (recentSearches.length > 0) {
+                                 const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: '', isRecent: true }));
+                                 setSuggestions(recentSuggestions);
+                                 setShowSuggestions(true);
+                               }
+                             }}
                             onKeyDown={handleWebsiteKeyDown}
                           />
                           {showSuggestions && suggestions.length > 0 && (
                             <SuggestionsContainer>
+                              {/* Show Recent searches label if there are recent items */}
+                              {suggestions.some(s => s.isRecent) && websiteInput.length === 0 && (
+                                <SuggestionLabel>Recent searches</SuggestionLabel>
+                              )}
                               {suggestions.map((suggestion, index) => (
                                 <SuggestionItem
                                   key={index}
