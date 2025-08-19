@@ -124,6 +124,33 @@ const SectionTitle = styled.h3`
   margin: 0;
 `;
 
+const MetadataContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+`;
+
+const MetadataItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+`;
+
+const MetadataIcon = styled.img`
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+`;
+
+const BuildHeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
 const SectionContent = styled.div`
   padding: 20px;
   flex: 1;
@@ -152,15 +179,7 @@ const FieldContainer = styled.div`
   margin-bottom: 0;
 `;
 
-const RowContainer = styled.div`
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  
-  > * {
-    flex: 1;
-  }
-`;
+
 
 const DropdownContainer = styled.div`
   margin-bottom: 0;
@@ -1081,34 +1100,7 @@ const AISegmentBuilder = ({ onBack }) => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [segmentName, setSegmentName] = useState('');
   const [recentSearches, setRecentSearches] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
-  const [countrySearch, setCountrySearch] = useState('');
-  const countryRef = useRef(null);
 
-  // Country data
-  const countries = [
-    { code: 'US', name: 'United States', flag: '🇺🇸' },
-    { code: 'CA', name: 'Canada', flag: '🇨🇦' },
-    { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
-    { code: 'AU', name: 'Australia', flag: '🇦🇺' },
-    { code: 'DE', name: 'Germany', flag: '🇩🇪' },
-    { code: 'FR', name: 'France', flag: '🇫🇷' },
-    { code: 'IT', name: 'Italy', flag: '🇮🇹' },
-    { code: 'ES', name: 'Spain', flag: '🇪🇸' },
-    { code: 'NL', name: 'Netherlands', flag: '🇳🇱' },
-    { code: 'SE', name: 'Sweden', flag: '🇸🇪' },
-    { code: 'NO', name: 'Norway', flag: '🇳🇴' },
-    { code: 'DK', name: 'Denmark', flag: '🇩🇰' },
-    { code: 'FI', name: 'Finland', flag: '🇫🇮' },
-    { code: 'JP', name: 'Japan', flag: '🇯🇵' },
-    { code: 'KR', name: 'South Korea', flag: '🇰🇷' },
-    { code: 'SG', name: 'Singapore', flag: '🇸🇬' },
-    { code: 'BR', name: 'Brazil', flag: '🇧🇷' },
-    { code: 'MX', name: 'Mexico', flag: '🇲🇽' },
-    { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
-    { code: 'IN', name: 'India', flag: '🇮🇳' }
-  ];
 
   // Load recent searches from localStorage on component mount
   useEffect(() => {
@@ -1742,12 +1734,7 @@ const AISegmentBuilder = ({ onBack }) => {
     setGranularBusinessLines(suggestion);
   };
 
-  // Country selector handlers
-  const handleCountrySelect = (country) => {
-    setSelectedCountry(country);
-    setIsCountryDropdownOpen(false);
-    setCountrySearch('');
-  };
+
 
   // Handle Save Segment button click
   const handleSaveSegment = () => {
@@ -1789,12 +1776,6 @@ const AISegmentBuilder = ({ onBack }) => {
     line.toLowerCase().includes(businessLineSearch.toLowerCase())
   );
 
-  // Filter countries based on search
-  const filteredCountries = countries.filter(country =>
-    country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
-    country.code.toLowerCase().includes(countrySearch.toLowerCase())
-  );
-
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -1805,9 +1786,6 @@ const AISegmentBuilder = ({ onBack }) => {
       if (websiteRef.current && !websiteRef.current.contains(event.target)) {
         setShowSuggestions(false);
         setFocusedSuggestionIndex(-1);
-      }
-      if (countryRef.current && !countryRef.current.contains(event.target)) {
-        setIsCountryDropdownOpen(false);
       }
     };
 
@@ -1834,183 +1812,80 @@ const AISegmentBuilder = ({ onBack }) => {
                 <SectionDivider />
                 <LeftSection>
                   <SectionHeader>
-                    <SectionTitle>Build</SectionTitle>
+                    <BuildHeaderContainer>
+                      <SectionTitle>Build</SectionTitle>
+                      <MetadataContainer>
+                        <MetadataItem>
+                          <MetadataIcon src="/Images/@Calander.png" alt="Time" />
+                          Last 12 months
+                        </MetadataItem>
+                        <MetadataItem>
+                          <MetadataIcon src="/Images/@Worldwide.png" alt="Country" />
+                          Worldwide
+                        </MetadataItem>
+                        <MetadataItem>
+                          <MetadataIcon src="/Images/@All Traffic.png" alt="Traffic source" />
+                          All Traffic
+                        </MetadataItem>
+                      </MetadataContainer>
+                    </BuildHeaderContainer>
                   </SectionHeader>
                   <SectionContent>
                     <FieldContainer>
-                      <RowContainer>
-                        <SearchContainer>
-                          <SearchLabel>Website</SearchLabel>
-                          <SearchField ref={websiteRef}>
-                            {selectedWebsiteFavicon && (
-                              <InputFavicon 
-                                src={selectedWebsiteFavicon} 
-                                alt="Website favicon"
-                                onError={(e) => {
-                                  e.target.style.display = 'none';
-                                }}
-                              />
-                            )}
-                            <SearchInput 
-                              placeholder="Enter website domain..." 
-                              value={websiteInput}
-                              hasFavicon={!!selectedWebsiteFavicon}
-                              onChange={(e) => handleWebsiteChange(e.target.value)}
-                                                           onFocus={() => {
-                                 if (websiteInput.length > 0) {
-                                   setShowSuggestions(true);
-                                 } else if (recentSearches.length > 0) {
-                                   const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: getFaviconUrl(search), isRecent: true }));
-                                   setSuggestions(recentSuggestions);
-                                   setShowSuggestions(true);
-                                 }
-                               }}
-                              onKeyDown={handleWebsiteKeyDown}
-                            />
-                            {showSuggestions && suggestions.length > 0 && (
-                              <SuggestionsContainer>
-                                {/* Show Recent searches label if there are recent items */}
-                                {suggestions.some(s => s.isRecent) && websiteInput.length === 0 && (
-                                  <SuggestionLabel>Recent searches</SuggestionLabel>
-                                )}
-                                {suggestions.map((suggestion, index) => (
-                                  <SuggestionItem
-                                    key={index}
-                                    onClick={() => handleSuggestionClick(suggestion)}
-                                    focused={focusedSuggestionIndex === index}
-                                  >
-                                    <SuggestionFavicon 
-                                      src={suggestion.favicon} 
-                                      alt={`${suggestion.url} favicon`}
-                                      onError={(e) => {
-                                        e.target.style.display = 'none';
-                                      }}
-                                    />
-                                    {suggestion.url}
-                                  </SuggestionItem>
-                                ))}
-                              </SuggestionsContainer>
-                            )}
-                          </SearchField>
-                        </SearchContainer>
-
-                        <DropdownContainer>
-                          <DropdownLabel>Country</DropdownLabel>
-                          <DropdownField ref={countryRef}>
-                            <DropdownInput 
-                              onClick={() => {
-                                setIsCountryDropdownOpen(!isCountryDropdownOpen);
-                                if (!isCountryDropdownOpen) {
-                                  setCountrySearch('');
-                                }
+                      <SearchContainer>
+                        <SearchLabel>Website</SearchLabel>
+                        <SearchField ref={websiteRef}>
+                          {selectedWebsiteFavicon && (
+                            <InputFavicon 
+                              src={selectedWebsiteFavicon} 
+                              alt="Website favicon"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
                               }}
-                            >
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-                                {selectedCountry ? (
-                                  <>
-                                    <span style={{ fontSize: '16px' }}>{selectedCountry.flag}</span>
-                                    <span style={{ color: '#374151' }}>{selectedCountry.name}</span>
-                                  </>
-                                ) : (
-                                  <span style={{ color: '#6b7280' }}>Select country...</span>
-                                )}
-                              </div>
-                              <DropdownIcon>
-                                <ChevronDown size={16} />
-                              </DropdownIcon>
-                            </DropdownInput>
-                            
-                            {isCountryDropdownOpen && (
-                              <div style={{
-                                position: 'absolute',
-                                top: '100%',
-                                left: 0,
-                                right: 0,
-                                backgroundColor: '#ffffff',
-                                border: '1px solid #d1d5db',
-                                borderRadius: '6px',
-                                marginTop: '4px',
-                                maxHeight: '200px',
-                                overflowY: 'auto',
-                                zIndex: 10,
-                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                              }}>
-                                {/* Search input */}
-                                <div style={{
-                                  padding: '12px 16px',
-                                  borderBottom: '1px solid #f3f4f6',
-                                  position: 'sticky',
-                                  top: 0,
-                                  backgroundColor: '#ffffff',
-                                  zIndex: 1
-                                }}>
-                                  <input
-                                    type="text"
-                                    placeholder="Search countries..."
-                                    value={countrySearch}
-                                    onChange={(e) => setCountrySearch(e.target.value)}
-                                    style={{
-                                      width: '100%',
-                                      padding: '8px 12px',
-                                      border: '1px solid #d1d5db',
-                                      borderRadius: '4px',
-                                      fontSize: '14px',
-                                      outline: 'none'
-                                    }}
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Escape') {
-                                        setIsCountryDropdownOpen(false);
-                                        setCountrySearch('');
-                                      }
+                            />
+                          )}
+                          <SearchInput 
+                            placeholder="Enter website domain..." 
+                            value={websiteInput}
+                            hasFavicon={!!selectedWebsiteFavicon}
+                            onChange={(e) => handleWebsiteChange(e.target.value)}
+                                                         onFocus={() => {
+                               if (websiteInput.length > 0) {
+                                 setShowSuggestions(true);
+                               } else if (recentSearches.length > 0) {
+                                 const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: getFaviconUrl(search), isRecent: true }));
+                                 setSuggestions(recentSuggestions);
+                                 setShowSuggestions(true);
+                               }
+                             }}
+                            onKeyDown={handleWebsiteKeyDown}
+                          />
+                          {showSuggestions && suggestions.length > 0 && (
+                            <SuggestionsContainer>
+                              {/* Show Recent searches label if there are recent items */}
+                              {suggestions.some(s => s.isRecent) && websiteInput.length === 0 && (
+                                <SuggestionLabel>Recent searches</SuggestionLabel>
+                              )}
+                              {suggestions.map((suggestion, index) => (
+                                <SuggestionItem
+                                  key={index}
+                                  onClick={() => handleSuggestionClick(suggestion)}
+                                  focused={focusedSuggestionIndex === index}
+                                >
+                                  <SuggestionFavicon 
+                                    src={suggestion.favicon} 
+                                    alt={`${suggestion.url} favicon`}
+                                    onError={(e) => {
+                                      e.target.style.display = 'none';
                                     }}
                                   />
-                                </div>
-                                {filteredCountries.map((country) => (
-                                  <div
-                                    key={country.code}
-                                    onClick={() => handleCountrySelect(country)}
-                                    style={{
-                                      padding: '12px 16px',
-                                      cursor: 'pointer',
-                                      backgroundColor: selectedCountry?.code === country.code ? '#f0f9ff' : 'transparent',
-                                      color: selectedCountry?.code === country.code ? '#3E74FE' : '#374151',
-                                      borderBottom: '1px solid #f3f4f6',
-                                      fontSize: '14px',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      gap: '8px',
-                                      transition: 'background-color 0.2s'
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      if (selectedCountry?.code !== country.code) {
-                                        e.target.style.backgroundColor = '#f9fafb';
-                                      }
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      if (selectedCountry?.code !== country.code) {
-                                        e.target.style.backgroundColor = 'transparent';
-                                      }
-                                    }}
-                                  >
-                                    <span style={{ fontSize: '16px' }}>{country.flag}</span>
-                                    {country.name}
-                                  </div>
-                                ))}
-                                {filteredCountries.length === 0 && countrySearch && (
-                                  <div style={{
-                                    padding: '12px 16px',
-                                    color: '#6b7280',
-                                    fontSize: '14px',
-                                    textAlign: 'center'
-                                  }}>
-                                    No countries found
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </DropdownField>
-                        </DropdownContainer>
-                      </RowContainer>
+                                  {suggestion.url}
+                                </SuggestionItem>
+                              ))}
+                            </SuggestionsContainer>
+                          )}
+                        </SearchField>
+                      </SearchContainer>
                     </FieldContainer>
 
                     <FieldContainer>
