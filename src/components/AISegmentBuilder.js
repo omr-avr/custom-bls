@@ -152,10 +152,7 @@ const BuildHeaderContainer = styled.div`
 `;
 
 const VisitsShare = styled.span`
-  background-color: #f3f4f6;
   color: #6b7280;
-  padding: 2px 6px;
-  border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
   margin-left: auto;
@@ -2005,7 +2002,18 @@ const AISegmentBuilder = ({ onBack }) => {
                                     fontSize: '14px',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '8px'
+                                    gap: '8px',
+                                    transition: 'background-color 0.2s'
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    if (!selectedBusinessLines.includes(line.name) && focusedBusinessLineIndex !== index) {
+                                      e.target.style.backgroundColor = '#f9fafb';
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!selectedBusinessLines.includes(line.name) && focusedBusinessLineIndex !== index) {
+                                      e.target.style.backgroundColor = 'transparent';
+                                    }
                                   }}
                                 >
                                   <input
