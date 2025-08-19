@@ -151,6 +151,17 @@ const BuildHeaderContainer = styled.div`
   width: 100%;
 `;
 
+const VisitsShare = styled.span`
+  background-color: #f3f4f6;
+  color: #6b7280;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: auto;
+  flex-shrink: 0;
+`;
+
 const SectionContent = styled.div`
   padding: 20px;
   flex: 1;
@@ -1200,7 +1211,7 @@ const AISegmentBuilder = ({ onBack }) => {
   };
 
   const getBusinessLinesForWebsite = (website) => {
-    return businessLinesMap[website] || [
+    const businessLineNames = businessLinesMap[website] || [
       'General Clothing',
       'Computer Electronics',
       'Home Appliances',
@@ -1212,6 +1223,12 @@ const AISegmentBuilder = ({ onBack }) => {
       'Home Furniture',
       'Beverages'
     ];
+    
+    // Generate realistic visits share data for each business line
+    return businessLineNames.map(name => ({
+      name,
+      visitsShare: Math.floor(Math.random() * 40) + 5 // Random between 5-44%
+    })).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
   };
 
   const businessLines = getBusinessLinesForWebsite(websiteInput);
@@ -1370,11 +1387,12 @@ const AISegmentBuilder = ({ onBack }) => {
   };
 
   const handleBusinessLineToggle = (line) => {
+    const lineName = typeof line === 'string' ? line : line.name;
     let newSelectedLines;
-    if (selectedBusinessLines.includes(line)) {
-      newSelectedLines = selectedBusinessLines.filter(item => item !== line);
+    if (selectedBusinessLines.includes(lineName)) {
+      newSelectedLines = selectedBusinessLines.filter(item => item !== lineName);
     } else {
-      newSelectedLines = [...selectedBusinessLines, line];
+      newSelectedLines = [...selectedBusinessLines, lineName];
     }
     setSelectedBusinessLines(newSelectedLines);
     
@@ -1773,7 +1791,7 @@ const AISegmentBuilder = ({ onBack }) => {
 
   // Filter business lines based on search
   const filteredBusinessLines = businessLines.filter(line =>
-    line.toLowerCase().includes(businessLineSearch.toLowerCase())
+    line.name.toLowerCase().includes(businessLineSearch.toLowerCase())
   );
 
   // Close dropdowns when clicking outside
@@ -1976,13 +1994,13 @@ const AISegmentBuilder = ({ onBack }) => {
                               </div>
                               {filteredBusinessLines.map((line, index) => (
                                 <div
-                                  key={line}
+                                  key={line.name}
                                   onClick={() => handleBusinessLineToggle(line)}
                                   style={{
                                     padding: '12px 16px',
                                     cursor: 'pointer',
-                                    backgroundColor: selectedBusinessLines.includes(line) || focusedBusinessLineIndex === index ? '#f0f9ff' : 'transparent',
-                                    color: selectedBusinessLines.includes(line) || focusedBusinessLineIndex === index ? '#3E74FE' : '#374151',
+                                    backgroundColor: selectedBusinessLines.includes(line.name) || focusedBusinessLineIndex === index ? '#f0f9ff' : 'transparent',
+                                    color: selectedBusinessLines.includes(line.name) || focusedBusinessLineIndex === index ? '#3E74FE' : '#374151',
                                     borderBottom: '1px solid #f3f4f6',
                                     fontSize: '14px',
                                     display: 'flex',
@@ -1992,7 +2010,7 @@ const AISegmentBuilder = ({ onBack }) => {
                                 >
                                   <input
                                     type="checkbox"
-                                    checked={selectedBusinessLines.includes(line)}
+                                    checked={selectedBusinessLines.includes(line.name)}
                                     onChange={() => {}}
                                     style={{
                                       width: '16px',
@@ -2000,7 +2018,8 @@ const AISegmentBuilder = ({ onBack }) => {
                                       accentColor: '#3E74FE'
                                     }}
                                   />
-                                  {line}
+                                  <span style={{ flex: 1 }}>{line.name}</span>
+                                  <VisitsShare>{line.visitsShare}%</VisitsShare>
                                 </div>
                               ))}
                             </div>
