@@ -1978,7 +1978,18 @@ const AISegmentBuilder = ({ onBack }) => {
                                       fontSize: '14px',
                                       display: 'flex',
                                       alignItems: 'center',
-                                      gap: '8px'
+                                      gap: '8px',
+                                      transition: 'background-color 0.2s'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      if (selectedCountry?.code !== country.code) {
+                                        e.target.style.backgroundColor = '#f9fafb';
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (selectedCountry?.code !== country.code) {
+                                        e.target.style.backgroundColor = 'transparent';
+                                      }
                                     }}
                                   >
                                     <span style={{ fontSize: '16px' }}>{country.flag}</span>
