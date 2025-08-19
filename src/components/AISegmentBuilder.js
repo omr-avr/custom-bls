@@ -152,6 +152,16 @@ const FieldContainer = styled.div`
   margin-bottom: 0;
 `;
 
+const RowContainer = styled.div`
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  
+  > * {
+    flex: 1;
+  }
+`;
+
 const DropdownContainer = styled.div`
   margin-bottom: 0;
 `;
@@ -1071,6 +1081,33 @@ const AISegmentBuilder = ({ onBack }) => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [segmentName, setSegmentName] = useState('');
   const [recentSearches, setRecentSearches] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const countryRef = useRef(null);
+
+  // Country data
+  const countries = [
+    { code: 'US', name: 'United States', flag: '🇺🇸' },
+    { code: 'CA', name: 'Canada', flag: '🇨🇦' },
+    { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
+    { code: 'AU', name: 'Australia', flag: '🇦🇺' },
+    { code: 'DE', name: 'Germany', flag: '🇩🇪' },
+    { code: 'FR', name: 'France', flag: '🇫🇷' },
+    { code: 'IT', name: 'Italy', flag: '🇮🇹' },
+    { code: 'ES', name: 'Spain', flag: '🇪🇸' },
+    { code: 'NL', name: 'Netherlands', flag: '🇳🇱' },
+    { code: 'SE', name: 'Sweden', flag: '🇸🇪' },
+    { code: 'NO', name: 'Norway', flag: '🇳🇴' },
+    { code: 'DK', name: 'Denmark', flag: '🇩🇰' },
+    { code: 'FI', name: 'Finland', flag: '🇫🇮' },
+    { code: 'JP', name: 'Japan', flag: '🇯🇵' },
+    { code: 'KR', name: 'South Korea', flag: '🇰🇷' },
+    { code: 'SG', name: 'Singapore', flag: '🇸🇬' },
+    { code: 'BR', name: 'Brazil', flag: '🇧🇷' },
+    { code: 'MX', name: 'Mexico', flag: '🇲🇽' },
+    { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
+    { code: 'IN', name: 'India', flag: '🇮🇳' }
+  ];
 
   // Load recent searches from localStorage on component mount
   useEffect(() => {
@@ -1704,6 +1741,12 @@ const AISegmentBuilder = ({ onBack }) => {
     setGranularBusinessLines(suggestion);
   };
 
+  // Country selector handlers
+  const handleCountrySelect = (country) => {
+    setSelectedCountry(country);
+    setIsCountryDropdownOpen(false);
+  };
+
   // Handle Save Segment button click
   const handleSaveSegment = () => {
     const generatedName = generateSegmentName();
@@ -1755,6 +1798,9 @@ const AISegmentBuilder = ({ onBack }) => {
         setShowSuggestions(false);
         setFocusedSuggestionIndex(-1);
       }
+      if (countryRef.current && !countryRef.current.contains(event.target)) {
+        setIsCountryDropdownOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -1784,60 +1830,123 @@ const AISegmentBuilder = ({ onBack }) => {
                   </SectionHeader>
                   <SectionContent>
                     <FieldContainer>
-                      <SearchContainer>
-                        <SearchLabel>Website</SearchLabel>
-                        <SearchField ref={websiteRef}>
-                          {selectedWebsiteFavicon && (
-                            <InputFavicon 
-                              src={selectedWebsiteFavicon} 
-                              alt="Website favicon"
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                              }}
+                      <RowContainer>
+                        <SearchContainer>
+                          <SearchLabel>Website</SearchLabel>
+                          <SearchField ref={websiteRef}>
+                            {selectedWebsiteFavicon && (
+                              <InputFavicon 
+                                src={selectedWebsiteFavicon} 
+                                alt="Website favicon"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
+                              />
+                            )}
+                            <SearchInput 
+                              placeholder="Enter website domain..." 
+                              value={websiteInput}
+                              hasFavicon={!!selectedWebsiteFavicon}
+                              onChange={(e) => handleWebsiteChange(e.target.value)}
+                                                           onFocus={() => {
+                                 if (websiteInput.length > 0) {
+                                   setShowSuggestions(true);
+                                 } else if (recentSearches.length > 0) {
+                                   const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: getFaviconUrl(search), isRecent: true }));
+                                   setSuggestions(recentSuggestions);
+                                   setShowSuggestions(true);
+                                 }
+                               }}
+                              onKeyDown={handleWebsiteKeyDown}
                             />
-                          )}
-                          <SearchInput 
-                            placeholder="Enter website domain..." 
-                            value={websiteInput}
-                            hasFavicon={!!selectedWebsiteFavicon}
-                            onChange={(e) => handleWebsiteChange(e.target.value)}
-                                                         onFocus={() => {
-                               if (websiteInput.length > 0) {
-                                 setShowSuggestions(true);
-                               } else if (recentSearches.length > 0) {
-                                 const recentSuggestions = recentSearches.map(search => ({ url: search, favicon: getFaviconUrl(search), isRecent: true }));
-                                 setSuggestions(recentSuggestions);
-                                 setShowSuggestions(true);
-                               }
-                             }}
-                            onKeyDown={handleWebsiteKeyDown}
-                          />
-                          {showSuggestions && suggestions.length > 0 && (
-                            <SuggestionsContainer>
-                              {/* Show Recent searches label if there are recent items */}
-                              {suggestions.some(s => s.isRecent) && websiteInput.length === 0 && (
-                                <SuggestionLabel>Recent searches</SuggestionLabel>
-                              )}
-                              {suggestions.map((suggestion, index) => (
-                                <SuggestionItem
-                                  key={index}
-                                  onClick={() => handleSuggestionClick(suggestion)}
-                                  focused={focusedSuggestionIndex === index}
-                                >
-                                  <SuggestionFavicon 
-                                    src={suggestion.favicon} 
-                                    alt={`${suggestion.url} favicon`}
-                                    onError={(e) => {
-                                      e.target.style.display = 'none';
+                            {showSuggestions && suggestions.length > 0 && (
+                              <SuggestionsContainer>
+                                {/* Show Recent searches label if there are recent items */}
+                                {suggestions.some(s => s.isRecent) && websiteInput.length === 0 && (
+                                  <SuggestionLabel>Recent searches</SuggestionLabel>
+                                )}
+                                {suggestions.map((suggestion, index) => (
+                                  <SuggestionItem
+                                    key={index}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                    focused={focusedSuggestionIndex === index}
+                                  >
+                                    <SuggestionFavicon 
+                                      src={suggestion.favicon} 
+                                      alt={`${suggestion.url} favicon`}
+                                      onError={(e) => {
+                                        e.target.style.display = 'none';
+                                      }}
+                                    />
+                                    {suggestion.url}
+                                  </SuggestionItem>
+                                ))}
+                              </SuggestionsContainer>
+                            )}
+                          </SearchField>
+                        </SearchContainer>
+
+                        <DropdownContainer>
+                          <DropdownLabel>Country</DropdownLabel>
+                          <DropdownField ref={countryRef}>
+                            <DropdownInput 
+                              onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                                {selectedCountry ? (
+                                  <>
+                                    <span style={{ fontSize: '16px' }}>{selectedCountry.flag}</span>
+                                    <span style={{ color: '#374151' }}>{selectedCountry.name}</span>
+                                  </>
+                                ) : (
+                                  <span style={{ color: '#6b7280' }}>Select country...</span>
+                                )}
+                              </div>
+                              <DropdownIcon>
+                                <ChevronDown size={16} />
+                              </DropdownIcon>
+                            </DropdownInput>
+                            
+                            {isCountryDropdownOpen && (
+                              <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                right: 0,
+                                backgroundColor: '#ffffff',
+                                border: '1px solid #d1d5db',
+                                borderRadius: '6px',
+                                marginTop: '4px',
+                                maxHeight: '200px',
+                                overflowY: 'auto',
+                                zIndex: 10,
+                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                              }}>
+                                {countries.map((country) => (
+                                  <div
+                                    key={country.code}
+                                    onClick={() => handleCountrySelect(country)}
+                                    style={{
+                                      padding: '12px 16px',
+                                      cursor: 'pointer',
+                                      backgroundColor: selectedCountry?.code === country.code ? '#f0f9ff' : 'transparent',
+                                      color: selectedCountry?.code === country.code ? '#3E74FE' : '#374151',
+                                      borderBottom: '1px solid #f3f4f6',
+                                      fontSize: '14px',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '8px'
                                     }}
-                                  />
-                                  {suggestion.url}
-                                </SuggestionItem>
-                              ))}
-                            </SuggestionsContainer>
-                          )}
-                        </SearchField>
-                      </SearchContainer>
+                                  >
+                                    <span style={{ fontSize: '16px' }}>{country.flag}</span>
+                                    {country.name}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </DropdownField>
+                        </DropdownContainer>
+                      </RowContainer>
                     </FieldContainer>
 
                     <FieldContainer>
