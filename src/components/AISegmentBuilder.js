@@ -127,7 +127,7 @@ const SectionTitle = styled.h3`
 const MetadataContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 `;
 
 const MetadataItem = styled.div`
@@ -139,8 +139,8 @@ const MetadataItem = styled.div`
 `;
 
 const MetadataIcon = styled.img`
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   opacity: 0.7;
 `;
 
