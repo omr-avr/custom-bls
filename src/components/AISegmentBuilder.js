@@ -1816,15 +1816,15 @@ const AISegmentBuilder = ({ onBack }) => {
                       <SectionTitle>Build</SectionTitle>
                       <MetadataContainer>
                         <MetadataItem>
-                          <MetadataIcon src="/Images/@Calander.png" alt="Time" />
+                          <MetadataIcon src="/Images/Calander.png" alt="Time" />
                           Last 12 months
                         </MetadataItem>
                         <MetadataItem>
-                          <MetadataIcon src="/Images/@Worldwide.png" alt="Country" />
+                          <MetadataIcon src="/Images/Worldwide.png" alt="Country" />
                           Worldwide
                         </MetadataItem>
                         <MetadataItem>
-                          <MetadataIcon src="/Images/@All Traffic.png" alt="Traffic source" />
+                          <MetadataIcon src="/Images/All Traffic.png" alt="Traffic source" />
                           All Traffic
                         </MetadataItem>
                       </MetadataContainer>
