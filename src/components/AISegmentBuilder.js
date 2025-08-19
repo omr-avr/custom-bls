@@ -437,13 +437,13 @@ const DropdownInput = styled.div`
   border-radius: 6px;
   font-size: 14px;
   background-color: #ffffff;
-  min-height: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: #6b7280;
-  flex-wrap: wrap;
   gap: 8px;
+  box-sizing: border-box;
 
   &:hover {
     border-color: #9ca3af;
@@ -1083,6 +1083,7 @@ const AISegmentBuilder = ({ onBack }) => {
   const [recentSearches, setRecentSearches] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState('');
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('');
   const countryRef = useRef(null);
 
   // Country data
@@ -1745,6 +1746,7 @@ const AISegmentBuilder = ({ onBack }) => {
   const handleCountrySelect = (country) => {
     setSelectedCountry(country);
     setIsCountryDropdownOpen(false);
+    setCountrySearch('');
   };
 
   // Handle Save Segment button click
@@ -1785,6 +1787,12 @@ const AISegmentBuilder = ({ onBack }) => {
   // Filter business lines based on search
   const filteredBusinessLines = businessLines.filter(line =>
     line.toLowerCase().includes(businessLineSearch.toLowerCase())
+  );
+
+  // Filter countries based on search
+  const filteredCountries = countries.filter(country =>
+    country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    country.code.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
   // Close dropdowns when clicking outside
@@ -1890,7 +1898,12 @@ const AISegmentBuilder = ({ onBack }) => {
                           <DropdownLabel>Country</DropdownLabel>
                           <DropdownField ref={countryRef}>
                             <DropdownInput 
-                              onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                              onClick={() => {
+                                setIsCountryDropdownOpen(!isCountryDropdownOpen);
+                                if (!isCountryDropdownOpen) {
+                                  setCountrySearch('');
+                                }
+                              }}
                             >
                               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
                                 {selectedCountry ? (
@@ -1922,7 +1935,37 @@ const AISegmentBuilder = ({ onBack }) => {
                                 zIndex: 10,
                                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
                               }}>
-                                {countries.map((country) => (
+                                {/* Search input */}
+                                <div style={{
+                                  padding: '12px 16px',
+                                  borderBottom: '1px solid #f3f4f6',
+                                  position: 'sticky',
+                                  top: 0,
+                                  backgroundColor: '#ffffff',
+                                  zIndex: 1
+                                }}>
+                                  <input
+                                    type="text"
+                                    placeholder="Search countries..."
+                                    value={countrySearch}
+                                    onChange={(e) => setCountrySearch(e.target.value)}
+                                    style={{
+                                      width: '100%',
+                                      padding: '8px 12px',
+                                      border: '1px solid #d1d5db',
+                                      borderRadius: '4px',
+                                      fontSize: '14px',
+                                      outline: 'none'
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Escape') {
+                                        setIsCountryDropdownOpen(false);
+                                        setCountrySearch('');
+                                      }
+                                    }}
+                                  />
+                                </div>
+                                {filteredCountries.map((country) => (
                                   <div
                                     key={country.code}
                                     onClick={() => handleCountrySelect(country)}
@@ -1942,6 +1985,16 @@ const AISegmentBuilder = ({ onBack }) => {
                                     {country.name}
                                   </div>
                                 ))}
+                                {filteredCountries.length === 0 && countrySearch && (
+                                  <div style={{
+                                    padding: '12px 16px',
+                                    color: '#6b7280',
+                                    fontSize: '14px',
+                                    textAlign: 'center'
+                                  }}>
+                                    No countries found
+                                  </div>
+                                )}
                               </div>
                             )}
                           </DropdownField>
