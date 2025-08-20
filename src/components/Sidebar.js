@@ -15,7 +15,7 @@ import {
   Download, 
   Settings,
   Star,
-  Clock
+  PieChart
 } from 'lucide-react';
 
 const SidebarContainer = styled.div`
@@ -102,7 +102,7 @@ const IconWrapper = styled.div`
   justify-content: center;
 `;
 
-const Sidebar = ({ onWebsiteAnalysisClick }) => {
+const Sidebar = ({ currentPage, onWebsiteAnalysisClick, onWebsiteSegmentsClick }) => {
   return (
     <SidebarContainer>
       <Logo>
@@ -130,7 +130,7 @@ const Sidebar = ({ onWebsiteAnalysisClick }) => {
 
       <NavSection>
         <SectionTitle>Website Research</SectionTitle>
-        <NavItem onClick={onWebsiteAnalysisClick}>
+        <NavItem active={currentPage === 'website-analysis'} onClick={onWebsiteAnalysisClick}>
           <IconWrapper><Globe size={16} /></IconWrapper>
           Website Analysis
         </NavItem>
@@ -138,8 +138,8 @@ const Sidebar = ({ onWebsiteAnalysisClick }) => {
           <IconWrapper><BarChart3 size={16} /></IconWrapper>
           Website Rankings
         </NavItem>
-        <NavItem active>
-          <IconWrapper><Clock size={16} /></IconWrapper>
+        <NavItem active={currentPage === 'website-segments'} onClick={onWebsiteSegmentsClick}>
+          <IconWrapper><PieChart size={16} /></IconWrapper>
           Website Segments
         </NavItem>
       </NavSection>

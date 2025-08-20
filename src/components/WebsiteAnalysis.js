@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Info, BarChart3, FolderOpen, Eye, Globe } from 'lucide-react';
+import { Info, BarChart3, FolderOpen, Eye, Globe, Sparkles } from 'lucide-react';
 
 const MainContainer = styled.div`
   flex: 1;
@@ -605,7 +605,8 @@ const WebsiteAnalysis = ({ onBack }) => {
                   <Input placeholder="Enter granular business lines" />
                 </FormGroup>
                 <GenerateButton>
-                  ✨ Generate Segment
+                  <Sparkles size={14} />
+                  Generate Segment
                 </GenerateButton>
               </SegmentForm>
             </SegmentWidget>

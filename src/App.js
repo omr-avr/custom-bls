@@ -22,6 +22,10 @@ function App() {
     setCurrentPage('website-analysis');
   };
 
+  const handleWebsiteSegmentsClick = () => {
+    setCurrentPage('website-segments');
+  };
+
   const handleBackToMain = () => {
     setCurrentPage('main');
   };
@@ -32,6 +36,8 @@ function App() {
         return <AISegmentBuilder onBack={handleBackToMain} />;
       case 'website-analysis':
         return <WebsiteAnalysis onBack={handleBackToMain} />;
+      case 'website-segments':
+        return <AISegmentBuilder onBack={handleBackToMain} />;
       default:
         return <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />;
     }
@@ -39,7 +45,11 @@ function App() {
 
   return (
     <AppContainer>
-      <Sidebar onWebsiteAnalysisClick={handleWebsiteAnalysisClick} />
+      <Sidebar 
+        currentPage={currentPage}
+        onWebsiteAnalysisClick={handleWebsiteAnalysisClick} 
+        onWebsiteSegmentsClick={handleWebsiteSegmentsClick}
+      />
       {renderPage()}
     </AppContainer>
   );
