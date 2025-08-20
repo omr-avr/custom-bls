@@ -23,6 +23,48 @@ const Title = styled.h1`
   margin: 0;
 `;
 
+const WebsiteItems = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 16px;
+  padding: 12px 0;
+`;
+
+const WebsiteItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const WebsiteFavicon = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: ${props => props.color || '#f3f4f6'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  position: relative;
+  overflow: hidden;
+`;
+
+const WebsiteUrl = styled.span`
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+`;
+
+const ColorDot = styled.div`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: ${props => props.color};
+`;
+
 const Content = styled.div`
   padding: 0px 32px;
   max-width: 1360px;
@@ -284,6 +326,14 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('business-lines');
   const [viewMode, setViewMode] = useState('percentage'); // 'percentage' or 'numbers'
 
+  const websites = [
+    { url: 'macys.com', color: '#40C4FF', favicon: 'M' },
+    { url: 'jcpenney.com', color: '#FFD700', favicon: 'J' },
+    { url: 'bloomingdales.com', color: '#20B2AA', favicon: 'B' },
+    { url: 'zappos.com', color: '#4C6EF5', favicon: 'Z' },
+    { url: 'saksfifthavenue.com', color: '#FF8A33', favicon: 'S' }
+  ];
+
   const businessLinesData = [
     { 
       name: "Women's Clothing", 
@@ -347,6 +397,17 @@ const WebsiteAnalysis = ({ onBack }) => {
     <MainContainer>
       <Header>
         <Title>Website Analysis > Website Content</Title>
+        <WebsiteItems>
+          {websites.map((website, index) => (
+            <WebsiteItem key={index}>
+              <WebsiteFavicon color={website.color}>
+                {website.favicon}
+              </WebsiteFavicon>
+              <WebsiteUrl>{website.url}</WebsiteUrl>
+              <ColorDot color={website.color} />
+            </WebsiteItem>
+          ))}
+        </WebsiteItems>
       </Header>
 
       <TabsContainer>
