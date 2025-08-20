@@ -255,6 +255,8 @@ const WebsiteDropdownButton = styled.button`
   gap: 8px;
   justify-content: space-between;
   text-align: left;
+  height: 44px;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
@@ -327,7 +329,8 @@ const BusinessLinesDropdownButton = styled.button`
   align-items: center;
   justify-content: space-between;
   text-align: left;
-  min-height: 40px;
+  height: 44px;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
@@ -416,6 +419,7 @@ const FormGroup = styled.div`
 
 const FieldContainer = styled.div`
   margin-bottom: 0;
+  flex: 1;
 `;
 
 const SearchContainer = styled.div`
@@ -472,7 +476,9 @@ const Input = styled.input`
   font-size: 14px;
   background-color: #ffffff;
   color: #374151;
-  min-width: 200px;
+  width: 100%;
+  height: 44px;
+  box-sizing: border-box;
 
   &::placeholder {
     color: #9ca3af;
@@ -538,13 +544,8 @@ const WebsiteAnalysis = ({ onBack }) => {
   };
 
   const handleBusinessLineToggle = (businessLine) => {
-    setSelectedBusinessLines(prev => {
-      if (prev.includes(businessLine)) {
-        return prev.filter(line => line !== businessLine);
-      } else {
-        return [...prev, businessLine];
-      }
-    });
+    setSelectedBusinessLines([businessLine]); // Single select
+    setIsBusinessLinesDropdownOpen(false); // Close dropdown after selection
   };
 
   const websites = [
@@ -975,10 +976,8 @@ const WebsiteAnalysis = ({ onBack }) => {
                       >
                         <span>
                           {selectedBusinessLines.length === 0 
-                            ? 'Select business lines...' 
-                            : selectedBusinessLines.length === 1
-                            ? selectedBusinessLines[0]
-                            : `${selectedBusinessLines.length} business lines selected`
+                            ? 'Select business line...' 
+                            : selectedBusinessLines[0]
                           }
                         </span>
                         <ChevronDown size={16} />
@@ -990,13 +989,11 @@ const WebsiteAnalysis = ({ onBack }) => {
                             <BusinessLinesDropdownItem 
                               key={index}
                               onClick={() => handleBusinessLineToggle(businessLine.name)}
+                              style={{ 
+                                backgroundColor: selectedBusinessLines.includes(businessLine.name) ? '#f3f4f6' : 'transparent' 
+                              }}
                             >
                               <DropdownBusinessLineInfo>
-                                <BusinessLineCheckbox 
-                                  type="checkbox"
-                                  checked={selectedBusinessLines.includes(businessLine.name)}
-                                  onChange={() => {}} // Controlled by parent onClick
-                                />
                                 <span>{businessLine.name}</span>
                               </DropdownBusinessLineInfo>
                               <VisitsShare>{businessLine.visitsShare}%</VisitsShare>
