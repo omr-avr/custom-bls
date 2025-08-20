@@ -377,20 +377,6 @@ const WebsiteAnalysis = ({ onBack }) => {
                     <Info size={14} />
                   </InfoIcon>
                 </WidgetTitle>
-                <WidgetActions>
-                  <ToggleButton 
-                    active={viewMode === 'percentage'}
-                    onClick={() => setViewMode('percentage')}
-                  >
-                    %
-                  </ToggleButton>
-                  <ToggleButton 
-                    active={viewMode === 'numbers'}
-                    onClick={() => setViewMode('numbers')}
-                  >
-                    #
-                  </ToggleButton>
-                </WidgetActions>
               </WidgetHeader>
               
               {businessLinesData.map((item, index) => (
@@ -437,143 +423,141 @@ const WebsiteAnalysis = ({ onBack }) => {
                     <Info size={14} />
                   </InfoIcon>
                 </WidgetTitle>
-                <WidgetActions>
-                  <ToggleButton active={true}>
-                    #
-                  </ToggleButton>
-                  <ToggleButton active={false}>
-                    %
-                  </ToggleButton>
-                </WidgetActions>
+
               </WidgetHeader>
               
-              <div style={{ height: '250px', position: 'relative', marginTop: '16px', width: '100%' }}>
-                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="areaGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#40C4FF" stopOpacity="0.6"/>
-                      <stop offset="100%" stopColor="#40C4FF" stopOpacity="0.1"/>
-                    </linearGradient>
-                    <linearGradient id="areaGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#FFD700" stopOpacity="0.6"/>
-                      <stop offset="100%" stopColor="#FFD700" stopOpacity="0.1"/>
-                    </linearGradient>
-                    <linearGradient id="areaGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#20B2AA" stopOpacity="0.6"/>
-                      <stop offset="100%" stopColor="#20B2AA" stopOpacity="0.1"/>
-                    </linearGradient>
-                  </defs>
+              <div style={{ height: '200px', position: 'relative', marginTop: '16px', width: '100%', padding: '20px 40px 30px 50px' }}>
+                <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+                  <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="areaGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#40C4FF" stopOpacity="0.6"/>
+                        <stop offset="100%" stopColor="#40C4FF" stopOpacity="0.1"/>
+                      </linearGradient>
+                      <linearGradient id="areaGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#FFD700" stopOpacity="0.6"/>
+                        <stop offset="100%" stopColor="#FFD700" stopOpacity="0.1"/>
+                      </linearGradient>
+                      <linearGradient id="areaGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#20B2AA" stopOpacity="0.6"/>
+                        <stop offset="100%" stopColor="#20B2AA" stopOpacity="0.1"/>
+                      </linearGradient>
+                    </defs>
+                    
+                    {/* Area 1 - Bottom layer (macys.com) */}
+                    <path 
+                      d="M0,95 L8,88 L16,85 L24,82 L32,78 L40,75 L48,72 L56,70 L64,68 L72,65 L80,63 L88,60 L96,58 L100,57 L100,100 L0,100 Z" 
+                      fill="url(#areaGradient1)"
+                    />
+                    
+                    {/* Area 2 - Middle layer (jcpenney.com) */}
+                    <path 
+                      d="M0,85 L8,80 L16,75 L24,72 L32,68 L40,65 L48,62 L56,58 L64,55 L72,52 L80,48 L88,45 L96,42 L100,40 L100,100 L0,100 Z" 
+                      fill="url(#areaGradient2)"
+                    />
+                    
+                    {/* Area 3 - Top layer (bloomingdales.com) */}
+                    <path 
+                      d="M0,70 L8,65 L16,58 L24,52 L32,48 L40,45 L48,42 L56,38 L64,35 L72,32 L80,28 L88,25 L96,22 L100,20 L100,100 L0,100 Z" 
+                      fill="url(#areaGradient3)"
+                    />
+                    
+                    {/* Chart lines */}
+                    <path 
+                      d="M0,57 L8,55 L16,52 L24,50 L32,48 L40,45 L48,43 L56,40 L64,38 L72,35 L80,33 L88,30 L96,28 L100,27" 
+                      stroke="#40C4FF" 
+                      strokeWidth="0.5" 
+                      fill="none"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                    <path 
+                      d="M0,40 L8,38 L16,35 L24,32 L32,30 L40,28 L48,25 L56,23 L64,20 L72,18 L80,15 L88,13 L96,10 L100,8" 
+                      stroke="#FFD700" 
+                      strokeWidth="0.5" 
+                      fill="none"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                    <path 
+                      d="M0,20 L8,18 L16,15 L24,12 L32,10 L40,8 L48,6 L56,5 L64,4 L72,3 L80,2 L88,1 L96,0.5 L100,0" 
+                      stroke="#20B2AA" 
+                      strokeWidth="0.5" 
+                      fill="none"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </svg>
                   
-                  {/* Area 1 - Bottom layer (macys.com) */}
-                  <path 
-                    d="M0,95 L8,88 L16,85 L24,82 L32,78 L40,75 L48,72 L56,70 L64,68 L72,65 L80,63 L88,60 L96,58 L100,57 L100,100 L0,100 Z" 
-                    fill="url(#areaGradient1)"
-                  />
-                  
-                  {/* Area 2 - Middle layer (jcpenney.com) */}
-                  <path 
-                    d="M0,85 L8,80 L16,75 L24,72 L32,68 L40,65 L48,62 L56,58 L64,55 L72,52 L80,48 L88,45 L96,42 L100,40 L100,100 L0,100 Z" 
-                    fill="url(#areaGradient2)"
-                  />
-                  
-                  {/* Area 3 - Top layer (bloomingdales.com) */}
-                  <path 
-                    d="M0,70 L8,65 L16,58 L24,52 L32,48 L40,45 L48,42 L56,38 L64,35 L72,32 L80,28 L88,25 L96,22 L100,20 L100,100 L0,100 Z" 
-                    fill="url(#areaGradient3)"
-                  />
-                  
-                  {/* Chart lines */}
-                  <path 
-                    d="M0,57 L8,55 L16,52 L24,50 L32,48 L40,45 L48,43 L56,40 L64,38 L72,35 L80,33 L88,30 L96,28 L100,27" 
-                    stroke="#40C4FF" 
-                    strokeWidth="0.5" 
-                    fill="none"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <path 
-                    d="M0,40 L8,38 L16,35 L24,32 L32,30 L40,28 L48,25 L56,23 L64,20 L72,18 L80,15 L88,13 L96,10 L100,8" 
-                    stroke="#FFD700" 
-                    strokeWidth="0.5" 
-                    fill="none"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <path 
-                    d="M0,20 L8,18 L16,15 L24,12 L32,10 L40,8 L48,6 L56,5 L64,4 L72,3 L80,2 L88,1 L96,0.5 L100,0" 
-                    stroke="#20B2AA" 
-                    strokeWidth="0.5" 
-                    fill="none"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-                
-                {/* Chart Axes and Labels */}
-                <div style={{ 
-                  position: 'absolute', 
-                  bottom: '0', 
-                  left: '0', 
-                  right: '0', 
-                  height: '20px', 
-                  display: 'flex', 
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '11px',
-                  color: '#9CA3AF',
-                  paddingTop: '8px'
-                }}>
-                  <span>Apr 2024</span>
-                  <span>Jul 2024</span>
-                  <span>Oct 2024</span>
-                  <span>Jan 2025</span>
-                  <span>Mar 2025</span>
-                </div>
-                
-                {/* Y-axis labels */}
-                <div style={{
-                  position: 'absolute',
-                  left: '-40px',
-                  top: '0',
-                  bottom: '20px',
-                  width: '35px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-end',
-                  fontSize: '11px',
-                  color: '#9CA3AF',
-                  paddingRight: '8px'
-                }}>
-                  <span>350,000</span>
-                  <span>300,000</span>
-                  <span>250,000</span>
-                  <span>200,000</span>
-                  <span>0</span>
-                </div>
-                
-                {/* Legend */}
-                <div style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '4px',
-                  fontSize: '11px',
-                  color: '#6B7280'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '8px', height: '8px', backgroundColor: '#20B2AA', borderRadius: '50%' }}></div>
-                    <span>bloomingdales.com</span>
-                    <span style={{ color: '#9CA3AF' }}>63.5M</span>
+                  {/* Chart Axes and Labels */}
+                  <div style={{ 
+                    position: 'absolute', 
+                    bottom: '-20px', 
+                    left: '0', 
+                    right: '0', 
+                    height: '20px', 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    fontSize: '11px',
+                    color: '#9CA3AF'
+                  }}>
+                    <span>Apr 2024</span>
+                    <span>Jul 2024</span>
+                    <span>Oct 2024</span>
+                    <span>Jan 2025</span>
+                    <span>Mar 2025</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '8px', height: '8px', backgroundColor: '#FFD700', borderRadius: '50%' }}></div>
-                    <span>jcpenney.com</span>
-                    <span style={{ color: '#9CA3AF' }}>90.2M</span>
+                  
+                  {/* Y-axis labels */}
+                  <div style={{
+                    position: 'absolute',
+                    left: '-45px',
+                    top: '0',
+                    bottom: '0',
+                    width: '40px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    fontSize: '11px',
+                    color: '#9CA3AF',
+                    paddingRight: '5px'
+                  }}>
+                    <span>350,000</span>
+                    <span>300,000</span>
+                    <span>250,000</span>
+                    <span>200,000</span>
+                    <span>0</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ width: '8px', height: '8px', backgroundColor: '#40C4FF', borderRadius: '50%' }}></div>
-                    <span>macys.com</span>
-                    <span style={{ color: '#9CA3AF' }}>103.2M</span>
+                  
+                  {/* Legend */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '0px',
+                    right: '0px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    fontSize: '11px',
+                    color: '#6B7280',
+                    zIndex: 10,
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    padding: '8px',
+                    borderRadius: '4px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ width: '8px', height: '8px', backgroundColor: '#20B2AA', borderRadius: '50%' }}></div>
+                      <span>bloomingdales.com</span>
+                      <span style={{ color: '#9CA3AF' }}>63.5M</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ width: '8px', height: '8px', backgroundColor: '#FFD700', borderRadius: '50%' }}></div>
+                      <span>jcpenney.com</span>
+                      <span style={{ color: '#9CA3AF' }}>90.2M</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ width: '8px', height: '8px', backgroundColor: '#40C4FF', borderRadius: '50%' }}></div>
+                      <span>macys.com</span>
+                      <span style={{ color: '#9CA3AF' }}>103.2M</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -586,12 +570,13 @@ const WebsiteAnalysis = ({ onBack }) => {
                   Create a custom segment
                   <span style={{ 
                     marginLeft: '8px', 
-                    fontSize: '12px', 
-                    fontWeight: '500', 
+                    fontSize: '11px', 
+                    fontWeight: '600', 
                     color: '#3E74FE',
-                    background: 'linear-gradient(90deg, rgba(62, 116, 254, 0.15) 0%, rgba(42, 211, 171, 0.15) 100%)',
-                    padding: '2px 8px',
-                    borderRadius: '4px'
+                    backgroundColor: '#F0F8FF',
+                    padding: '3px 6px',
+                    borderRadius: '12px',
+                    border: '1px solid #E1EDFF'
                   }}>
                     AI-POWERED
                   </span>
