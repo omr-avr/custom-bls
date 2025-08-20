@@ -35,21 +35,18 @@ const WebsiteItem = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 8px 12px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 `;
 
-const WebsiteFavicon = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  background-color: ${props => props.color || '#f3f4f6'};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: white;
-  position: relative;
-  overflow: hidden;
+const WebsiteFavicon = styled.img`
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  object-fit: contain;
 `;
 
 const WebsiteUrl = styled.span`
@@ -327,11 +324,11 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [viewMode, setViewMode] = useState('percentage'); // 'percentage' or 'numbers'
 
   const websites = [
-    { url: 'macys.com', color: '#40C4FF', favicon: 'M' },
-    { url: 'jcpenney.com', color: '#FFD700', favicon: 'J' },
-    { url: 'bloomingdales.com', color: '#20B2AA', favicon: 'B' },
-    { url: 'zappos.com', color: '#4C6EF5', favicon: 'Z' },
-    { url: 'saksfifthavenue.com', color: '#FF8A33', favicon: 'S' }
+    { url: 'apple.com', color: '#40C4FF', favicon: 'https://www.google.com/s2/favicons?domain=apple.com&sz=16' },
+    { url: 'hp.com', color: '#FFD700', favicon: 'https://www.google.com/s2/favicons?domain=hp.com&sz=16' },
+    { url: 'samsung.com', color: '#20B2AA', favicon: 'https://www.google.com/s2/favicons?domain=samsung.com&sz=16' },
+    { url: 'dell.com', color: '#4C6EF5', favicon: 'https://www.google.com/s2/favicons?domain=dell.com&sz=16' },
+    { url: 'lenovo.com', color: '#FF8A33', favicon: 'https://www.google.com/s2/favicons?domain=lenovo.com&sz=16' }
   ];
 
   const businessLinesData = [
@@ -400,9 +397,30 @@ const WebsiteAnalysis = ({ onBack }) => {
         <WebsiteItems>
           {websites.map((website, index) => (
             <WebsiteItem key={index}>
-              <WebsiteFavicon color={website.color}>
-                {website.favicon}
-              </WebsiteFavicon>
+              <WebsiteFavicon 
+                src={website.favicon} 
+                alt={`${website.url} favicon`}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'inline-block';
+                }}
+              />
+              <div 
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '2px',
+                  backgroundColor: website.color,
+                  display: 'none',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '10px',
+                  fontWeight: '600',
+                  color: 'white'
+                }}
+              >
+                {website.url.charAt(0).toUpperCase()}
+              </div>
               <WebsiteUrl>{website.url}</WebsiteUrl>
               <ColorDot color={website.color} />
             </WebsiteItem>
