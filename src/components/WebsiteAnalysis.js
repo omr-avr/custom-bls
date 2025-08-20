@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { Info, BarChart3, FolderOpen, Eye, Globe, Sparkles, ChevronDown } from 'lucide-react';
 
@@ -487,20 +487,18 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [isBusinessLinesDropdownOpen, setIsBusinessLinesDropdownOpen] = useState(false);
   const [businessLines, setBusinessLines] = useState([]);
 
-  // Business lines mapping for each website
-  const businessLinesMap = {
+  // Business lines mapping for each website - memoized to prevent recreations
+  const businessLinesMap = useMemo(() => ({
     'apple.com': ['Mobile Phones', 'Laptop Computers', 'Tablet PCs', 'Headphones', 'Watches & Watch Accessories'],
     'hp.com': ['Laptop Computers', 'Desktop Computers', 'Printers & Scanners', 'Computer Electronics', 'Office & School supplies'],
     'samsung.com': ['Mobile Phones', 'Televisions', 'Home Appliances', 'Tablet PCs', 'Computer Electronics'],
     'dell.com': ['Laptop Computers', 'Desktop Computers', 'Computer Electronics', 'Monitors', 'Office & School supplies'],
     'lenovo.com': ['Laptop Computers', 'Desktop Computers', 'Tablet PCs', 'Computer Electronics', 'Mobile Phones']
-  };
+  }), []);
 
   const handleWebsiteSelect = (index) => {
     setSelectedWebsite(index);
     setIsWebsiteDropdownOpen(false);
-    // Reset business lines selection when website changes
-    setSelectedBusinessLines([]);
     setIsBusinessLinesDropdownOpen(false);
   };
 
@@ -522,10 +520,13 @@ const WebsiteAnalysis = ({ onBack }) => {
     { url: 'lenovo.com', color: '#FF8A33', favicon: 'https://www.google.com/s2/favicons?domain=lenovo.com&sz=16' }
   ];
 
-  // Update business lines when selected website changes
+  // Update business lines when selected website changes or on mount
   useEffect(() => {
     const selectedWebsiteUrl = websites[selectedWebsite].url;
     const businessLineNames = businessLinesMap[selectedWebsiteUrl] || [];
+    
+    console.log('Selected website:', selectedWebsiteUrl);
+    console.log('Business line names:', businessLineNames);
     
     // Generate realistic visits share data for each business line
     const businessLinesWithShares = businessLineNames.map((name, index) => ({
@@ -533,8 +534,12 @@ const WebsiteAnalysis = ({ onBack }) => {
       visitsShare: Math.floor(Math.random() * 40) + 5 // Random between 5-44%
     })).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
     
+    console.log('Business lines with shares:', businessLinesWithShares);
     setBusinessLines(businessLinesWithShares);
-  }, [selectedWebsite]);
+    
+    // Also reset selected business lines when website changes
+    setSelectedBusinessLines([]);
+  }, [selectedWebsite, businessLinesMap]);
 
   const businessLinesData = [
     { 
