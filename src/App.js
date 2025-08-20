@@ -12,7 +12,7 @@ const AppContainer = styled.div`
 `;
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('main');
+  const [currentPage, setCurrentPage] = useState('website-segments');
 
   const handleAISegmentBuilderClick = () => {
     setCurrentPage('ai-segment-builder');
@@ -20,6 +20,10 @@ function App() {
 
   const handleWebsiteAnalysisClick = () => {
     setCurrentPage('website-analysis');
+  };
+
+  const handleWebsiteSegmentsClick = () => {
+    setCurrentPage('website-segments');
   };
 
   const handleBackToMain = () => {
@@ -32,6 +36,8 @@ function App() {
         return <AISegmentBuilder onBack={handleBackToMain} />;
       case 'website-analysis':
         return <WebsiteAnalysis onBack={handleBackToMain} />;
+      case 'website-segments':
+        return <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />;
       default:
         return <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />;
     }
@@ -39,7 +45,11 @@ function App() {
 
   return (
     <AppContainer>
-      <Sidebar onWebsiteAnalysisClick={handleWebsiteAnalysisClick} currentPage={currentPage} />
+      <Sidebar 
+        onWebsiteAnalysisClick={handleWebsiteAnalysisClick} 
+        onWebsiteSegmentsClick={handleWebsiteSegmentsClick}
+        currentPage={currentPage} 
+      />
       {renderPage()}
     </AppContainer>
   );
