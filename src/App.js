@@ -4,7 +4,6 @@ import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import AISegmentBuilder from './components/AISegmentBuilder';
 import WebsiteAnalysis from './components/WebsiteAnalysis';
-import WebsiteSegments from './components/WebsiteSegments';
 
 const AppContainer = styled.div`
   display: flex;
@@ -38,7 +37,7 @@ function App() {
       case 'website-analysis':
         return <WebsiteAnalysis onBack={handleBackToMain} />;
       case 'website-segments':
-        return <WebsiteSegments onBack={handleBackToMain} />;
+        return <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />;
       default:
         return <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />;
     }
