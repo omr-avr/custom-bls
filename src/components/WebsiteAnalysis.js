@@ -37,7 +37,6 @@ const TabsContainer = styled.div`
   padding: 0 32px;
   max-width: 1360px;
   margin: 0 auto;
-  background-color: #ffffff;
 `;
 
 const Tab = styled.button`
@@ -163,12 +162,11 @@ const ProgressBar = styled.div`
   background-color: #e5e7eb;
   border-radius: 3px;
   overflow: hidden;
+  display: flex;
 `;
 
-const ProgressFill = styled.div`
+const ProgressSegment = styled.div`
   height: 100%;
-  background-color: #3E74FE;
-  border-radius: 3px;
   transition: width 0.3s ease;
 `;
 
@@ -206,12 +204,14 @@ const SegmentForm = styled.div`
   display: flex;
   gap: 12px;
   align-items: flex-end;
+  width: 100%;
 `;
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
 `;
 
 const Label = styled.label`
@@ -270,6 +270,8 @@ const GenerateButton = styled.button`
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
 
   &:hover {
     opacity: 0.9;
@@ -281,10 +283,55 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [viewMode, setViewMode] = useState('percentage'); // 'percentage' or 'numbers'
 
   const businessLinesData = [
-    { name: "Women's Clothing", visits: '15.7M', percentage: 37.6, growth: 37.6, isPositive: true },
-    { name: "Men's Clothing", visits: '11.3M', percentage: 23.2, growth: -3.2, isPositive: false },
-    { name: "Footwear", visits: '8.5M', percentage: 18.5, growth: 37.6, isPositive: true },
-    { name: "Children's Clothing", visits: '8.5M', percentage: 15.2, growth: -3.2, isPositive: false },
+    { 
+      name: "Women's Clothing", 
+      visits: '15.7M', 
+      percentage: 37.6, 
+      growth: 37.6, 
+      isPositive: true,
+      segments: [
+        { percentage: 30, color: '#4C6EF5' },
+        { percentage: 20, color: '#FF8A33' },
+        { percentage: 10, color: '#20B2AA' },
+        { percentage: 25, color: '#FFD700' },
+        { percentage: 15, color: '#40C4FF' }
+      ]
+    },
+    { 
+      name: "Men's Clothing", 
+      visits: '11.3M', 
+      percentage: 23.2, 
+      growth: -3.2, 
+      isPositive: false,
+      segments: [
+        { percentage: 23, color: '#4C6EF5' },
+        { percentage: 18, color: '#FF8A33' },
+        { percentage: 15, color: '#20B2AA' },
+        { percentage: 39, color: '#FFD700' },
+        { percentage: 5, color: '#40C4FF' }
+      ]
+    },
+    { 
+      name: "Footwear", 
+      visits: '8.5M', 
+      percentage: 18.5, 
+      growth: 37.6, 
+      isPositive: true,
+      segments: [
+        { percentage: 78, color: '#FFD700' },
+        { percentage: 22, color: '#40C4FF' }
+      ]
+    },
+    { 
+      name: "Children's Clothing", 
+      visits: '8.5M', 
+      percentage: 15.2, 
+      growth: -3.2, 
+      isPositive: false,
+      segments: [
+        { percentage: 78, color: '#4C6EF5' }
+      ]
+    },
   ];
 
   const tabs = [
@@ -356,7 +403,15 @@ const WebsiteAnalysis = ({ onBack }) => {
                     </BusinessLineStats>
                   </BusinessLineInfo>
                   <ProgressBar>
-                    <ProgressFill style={{ width: `${item.percentage}%` }} />
+                    {item.segments.map((segment, segIndex) => (
+                      <ProgressSegment 
+                        key={segIndex}
+                        style={{ 
+                          width: `${segment.percentage}%`,
+                          backgroundColor: segment.color
+                        }} 
+                      />
+                    ))}
                   </ProgressBar>
                   <VisitsValue>
                     {viewMode === 'percentage' ? `${item.percentage}%` : item.visits}
@@ -390,8 +445,61 @@ const WebsiteAnalysis = ({ onBack }) => {
                 </WidgetActions>
               </WidgetHeader>
               
-              <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>
-                [Chart visualization would go here]
+              <div style={{ height: '200px', position: 'relative', marginTop: '16px' }}>
+                <svg width="100%" height="100%" viewBox="0 0 800 200">
+                  <defs>
+                    <linearGradient id="areaGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#40C4FF" stopOpacity="0.8"/>
+                      <stop offset="100%" stopColor="#40C4FF" stopOpacity="0.1"/>
+                    </linearGradient>
+                    <linearGradient id="areaGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#FFD700" stopOpacity="0.8"/>
+                      <stop offset="100%" stopColor="#FFD700" stopOpacity="0.1"/>
+                    </linearGradient>
+                    <linearGradient id="areaGradient3" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#20B2AA" stopOpacity="0.8"/>
+                      <stop offset="100%" stopColor="#20B2AA" stopOpacity="0.1"/>
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Area 1 - Bottom layer */}
+                  <path 
+                    d="M50,180 Q150,160 250,150 T450,140 T650,135 T750,130 L750,180 Z" 
+                    fill="url(#areaGradient1)"
+                  />
+                  
+                  {/* Area 2 - Middle layer */}
+                  <path 
+                    d="M50,180 Q150,140 250,120 T450,100 T650,95 T750,90 L750,180 Z" 
+                    fill="url(#areaGradient2)"
+                  />
+                  
+                  {/* Area 3 - Top layer */}
+                  <path 
+                    d="M50,180 Q150,100 250,80 T450,60 T650,55 T750,50 L750,180 Z" 
+                    fill="url(#areaGradient3)"
+                  />
+                  
+                  {/* Lines */}
+                  <path 
+                    d="M50,130 Q150,160 250,150 T450,140 T650,135 T750,130" 
+                    stroke="#40C4FF" 
+                    strokeWidth="2" 
+                    fill="none"
+                  />
+                  <path 
+                    d="M50,90 Q150,140 250,120 T450,100 T650,95 T750,90" 
+                    stroke="#FFD700" 
+                    strokeWidth="2" 
+                    fill="none"
+                  />
+                  <path 
+                    d="M50,50 Q150,100 250,80 T450,60 T650,55 T750,50" 
+                    stroke="#20B2AA" 
+                    strokeWidth="2" 
+                    fill="none"
+                  />
+                </svg>
               </div>
             </Widget>
 
