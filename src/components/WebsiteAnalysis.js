@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Info, BarChart3, FolderOpen, Eye, Globe, Sparkles, ChevronDown } from 'lucide-react';
 
@@ -309,6 +309,90 @@ const DropdownFavicon = styled.img`
   object-fit: contain;
 `;
 
+const BusinessLinesDropdown = styled.div`
+  position: relative;
+  min-width: 150px;
+`;
+
+const BusinessLinesDropdownButton = styled.button`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  min-height: 40px;
+
+  &:focus {
+    outline: none;
+    border-color: #3E74FE;
+    box-shadow: 0 0 0 2px rgba(62, 116, 254, 0.1);
+  }
+`;
+
+const BusinessLinesDropdownList = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 2px;
+`;
+
+const BusinessLinesDropdownItem = styled.div`
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+
+  &:first-child {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+`;
+
+const BusinessLineInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const BusinessLineCheckbox = styled.input`
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+`;
+
+const VisitsShare = styled.span`
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+`;
+
 const SegmentHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -399,10 +483,35 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [viewMode, setViewMode] = useState('percentage'); // 'percentage' or 'numbers'
   const [selectedWebsite, setSelectedWebsite] = useState(0); // Index of selected website
   const [isWebsiteDropdownOpen, setIsWebsiteDropdownOpen] = useState(false);
+  const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
+  const [isBusinessLinesDropdownOpen, setIsBusinessLinesDropdownOpen] = useState(false);
+  const [businessLines, setBusinessLines] = useState([]);
+
+  // Business lines mapping for each website
+  const businessLinesMap = {
+    'apple.com': ['Mobile Phones', 'Laptop Computers', 'Tablet PCs', 'Headphones', 'Watches & Watch Accessories'],
+    'hp.com': ['Laptop Computers', 'Desktop Computers', 'Printers & Scanners', 'Computer Electronics', 'Office & School supplies'],
+    'samsung.com': ['Mobile Phones', 'Televisions', 'Home Appliances', 'Tablet PCs', 'Computer Electronics'],
+    'dell.com': ['Laptop Computers', 'Desktop Computers', 'Computer Electronics', 'Monitors', 'Office & School supplies'],
+    'lenovo.com': ['Laptop Computers', 'Desktop Computers', 'Tablet PCs', 'Computer Electronics', 'Mobile Phones']
+  };
 
   const handleWebsiteSelect = (index) => {
     setSelectedWebsite(index);
     setIsWebsiteDropdownOpen(false);
+    // Reset business lines selection when website changes
+    setSelectedBusinessLines([]);
+    setIsBusinessLinesDropdownOpen(false);
+  };
+
+  const handleBusinessLineToggle = (businessLine) => {
+    setSelectedBusinessLines(prev => {
+      if (prev.includes(businessLine)) {
+        return prev.filter(line => line !== businessLine);
+      } else {
+        return [...prev, businessLine];
+      }
+    });
   };
 
   const websites = [
@@ -412,6 +521,20 @@ const WebsiteAnalysis = ({ onBack }) => {
     { url: 'dell.com', color: '#4C6EF5', favicon: 'https://www.google.com/s2/favicons?domain=dell.com&sz=16' },
     { url: 'lenovo.com', color: '#FF8A33', favicon: 'https://www.google.com/s2/favicons?domain=lenovo.com&sz=16' }
   ];
+
+  // Update business lines when selected website changes
+  useEffect(() => {
+    const selectedWebsiteUrl = websites[selectedWebsite].url;
+    const businessLineNames = businessLinesMap[selectedWebsiteUrl] || [];
+    
+    // Generate realistic visits share data for each business line
+    const businessLinesWithShares = businessLineNames.map((name, index) => ({
+      name,
+      visitsShare: Math.floor(Math.random() * 40) + 5 // Random between 5-44%
+    })).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
+    
+    setBusinessLines(businessLinesWithShares);
+  }, [selectedWebsite]);
 
   const businessLinesData = [
     { 
@@ -789,12 +912,49 @@ const WebsiteAnalysis = ({ onBack }) => {
                   </WebsiteDropdown>
                 </FormGroup>
                 <FormGroup>
-                  <Select>
-                    <option>Women's Clothing</option>
-                    <option>Men's Clothing</option>
-                    <option>Footwear</option>
-                    <option>Children's Clothing</option>
-                  </Select>
+                  <BusinessLinesDropdown>
+                    <BusinessLinesDropdownButton 
+                      onClick={() => setIsBusinessLinesDropdownOpen(!isBusinessLinesDropdownOpen)}
+                    >
+                      <span>
+                        {selectedBusinessLines.length === 0 
+                          ? 'Select business lines...' 
+                          : selectedBusinessLines.length === 1
+                          ? selectedBusinessLines[0]
+                          : `${selectedBusinessLines.length} business lines selected`
+                        }
+                      </span>
+                      <ChevronDown size={16} />
+                    </BusinessLinesDropdownButton>
+                    
+                    {isBusinessLinesDropdownOpen && (
+                      <BusinessLinesDropdownList>
+                        {businessLines.map((businessLine, index) => (
+                          <BusinessLinesDropdownItem 
+                            key={index}
+                            onClick={() => handleBusinessLineToggle(businessLine.name)}
+                          >
+                            <BusinessLineInfo>
+                              <BusinessLineCheckbox 
+                                type="checkbox"
+                                checked={selectedBusinessLines.includes(businessLine.name)}
+                                onChange={() => {}} // Controlled by parent onClick
+                              />
+                              <span>{businessLine.name}</span>
+                            </BusinessLineInfo>
+                            <VisitsShare>{businessLine.visitsShare}%</VisitsShare>
+                          </BusinessLinesDropdownItem>
+                        ))}
+                        {businessLines.length === 0 && (
+                          <BusinessLinesDropdownItem>
+                            <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
+                              No business lines available
+                            </span>
+                          </BusinessLinesDropdownItem>
+                        )}
+                      </BusinessLinesDropdownList>
+                    )}
+                  </BusinessLinesDropdown>
                 </FormGroup>
                 <FormGroup>
                   <Input placeholder="Enter granular business lines" />
