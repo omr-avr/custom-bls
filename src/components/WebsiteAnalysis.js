@@ -604,10 +604,10 @@ const WebsiteAnalysis = ({ onBack }) => {
                 <FormGroup>
                   <Input placeholder="Enter granular business lines" />
                 </FormGroup>
-                <GenerateButton>
-                  <Sparkles size={14} />
-                  Generate Segment
-                </GenerateButton>
+                                  <GenerateButton>
+                    <Sparkles size={14} />
+                    Generate Segment
+                  </GenerateButton>
               </SegmentForm>
             </SegmentWidget>
           </WidgetsContainer>

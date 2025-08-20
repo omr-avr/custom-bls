@@ -102,7 +102,7 @@ const IconWrapper = styled.div`
   justify-content: center;
 `;
 
-const Sidebar = ({ currentPage, onWebsiteAnalysisClick, onWebsiteSegmentsClick }) => {
+const Sidebar = ({ onWebsiteAnalysisClick, currentPage }) => {
   return (
     <SidebarContainer>
       <Logo>
@@ -130,7 +130,7 @@ const Sidebar = ({ currentPage, onWebsiteAnalysisClick, onWebsiteSegmentsClick }
 
       <NavSection>
         <SectionTitle>Website Research</SectionTitle>
-        <NavItem active={currentPage === 'website-analysis'} onClick={onWebsiteAnalysisClick}>
+        <NavItem onClick={onWebsiteAnalysisClick} active={currentPage === 'website-analysis'}>
           <IconWrapper><Globe size={16} /></IconWrapper>
           Website Analysis
         </NavItem>
@@ -138,7 +138,7 @@ const Sidebar = ({ currentPage, onWebsiteAnalysisClick, onWebsiteSegmentsClick }
           <IconWrapper><BarChart3 size={16} /></IconWrapper>
           Website Rankings
         </NavItem>
-        <NavItem active={currentPage === 'website-segments'} onClick={onWebsiteSegmentsClick}>
+        <NavItem>
           <IconWrapper><PieChart size={16} /></IconWrapper>
           Website Segments
         </NavItem>
