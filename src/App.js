@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import AISegmentBuilder from './components/AISegmentBuilder';
+import WebsiteAnalysis from './components/WebsiteAnalysis';
 
 const AppContainer = styled.div`
   display: flex;
@@ -17,18 +18,29 @@ function App() {
     setCurrentPage('ai-segment-builder');
   };
 
+  const handleWebsiteAnalysisClick = () => {
+    setCurrentPage('website-analysis');
+  };
+
   const handleBackToMain = () => {
     setCurrentPage('main');
   };
 
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'ai-segment-builder':
+        return <AISegmentBuilder onBack={handleBackToMain} />;
+      case 'website-analysis':
+        return <WebsiteAnalysis onBack={handleBackToMain} />;
+      default:
+        return <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />;
+    }
+  };
+
   return (
     <AppContainer>
-      <Sidebar />
-      {currentPage === 'main' ? (
-        <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />
-      ) : (
-        <AISegmentBuilder onBack={handleBackToMain} />
-      )}
+      <Sidebar onWebsiteAnalysisClick={handleWebsiteAnalysisClick} />
+      {renderPage()}
     </AppContainer>
   );
 }

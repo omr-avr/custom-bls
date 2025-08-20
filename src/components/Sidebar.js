@@ -102,7 +102,7 @@ const IconWrapper = styled.div`
   justify-content: center;
 `;
 
-const Sidebar = () => {
+const Sidebar = ({ onWebsiteAnalysisClick }) => {
   return (
     <SidebarContainer>
       <Logo>
@@ -130,7 +130,7 @@ const Sidebar = () => {
 
       <NavSection>
         <SectionTitle>Website Research</SectionTitle>
-        <NavItem>
+        <NavItem onClick={onWebsiteAnalysisClick}>
           <IconWrapper><Globe size={16} /></IconWrapper>
           Website Analysis
         </NavItem>
