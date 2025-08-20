@@ -485,7 +485,14 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [isWebsiteDropdownOpen, setIsWebsiteDropdownOpen] = useState(false);
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isBusinessLinesDropdownOpen, setIsBusinessLinesDropdownOpen] = useState(false);
-  const [businessLines, setBusinessLines] = useState([]);
+  // Initialize with Apple business lines as fallback
+  const [businessLines, setBusinessLines] = useState([
+    { name: 'Mobile Phones', visitsShare: 35 },
+    { name: 'Laptop Computers', visitsShare: 28 },
+    { name: 'Tablet PCs', visitsShare: 20 },
+    { name: 'Headphones', visitsShare: 12 },
+    { name: 'Watches & Watch Accessories', visitsShare: 5 }
+  ]);
 
   // Business lines mapping for each website - memoized to prevent recreations
   const businessLinesMap = useMemo(() => ({
@@ -522,11 +529,16 @@ const WebsiteAnalysis = ({ onBack }) => {
 
   // Update business lines when selected website changes or on mount
   useEffect(() => {
-    const selectedWebsiteUrl = websites[selectedWebsite].url;
+    const selectedWebsiteUrl = websites[selectedWebsite]?.url;
+    if (!selectedWebsiteUrl) return;
+    
     const businessLineNames = businessLinesMap[selectedWebsiteUrl] || [];
     
-    console.log('Selected website:', selectedWebsiteUrl);
-    console.log('Business line names:', businessLineNames);
+    console.log('🔍 Debug Info:');
+    console.log('Selected website index:', selectedWebsite);
+    console.log('Selected website URL:', selectedWebsiteUrl);
+    console.log('Business line names from map:', businessLineNames);
+    console.log('Full businessLinesMap:', businessLinesMap);
     
     // Generate realistic visits share data for each business line
     const businessLinesWithShares = businessLineNames.map((name, index) => ({
@@ -534,12 +546,12 @@ const WebsiteAnalysis = ({ onBack }) => {
       visitsShare: Math.floor(Math.random() * 40) + 5 // Random between 5-44%
     })).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
     
-    console.log('Business lines with shares:', businessLinesWithShares);
+    console.log('Final business lines with shares:', businessLinesWithShares);
     setBusinessLines(businessLinesWithShares);
     
     // Also reset selected business lines when website changes
     setSelectedBusinessLines([]);
-  }, [selectedWebsite, businessLinesMap]);
+  }, [selectedWebsite, businessLinesMap, websites]);
 
   const businessLinesData = [
     { 
@@ -934,6 +946,7 @@ const WebsiteAnalysis = ({ onBack }) => {
                     
                     {isBusinessLinesDropdownOpen && (
                       <BusinessLinesDropdownList>
+                        {console.log('🔍 Rendering business lines dropdown with:', businessLines)}
                         {businessLines.map((businessLine, index) => (
                           <BusinessLinesDropdownItem 
                             key={index}
