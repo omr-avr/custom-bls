@@ -485,8 +485,8 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [isWebsiteDropdownOpen, setIsWebsiteDropdownOpen] = useState(false);
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isBusinessLinesDropdownOpen, setIsBusinessLinesDropdownOpen] = useState(false);
-  // Initialize with Apple business lines as fallback
-  const [businessLines, setBusinessLines] = useState([
+  // Initialize with Apple business lines as fallback - using new variable name to avoid conflicts
+  const [dynamicBusinessLines, setDynamicBusinessLines] = useState([
     { name: 'Mobile Phones', visitsShare: 35 },
     { name: 'Laptop Computers', visitsShare: 28 },
     { name: 'Tablet PCs', visitsShare: 20 },
@@ -547,7 +547,7 @@ const WebsiteAnalysis = ({ onBack }) => {
     })).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
     
     console.log('Final business lines with shares:', businessLinesWithShares);
-    setBusinessLines(businessLinesWithShares);
+    setDynamicBusinessLines(businessLinesWithShares);
     
     // Also reset selected business lines when website changes
     setSelectedBusinessLines([]);
@@ -946,8 +946,8 @@ const WebsiteAnalysis = ({ onBack }) => {
                     
                     {isBusinessLinesDropdownOpen && (
                       <BusinessLinesDropdownList>
-                        {console.log('🔍 Rendering business lines dropdown with:', businessLines)}
-                        {businessLines.map((businessLine, index) => (
+                        {console.log('🔍 Rendering business lines dropdown with:', dynamicBusinessLines)}
+                        {dynamicBusinessLines.map((businessLine, index) => (
                           <BusinessLinesDropdownItem 
                             key={index}
                             onClick={() => handleBusinessLineToggle(businessLine.name)}
@@ -963,7 +963,7 @@ const WebsiteAnalysis = ({ onBack }) => {
                             <VisitsShare>{businessLine.visitsShare}%</VisitsShare>
                           </BusinessLinesDropdownItem>
                         ))}
-                        {businessLines.length === 0 && (
+                        {dynamicBusinessLines.length === 0 && (
                           <BusinessLinesDropdownItem>
                             <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
                               No business lines available
