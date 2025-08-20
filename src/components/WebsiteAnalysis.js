@@ -414,6 +414,34 @@ const FormGroup = styled.div`
   flex: 1;
 `;
 
+const FieldContainer = styled.div`
+  margin-bottom: 0;
+`;
+
+const SearchContainer = styled.div`
+  margin-bottom: 0;
+`;
+
+const DropdownContainer = styled.div`
+  margin-bottom: 0;
+`;
+
+const SearchLabel = styled.label`
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+`;
+
+const DropdownLabel = styled.label`
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+`;
+
 const Label = styled.label`
   font-size: 12px;
   font-weight: 500;
@@ -895,97 +923,109 @@ const WebsiteAnalysis = ({ onBack }) => {
               </p>
               
               <SegmentForm>
-                <FormGroup>
-                  <WebsiteDropdown>
-                    <WebsiteDropdownButton 
-                      onClick={() => setIsWebsiteDropdownOpen(!isWebsiteDropdownOpen)}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <DropdownFavicon 
-                          src={websites[selectedWebsite].favicon} 
-                          alt={`${websites[selectedWebsite].url} favicon`}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                          }}
-                        />
-                        <span>{websites[selectedWebsite].url}</span>
-                      </div>
-                      <ChevronDown size={16} />
-                    </WebsiteDropdownButton>
-                    
-                    {isWebsiteDropdownOpen && (
-                      <WebsiteDropdownList>
-                        {websites.map((website, index) => (
-                          <WebsiteDropdownItem 
-                            key={index}
-                            onClick={() => handleWebsiteSelect(index)}
-                          >
-                            <DropdownFavicon 
-                              src={website.favicon} 
-                              alt={`${website.url} favicon`}
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                              }}
-                            />
-                            <span>{website.url}</span>
-                          </WebsiteDropdownItem>
-                        ))}
-                      </WebsiteDropdownList>
-                    )}
-                  </WebsiteDropdown>
-                </FormGroup>
-                <FormGroup>
-                  <BusinessLinesDropdown>
-                    <BusinessLinesDropdownButton 
-                      onClick={() => setIsBusinessLinesDropdownOpen(!isBusinessLinesDropdownOpen)}
-                    >
-                      <span>
-                        {selectedBusinessLines.length === 0 
-                          ? 'Select business lines...' 
-                          : selectedBusinessLines.length === 1
-                          ? selectedBusinessLines[0]
-                          : `${selectedBusinessLines.length} business lines selected`
-                        }
-                      </span>
-                      <ChevronDown size={16} />
-                    </BusinessLinesDropdownButton>
-                    
-                    {isBusinessLinesDropdownOpen && (
-                      <BusinessLinesDropdownList>
-                        {dynamicBusinessLines.map((businessLine, index) => (
-                          <BusinessLinesDropdownItem 
-                            key={index}
-                            onClick={() => handleBusinessLineToggle(businessLine.name)}
-                          >
-                            <DropdownBusinessLineInfo>
-                              <BusinessLineCheckbox 
-                                type="checkbox"
-                                checked={selectedBusinessLines.includes(businessLine.name)}
-                                onChange={() => {}} // Controlled by parent onClick
+                <FieldContainer>
+                  <SearchContainer>
+                    <SearchLabel>Website</SearchLabel>
+                    <WebsiteDropdown>
+                      <WebsiteDropdownButton 
+                        onClick={() => setIsWebsiteDropdownOpen(!isWebsiteDropdownOpen)}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <DropdownFavicon 
+                            src={websites[selectedWebsite].favicon} 
+                            alt={`${websites[selectedWebsite].url} favicon`}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                          <span>{websites[selectedWebsite].url}</span>
+                        </div>
+                        <ChevronDown size={16} />
+                      </WebsiteDropdownButton>
+                      
+                      {isWebsiteDropdownOpen && (
+                        <WebsiteDropdownList>
+                          {websites.map((website, index) => (
+                            <WebsiteDropdownItem 
+                              key={index}
+                              onClick={() => handleWebsiteSelect(index)}
+                            >
+                              <DropdownFavicon 
+                                src={website.favicon} 
+                                alt={`${website.url} favicon`}
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
                               />
-                              <span>{businessLine.name}</span>
-                            </DropdownBusinessLineInfo>
-                            <VisitsShare>{businessLine.visitsShare}%</VisitsShare>
-                          </BusinessLinesDropdownItem>
-                        ))}
-                        {dynamicBusinessLines.length === 0 && (
-                          <BusinessLinesDropdownItem>
-                            <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
-                              No business lines available
-                            </span>
-                          </BusinessLinesDropdownItem>
-                        )}
-                      </BusinessLinesDropdownList>
-                    )}
-                  </BusinessLinesDropdown>
-                </FormGroup>
-                <FormGroup>
-                  <Input placeholder="Enter granular business lines" />
-                </FormGroup>
-                                  <GenerateButton>
-                    <Sparkles size={14} />
-                    Generate Segment
-                  </GenerateButton>
+                              <span>{website.url}</span>
+                            </WebsiteDropdownItem>
+                          ))}
+                        </WebsiteDropdownList>
+                      )}
+                    </WebsiteDropdown>
+                  </SearchContainer>
+                </FieldContainer>
+                
+                <FieldContainer>
+                  <DropdownContainer>
+                    <DropdownLabel>Parent Business Lines</DropdownLabel>
+                    <BusinessLinesDropdown>
+                      <BusinessLinesDropdownButton 
+                        onClick={() => setIsBusinessLinesDropdownOpen(!isBusinessLinesDropdownOpen)}
+                      >
+                        <span>
+                          {selectedBusinessLines.length === 0 
+                            ? 'Select business lines...' 
+                            : selectedBusinessLines.length === 1
+                            ? selectedBusinessLines[0]
+                            : `${selectedBusinessLines.length} business lines selected`
+                          }
+                        </span>
+                        <ChevronDown size={16} />
+                      </BusinessLinesDropdownButton>
+                      
+                      {isBusinessLinesDropdownOpen && (
+                        <BusinessLinesDropdownList>
+                          {dynamicBusinessLines.map((businessLine, index) => (
+                            <BusinessLinesDropdownItem 
+                              key={index}
+                              onClick={() => handleBusinessLineToggle(businessLine.name)}
+                            >
+                              <DropdownBusinessLineInfo>
+                                <BusinessLineCheckbox 
+                                  type="checkbox"
+                                  checked={selectedBusinessLines.includes(businessLine.name)}
+                                  onChange={() => {}} // Controlled by parent onClick
+                                />
+                                <span>{businessLine.name}</span>
+                              </DropdownBusinessLineInfo>
+                              <VisitsShare>{businessLine.visitsShare}%</VisitsShare>
+                            </BusinessLinesDropdownItem>
+                          ))}
+                          {dynamicBusinessLines.length === 0 && (
+                            <BusinessLinesDropdownItem>
+                              <span style={{ color: '#9ca3af', fontStyle: 'italic' }}>
+                                No business lines available
+                              </span>
+                            </BusinessLinesDropdownItem>
+                          )}
+                        </BusinessLinesDropdownList>
+                      )}
+                    </BusinessLinesDropdown>
+                  </DropdownContainer>
+                </FieldContainer>
+                
+                <FieldContainer>
+                  <SearchContainer>
+                    <SearchLabel>Granular Business Lines</SearchLabel>
+                    <Input placeholder="Enter granular business lines" />
+                  </SearchContainer>
+                </FieldContainer>
+                
+                <GenerateButton>
+                  <Sparkles size={14} />
+                  Generate Segment
+                </GenerateButton>
               </SegmentForm>
             </SegmentWidget>
           </WidgetsContainer>
