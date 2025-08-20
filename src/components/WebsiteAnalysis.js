@@ -26,7 +26,7 @@ const Title = styled.h1`
 const WebsiteItems = styled.div`
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 8px;
   margin-top: 16px;
   padding: 12px 0;
 `;
