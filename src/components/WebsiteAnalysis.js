@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Info, BarChart3, FolderOpen, Eye, Globe, Sparkles } from 'lucide-react';
+import { Info, BarChart3, FolderOpen, Eye, Globe, Sparkles, ChevronDown } from 'lucide-react';
 
 const MainContainer = styled.div`
   flex: 1;
@@ -229,9 +229,84 @@ const SegmentWidget = styled.div`
   background-color: #ffffff;
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid transparent;
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
+              linear-gradient(90deg, #3E74FE 0%, #2AD3AB 100%) border-box;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   width: 100%;
+`;
+
+const WebsiteDropdown = styled.div`
+  position: relative;
+  min-width: 150px;
+`;
+
+const WebsiteDropdownButton = styled.button`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  text-align: left;
+
+  &:focus {
+    outline: none;
+    border-color: #3E74FE;
+    box-shadow: 0 0 0 2px rgba(62, 116, 254, 0.1);
+  }
+`;
+
+const WebsiteDropdownList = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 2px;
+`;
+
+const WebsiteDropdownItem = styled.div`
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+
+  &:first-child {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+`;
+
+const DropdownFavicon = styled.img`
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  object-fit: contain;
 `;
 
 const SegmentHeader = styled.div`
@@ -322,6 +397,13 @@ const GenerateButton = styled.button`
 const WebsiteAnalysis = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('business-lines');
   const [viewMode, setViewMode] = useState('percentage'); // 'percentage' or 'numbers'
+  const [selectedWebsite, setSelectedWebsite] = useState(0); // Index of selected website
+  const [isWebsiteDropdownOpen, setIsWebsiteDropdownOpen] = useState(false);
+
+  const handleWebsiteSelect = (index) => {
+    setSelectedWebsite(index);
+    setIsWebsiteDropdownOpen(false);
+  };
 
   const websites = [
     { url: 'apple.com', color: '#40C4FF', favicon: 'https://www.google.com/s2/favicons?domain=apple.com&sz=16' },
@@ -668,9 +750,43 @@ const WebsiteAnalysis = ({ onBack }) => {
               
               <SegmentForm>
                 <FormGroup>
-                  <Select>
-                    <option>macys.com</option>
-                  </Select>
+                  <WebsiteDropdown>
+                    <WebsiteDropdownButton 
+                      onClick={() => setIsWebsiteDropdownOpen(!isWebsiteDropdownOpen)}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <DropdownFavicon 
+                          src={websites[selectedWebsite].favicon} 
+                          alt={`${websites[selectedWebsite].url} favicon`}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                        <span>{websites[selectedWebsite].url}</span>
+                      </div>
+                      <ChevronDown size={16} />
+                    </WebsiteDropdownButton>
+                    
+                    {isWebsiteDropdownOpen && (
+                      <WebsiteDropdownList>
+                        {websites.map((website, index) => (
+                          <WebsiteDropdownItem 
+                            key={index}
+                            onClick={() => handleWebsiteSelect(index)}
+                          >
+                            <DropdownFavicon 
+                              src={website.favicon} 
+                              alt={`${website.url} favicon`}
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                              }}
+                            />
+                            <span>{website.url}</span>
+                          </WebsiteDropdownItem>
+                        ))}
+                      </WebsiteDropdownList>
+                    )}
+                  </WebsiteDropdown>
                 </FormGroup>
                 <FormGroup>
                   <Select>
