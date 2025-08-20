@@ -1075,7 +1075,7 @@ const SecondaryButton = styled(ModalButton)`
   }
 `;
 
-const AISegmentBuilder = ({ onBack }) => {
+const AISegmentBuilder = ({ onBack, initialData }) => {
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [websiteInput, setWebsiteInput] = useState('');
@@ -1117,6 +1117,30 @@ const AISegmentBuilder = ({ onBack }) => {
       setRecentSearches(JSON.parse(savedRecentSearches));
     }
   }, []);
+
+  // Populate form with initial data from Website Analysis banner
+  useEffect(() => {
+    if (initialData) {
+      // Set website input (with www. prefix for AI Builder)
+      if (initialData.websiteWithProtocol) {
+        setWebsiteInput(initialData.websiteWithProtocol);
+        // Generate favicon URL using Google's service
+        const cleanUrl = initialData.websiteWithProtocol.replace(/^www\./, '');
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${cleanUrl}&sz=16`;
+        setSelectedWebsiteFavicon(faviconUrl);
+      }
+      
+      // Set selected business lines
+      if (initialData.selectedBusinessLines && initialData.selectedBusinessLines.length > 0) {
+        setSelectedBusinessLines(initialData.selectedBusinessLines);
+      }
+      
+      // Set granular business lines
+      if (initialData.granularBusinessLines) {
+        setGranularBusinessLines(initialData.granularBusinessLines);
+      }
+    }
+  }, [initialData]);
 
   // CSV Data Mapping - Parent Business Lines from BLS column
   const businessLinesData = [

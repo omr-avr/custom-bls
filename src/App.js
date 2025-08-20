@@ -13,8 +13,10 @@ const AppContainer = styled.div`
 
 function App() {
   const [currentPage, setCurrentPage] = useState('website-segments');
+  const [aiBuilderInitialData, setAiBuilderInitialData] = useState(null);
 
-  const handleAISegmentBuilderClick = () => {
+  const handleAISegmentBuilderClick = (initialData = null) => {
+    setAiBuilderInitialData(initialData);
     setCurrentPage('ai-segment-builder');
   };
 
@@ -33,9 +35,9 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'ai-segment-builder':
-        return <AISegmentBuilder onBack={handleBackToMain} />;
+        return <AISegmentBuilder onBack={handleBackToMain} initialData={aiBuilderInitialData} />;
       case 'website-analysis':
-        return <WebsiteAnalysis onBack={handleBackToMain} />;
+        return <WebsiteAnalysis onBack={handleBackToMain} onNavigateToAIBuilder={handleAISegmentBuilderClick} />;
       case 'website-segments':
         return <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />;
       default:

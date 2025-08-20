@@ -521,13 +521,14 @@ const GenerateButton = styled.button`
   }
 `;
 
-const WebsiteAnalysis = ({ onBack }) => {
+const WebsiteAnalysis = ({ onBack, onNavigateToAIBuilder }) => {
   const [activeTab, setActiveTab] = useState('business-lines');
   const [viewMode, setViewMode] = useState('percentage'); // 'percentage' or 'numbers'
   const [selectedWebsite, setSelectedWebsite] = useState(0); // Index of selected website
   const [isWebsiteDropdownOpen, setIsWebsiteDropdownOpen] = useState(false);
   const [selectedBusinessLines, setSelectedBusinessLines] = useState(['Mobile Phones']); // Start with top business line
   const [isBusinessLinesDropdownOpen, setIsBusinessLinesDropdownOpen] = useState(false);
+  const [granularBusinessLines, setGranularBusinessLines] = useState('');
   
   // Refs for dropdown click outside handling
   const websiteDropdownRef = useRef(null);
@@ -578,6 +579,21 @@ const WebsiteAnalysis = ({ onBack }) => {
   const handleBusinessLineToggle = (businessLine) => {
     setSelectedBusinessLines([businessLine]); // Single select
     setIsBusinessLinesDropdownOpen(false); // Close dropdown after selection
+  };
+
+  const handleGenerateSegment = () => {
+    // Collect all form data
+    const formData = {
+      website: websites[selectedWebsite].url,
+      websiteWithProtocol: `www.${websites[selectedWebsite].url}`, // AI Builder expects www. prefix
+      selectedBusinessLines: selectedBusinessLines,
+      granularBusinessLines: granularBusinessLines
+    };
+
+    // Navigate to AI Segment Builder with form data
+    if (onNavigateToAIBuilder) {
+      onNavigateToAIBuilder(formData);
+    }
   };
 
   const websites = useMemo(() => [
@@ -1048,11 +1064,15 @@ const WebsiteAnalysis = ({ onBack }) => {
                 <FieldContainer>
                   <SearchContainer>
                     <SearchLabel>Granular Business Lines</SearchLabel>
-                    <Input placeholder="Enter granular business lines" />
+                    <Input 
+                      placeholder="Enter granular business lines" 
+                      value={granularBusinessLines}
+                      onChange={(e) => setGranularBusinessLines(e.target.value)}
+                    />
                   </SearchContainer>
                 </FieldContainer>
                 
-                <GenerateButton>
+                <GenerateButton onClick={handleGenerateSegment}>
                   <Sparkles size={14} />
                   Generate Segment
                 </GenerateButton>
