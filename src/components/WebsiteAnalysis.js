@@ -532,6 +532,7 @@ const WebsiteAnalysis = ({ onBack }) => {
   // Refs for dropdown click outside handling
   const websiteDropdownRef = useRef(null);
   const businessLinesDropdownRef = useRef(null);
+  const isInitialLoad = useRef(true);
   
   // Initialize with Apple business lines as fallback - using stable values
   const [dynamicBusinessLines, setDynamicBusinessLines] = useState([
@@ -567,9 +568,12 @@ const WebsiteAnalysis = ({ onBack }) => {
   }, []);
 
   const handleWebsiteSelect = (index) => {
+    console.log('Website changed to:', index);
     setSelectedWebsite(index);
     setIsWebsiteDropdownOpen(false);
     setIsBusinessLinesDropdownOpen(false);
+    // Reset the flag so business lines auto-select when website changes
+    isInitialLoad.current = true;
   };
 
   const handleBusinessLineToggle = (businessLine) => {
@@ -580,13 +584,13 @@ const WebsiteAnalysis = ({ onBack }) => {
     console.log('New selected should be:', [businessLine]);
   };
 
-  const websites = [
+  const websites = useMemo(() => [
     { url: 'apple.com', color: '#40C4FF', favicon: 'https://www.google.com/s2/favicons?domain=apple.com&sz=16' },
     { url: 'hp.com', color: '#FFD700', favicon: 'https://www.google.com/s2/favicons?domain=hp.com&sz=16' },
     { url: 'samsung.com', color: '#20B2AA', favicon: 'https://www.google.com/s2/favicons?domain=samsung.com&sz=16' },
     { url: 'dell.com', color: '#4C6EF5', favicon: 'https://www.google.com/s2/favicons?domain=dell.com&sz=16' },
     { url: 'lenovo.com', color: '#FF8A33', favicon: 'https://www.google.com/s2/favicons?domain=lenovo.com&sz=16' }
-  ];
+  ], []);
 
   // Update business lines when selected website changes or on mount
   useEffect(() => {
@@ -616,12 +620,11 @@ const WebsiteAnalysis = ({ onBack }) => {
     setDynamicBusinessLines(businessLinesWithShares);
     console.log('businessLinesWithShares:', businessLinesWithShares);
     
-    // Auto-select the top business line (highest visits share)
-    if (businessLinesWithShares.length > 0) {
-      console.log('Auto-selecting:', businessLinesWithShares[0].name);
+    // Auto-select the top business line only on initial load or when website changes
+    if (isInitialLoad.current && businessLinesWithShares.length > 0) {
+      console.log('Auto-selecting on initial load:', businessLinesWithShares[0].name);
       setSelectedBusinessLines([businessLinesWithShares[0].name]);
-    } else {
-      setSelectedBusinessLines([]);
+      isInitialLoad.current = false;
     }
   }, [selectedWebsite, businessLinesMap, websites]);
 
