@@ -375,7 +375,7 @@ const BusinessLinesDropdownItem = styled.div`
   }
 `;
 
-const BusinessLineInfo = styled.div`
+const DropdownBusinessLineInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -952,14 +952,14 @@ const WebsiteAnalysis = ({ onBack }) => {
                             key={index}
                             onClick={() => handleBusinessLineToggle(businessLine.name)}
                           >
-                            <BusinessLineInfo>
+                            <DropdownBusinessLineInfo>
                               <BusinessLineCheckbox 
                                 type="checkbox"
                                 checked={selectedBusinessLines.includes(businessLine.name)}
                                 onChange={() => {}} // Controlled by parent onClick
                               />
                               <span>{businessLine.name}</span>
-                            </BusinessLineInfo>
+                            </DropdownBusinessLineInfo>
                             <VisitsShare>{businessLine.visitsShare}%</VisitsShare>
                           </BusinessLinesDropdownItem>
                         ))}
