@@ -1207,28 +1207,35 @@ const AISegmentBuilder = ({ onBack }) => {
     'www.staples.com': ['Office & School supplies', 'Computer Electronics', 'Laptop Computers']
   };
 
-  const getBusinessLinesForWebsite = (website) => {
-    const businessLineNames = businessLinesMap[website] || [
-      'General Clothing',
-      'Computer Electronics',
-      'Home Appliances',
-      'Food',
-      'Personal care',
-      'Office & School supplies',
-      'Household Supplies',
-      'Toys & Games',
-      'Home Furniture',
-      'Beverages'
-    ];
-    
-    // Generate realistic visits share data for each business line
-    return businessLineNames.map(name => ({
-      name,
-      visitsShare: Math.floor(Math.random() * 40) + 5 // Random between 5-44%
-    })).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
-  };
+  const [businessLines, setBusinessLines] = useState([]);
 
-  const businessLines = getBusinessLinesForWebsite(websiteInput);
+  // Generate business lines with stable visits share data when website changes
+  useEffect(() => {
+    if (websiteInput) {
+      const businessLineNames = businessLinesMap[websiteInput] || [
+        'General Clothing',
+        'Computer Electronics',
+        'Home Appliances',
+        'Food',
+        'Personal care',
+        'Office & School supplies',
+        'Household Supplies',
+        'Toys & Games',
+        'Home Furniture',
+        'Beverages'
+      ];
+      
+      // Generate realistic visits share data for each business line with stable values
+      const businessLinesWithShares = businessLineNames.map((name, index) => ({
+        name,
+        visitsShare: Math.floor(Math.random() * 40) + 5 // Random between 5-44%
+      })).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
+      
+      setBusinessLines(businessLinesWithShares);
+    } else {
+      setBusinessLines([]);
+    }
+  }, [websiteInput]); // Only regenerate when website changes
 
   // Get favicon URL for any website
   const getFaviconUrl = (url) => {
@@ -2128,7 +2135,7 @@ const AISegmentBuilder = ({ onBack }) => {
                                               <LoaderContent>
                           <AIIcon>
                             <img 
-                              src="/ai-loader.gif" 
+                              src="/Images/ai-loader.gif" 
                               alt="AI Loading" 
                               style={{ width: '160px', height: '160px' }}
                             />
