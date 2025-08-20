@@ -483,15 +483,15 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [viewMode, setViewMode] = useState('percentage'); // 'percentage' or 'numbers'
   const [selectedWebsite, setSelectedWebsite] = useState(0); // Index of selected website
   const [isWebsiteDropdownOpen, setIsWebsiteDropdownOpen] = useState(false);
-  const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
+  const [selectedBusinessLines, setSelectedBusinessLines] = useState(['Mobile Phones']); // Start with top business line
   const [isBusinessLinesDropdownOpen, setIsBusinessLinesDropdownOpen] = useState(false);
-  // Initialize with Apple business lines as fallback - using new variable name to avoid conflicts
+  // Initialize with Apple business lines as fallback - using stable values
   const [dynamicBusinessLines, setDynamicBusinessLines] = useState([
-    { name: 'Mobile Phones', visitsShare: 35 },
-    { name: 'Laptop Computers', visitsShare: 28 },
-    { name: 'Tablet PCs', visitsShare: 20 },
-    { name: 'Headphones', visitsShare: 12 },
-    { name: 'Watches & Watch Accessories', visitsShare: 5 }
+    { name: 'Mobile Phones', visitsShare: 39 },
+    { name: 'Laptop Computers', visitsShare: 31 },
+    { name: 'Tablet PCs', visitsShare: 28 },
+    { name: 'Headphones', visitsShare: 22 },
+    { name: 'Watches & Watch Accessories', visitsShare: 15 }
   ]);
 
   // Business lines mapping for each website - memoized to prevent recreations
@@ -534,23 +534,29 @@ const WebsiteAnalysis = ({ onBack }) => {
     
     const businessLineNames = businessLinesMap[selectedWebsiteUrl] || [];
     
-    console.log('🔍 Debug Info:');
-    console.log('Selected website index:', selectedWebsite);
-    console.log('Selected website URL:', selectedWebsiteUrl);
-    console.log('Business line names from map:', businessLineNames);
-    console.log('Full businessLinesMap:', businessLinesMap);
+    // Generate STABLE visits share data for each business line using seeded random
+    const businessLinesWithShares = businessLineNames.map((name, index) => {
+      // Create a simple hash from name to get consistent random values
+      const hash = name.split('').reduce((a, b) => {
+        a = ((a << 5) - a) + b.charCodeAt(0);
+        return a & a;
+      }, 0);
+      const stableRandom = Math.abs(hash) % 40 + 5; // Stable value between 5-44
+      
+      return {
+        name,
+        visitsShare: stableRandom
+      };
+    }).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
     
-    // Generate realistic visits share data for each business line
-    const businessLinesWithShares = businessLineNames.map((name, index) => ({
-      name,
-      visitsShare: Math.floor(Math.random() * 40) + 5 // Random between 5-44%
-    })).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
-    
-    console.log('Final business lines with shares:', businessLinesWithShares);
     setDynamicBusinessLines(businessLinesWithShares);
     
-    // Also reset selected business lines when website changes
-    setSelectedBusinessLines([]);
+    // Auto-select the top business line (highest visits share)
+    if (businessLinesWithShares.length > 0) {
+      setSelectedBusinessLines([businessLinesWithShares[0].name]);
+    } else {
+      setSelectedBusinessLines([]);
+    }
   }, [selectedWebsite, businessLinesMap, websites]);
 
   const businessLinesData = [
@@ -946,7 +952,6 @@ const WebsiteAnalysis = ({ onBack }) => {
                     
                     {isBusinessLinesDropdownOpen && (
                       <BusinessLinesDropdownList>
-                        {console.log('🔍 Rendering business lines dropdown with:', dynamicBusinessLines)}
                         {dynamicBusinessLines.map((businessLine, index) => (
                           <BusinessLinesDropdownItem 
                             key={index}
