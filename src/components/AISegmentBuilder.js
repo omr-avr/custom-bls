@@ -1083,6 +1083,7 @@ const AISegmentBuilder = ({ onBack, initialData }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const dropdownRef = useRef(null);
   const websiteRef = useRef(null);
+  const shouldAutoGenerate = useRef(false);
   const [focusedSuggestionIndex, setFocusedSuggestionIndex] = useState(-1);
   const [focusedBusinessLineIndex, setFocusedBusinessLineIndex] = useState(-1);
   const [granularBusinessLines, setGranularBusinessLines] = useState('');
@@ -1139,6 +1140,9 @@ const AISegmentBuilder = ({ onBack, initialData }) => {
       if (initialData.granularBusinessLines) {
         setGranularBusinessLines(initialData.granularBusinessLines);
       }
+      
+      // Set flag to auto-trigger generate after all state updates
+      shouldAutoGenerate.current = true;
     }
   }, [initialData]);
 
@@ -1748,6 +1752,21 @@ const AISegmentBuilder = ({ onBack, initialData }) => {
       clearInterval(progressTimer);
     }, loadingTime);
   };
+
+  // Auto-trigger generation when coming from Website Analysis banner
+  useEffect(() => {
+    if (shouldAutoGenerate.current && 
+        websiteInput && 
+        selectedBusinessLines.length > 0 && 
+        granularBusinessLines) {
+      // Reset the flag
+      shouldAutoGenerate.current = false;
+      // Trigger generation with a small delay to ensure all state is updated
+      setTimeout(() => {
+        generateMetrics();
+      }, 300);
+    }
+  }, [websiteInput, selectedBusinessLines, granularBusinessLines]);
 
   const removeBusinessLine = (line) => {
     setSelectedBusinessLines(selectedBusinessLines.filter(item => item !== line));
