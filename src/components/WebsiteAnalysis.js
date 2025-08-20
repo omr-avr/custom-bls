@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import { Info, BarChart3, FolderOpen, Eye, Globe, Sparkles, ChevronDown } from 'lucide-react';
 
@@ -400,7 +400,14 @@ const SegmentHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 16px 0;
 `;
 
 const SegmentForm = styled.div`
@@ -506,6 +513,8 @@ const GenerateButton = styled.button`
   gap: 6px;
   flex-shrink: 0;
   white-space: nowrap;
+  height: 44px;
+  box-sizing: border-box;
 
   &:hover {
     opacity: 0.9;
@@ -519,6 +528,11 @@ const WebsiteAnalysis = ({ onBack }) => {
   const [isWebsiteDropdownOpen, setIsWebsiteDropdownOpen] = useState(false);
   const [selectedBusinessLines, setSelectedBusinessLines] = useState(['Mobile Phones']); // Start with top business line
   const [isBusinessLinesDropdownOpen, setIsBusinessLinesDropdownOpen] = useState(false);
+  
+  // Refs for dropdown click outside handling
+  const websiteDropdownRef = useRef(null);
+  const businessLinesDropdownRef = useRef(null);
+  
   // Initialize with Apple business lines as fallback - using stable values
   const [dynamicBusinessLines, setDynamicBusinessLines] = useState([
     { name: 'Mobile Phones', visitsShare: 39 },
@@ -536,6 +550,21 @@ const WebsiteAnalysis = ({ onBack }) => {
     'dell.com': ['Laptop Computers', 'Desktop Computers', 'Computer Electronics', 'Monitors', 'Office & School supplies'],
     'lenovo.com': ['Laptop Computers', 'Desktop Computers', 'Tablet PCs', 'Computer Electronics', 'Mobile Phones']
   }), []);
+
+  // Click outside handling for dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (websiteDropdownRef.current && !websiteDropdownRef.current.contains(event.target)) {
+        setIsWebsiteDropdownOpen(false);
+      }
+      if (businessLinesDropdownRef.current && !businessLinesDropdownRef.current.contains(event.target)) {
+        setIsBusinessLinesDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleWebsiteSelect = (index) => {
     setSelectedWebsite(index);
@@ -923,11 +952,13 @@ const WebsiteAnalysis = ({ onBack }) => {
                 Simply describe what you're looking for and let AI build your segment automatically
               </p>
               
+              <Divider />
+              
               <SegmentForm>
                 <FieldContainer>
                   <SearchContainer>
                     <SearchLabel>Website</SearchLabel>
-                    <WebsiteDropdown>
+                    <WebsiteDropdown ref={websiteDropdownRef}>
                       <WebsiteDropdownButton 
                         onClick={() => setIsWebsiteDropdownOpen(!isWebsiteDropdownOpen)}
                       >
@@ -970,7 +1001,7 @@ const WebsiteAnalysis = ({ onBack }) => {
                 <FieldContainer>
                   <DropdownContainer>
                     <DropdownLabel>Parent Business Lines</DropdownLabel>
-                    <BusinessLinesDropdown>
+                    <BusinessLinesDropdown ref={businessLinesDropdownRef}>
                       <BusinessLinesDropdownButton 
                         onClick={() => setIsBusinessLinesDropdownOpen(!isBusinessLinesDropdownOpen)}
                       >
