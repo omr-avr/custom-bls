@@ -573,8 +573,11 @@ const WebsiteAnalysis = ({ onBack }) => {
   };
 
   const handleBusinessLineToggle = (businessLine) => {
+    console.log('Clicked business line:', businessLine);
+    console.log('Current selected:', selectedBusinessLines);
     setSelectedBusinessLines([businessLine]); // Single select
     setIsBusinessLinesDropdownOpen(false); // Close dropdown after selection
+    console.log('New selected should be:', [businessLine]);
   };
 
   const websites = [
@@ -587,10 +590,13 @@ const WebsiteAnalysis = ({ onBack }) => {
 
   // Update business lines when selected website changes or on mount
   useEffect(() => {
+    console.log('useEffect triggered, selectedWebsite:', selectedWebsite);
     const selectedWebsiteUrl = websites[selectedWebsite]?.url;
+    console.log('selectedWebsiteUrl:', selectedWebsiteUrl);
     if (!selectedWebsiteUrl) return;
     
     const businessLineNames = businessLinesMap[selectedWebsiteUrl] || [];
+    console.log('businessLineNames:', businessLineNames);
     
     // Generate STABLE visits share data for each business line using seeded random
     const businessLinesWithShares = businessLineNames.map((name, index) => {
@@ -608,9 +614,11 @@ const WebsiteAnalysis = ({ onBack }) => {
     }).sort((a, b) => b.visitsShare - a.visitsShare); // Sort by visits share descending
     
     setDynamicBusinessLines(businessLinesWithShares);
+    console.log('businessLinesWithShares:', businessLinesWithShares);
     
     // Auto-select the top business line (highest visits share)
     if (businessLinesWithShares.length > 0) {
+      console.log('Auto-selecting:', businessLinesWithShares[0].name);
       setSelectedBusinessLines([businessLinesWithShares[0].name]);
     } else {
       setSelectedBusinessLines([]);
