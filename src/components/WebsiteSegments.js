@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Search, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Sparkles, Globe } from 'lucide-react';
 
 const MainContainer = styled.div`
   flex: 1;
   background-color: #F5F9FD;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px;
 `;
 
 const Header = styled.div`
@@ -21,11 +21,10 @@ const Title = styled.h1`
 `;
 
 const Card = styled.div`
-  background: #ffffff;
+  background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
   margin-bottom: 24px;
-  overflow: hidden;
 `;
 
 const CardHeader = styled.div`
@@ -47,7 +46,6 @@ const CardTitle = styled.h2`
 const ButtonGroup = styled.div`
   display: flex;
   gap: 12px;
-  align-items: center;
 `;
 
 const Button = styled.button`
@@ -60,11 +58,11 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   gap: 6px;
-  border: none;
-
+  
   ${props => props.primary ? `
     background: linear-gradient(90deg, #3E74FE 0%, #2AD3AB 100%);
     color: #ffffff;
+    border: none;
     
     &:hover {
       opacity: 0.9;
@@ -80,9 +78,32 @@ const Button = styled.button`
   `}
 `;
 
+const TabsContainer = styled.div`
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+`;
+
+const Tab = styled.button`
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  color: ${props => props.active ? '#3B82F6' : '#6B7280'};
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid ${props => props.active ? '#3B82F6' : 'transparent'};
+  transition: all 0.2s;
+  
+  &:hover {
+    color: #3B82F6;
+  }
+`;
+
 const SearchContainer = styled.div`
+  padding: 0 24px 20px 24px;
   position: relative;
-  width: 300px;
 `;
 
 const SearchInput = styled.input`
@@ -91,112 +112,97 @@ const SearchInput = styled.input`
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
-  background-color: #ffffff;
   
   &:focus {
     outline: none;
-    border-color: #3E74FE;
-    box-shadow: 0 0 0 2px rgba(62, 116, 254, 0.1);
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
   
   &::placeholder {
-    color: #9ca3af;
+    color: #9CA3AF;
   }
 `;
 
-const SearchIcon = styled.div`
+const SearchIcon = styled(Search)`
   position: absolute;
-  left: 12px;
+  left: 36px;
   top: 50%;
   transform: translateY(-50%);
-  color: #9ca3af;
+  color: #9CA3AF;
+  width: 16px;
+  height: 16px;
 `;
 
-const TabsContainer = styled.div`
-  display: flex;
-  border-bottom: 1px solid #f3f4f6;
-  padding: 0 24px;
-`;
-
-const Tab = styled.button`
-  padding: 12px 0;
-  margin-right: 32px;
-  border: none;
-  background: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: ${props => props.active ? '#3E74FE' : '#6b7280'};
-  border-bottom: 2px solid ${props => props.active ? '#3E74FE' : 'transparent'};
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    color: #3E74FE;
-  }
-`;
-
-const TableContainer = styled.div`
+const Table = styled.div`
   overflow-x: auto;
 `;
 
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-`;
-
-const TableHeader = styled.th`
+const TableHeader = styled.div`
+  display: grid;
+  grid-template-columns: 40px 40px 1fr auto;
   padding: 12px 24px;
-  text-align: left;
+  background-color: #f9fafb;
   font-size: 12px;
   font-weight: 600;
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 1px solid #f3f4f6;
-  background-color: #f9fafb;
 `;
 
-const TableRow = styled.tr`
+const TableRow = styled.div`
+  display: grid;
+  grid-template-columns: 40px 40px 1fr auto;
+  padding: 16px 24px;
   border-bottom: 1px solid #f3f4f6;
+  align-items: center;
   
   &:hover {
     background-color: #f9fafb;
   }
-`;
-
-const TableCell = styled.td`
-  padding: 16px 24px;
-  font-size: 14px;
-  color: #374151;
+  
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const Checkbox = styled.input`
   width: 16px;
   height: 16px;
-  accent-color: #3E74FE;
 `;
 
 const DomainIcon = styled.div`
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
   background-color: #e5e7eb;
-  display: inline-block;
-  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DomainInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 `;
 
 const DomainName = styled.div`
+  font-size: 14px;
   font-weight: 500;
   color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 `;
 
 const SegmentName = styled.div`
   font-size: 12px;
   color: #6b7280;
-  margin-top: 2px;
 `;
 
-const DateText = styled.div`
+const DateModified = styled.div`
+  font-size: 12px;
   color: #6b7280;
 `;
 
@@ -205,27 +211,26 @@ const Pagination = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #f3f4f6;
-`;
-
-const PaginationInfo = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   color: #6b7280;
 `;
 
-const PaginationControls = styled.div`
+const PaginationButtons = styled.div`
   display: flex;
   gap: 8px;
 `;
 
 const PaginationButton = styled.button`
-  padding: 6px 8px;
+  width: 32px;
+  height: 32px;
   border: 1px solid #d1d5db;
   background: #ffffff;
+  color: #6b7280;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
-  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   &:hover {
     background-color: #f9fafb;
@@ -237,42 +242,61 @@ const PaginationButton = styled.button`
   }
 `;
 
-const ComparisonRow = styled.div`
-  padding: 16px 24px;
-  border-bottom: 1px solid #f3f4f6;
+const ComparisonHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 16px;
 `;
 
-const ComparisonName = styled.div`
+const ComparisonRow = styled.div`
+  padding: 16px 24px;
+  border-bottom: 1px solid #f3f4f6;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const ComparisonTitle = styled.div`
   font-size: 14px;
   font-weight: 500;
   color: #1f2937;
+  margin-bottom: 8px;
 `;
 
-const ComparisonSites = styled.div`
+const ComparisonDetails = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 12px;
+  font-size: 12px;
   color: #6b7280;
 `;
 
-const SiteTag = styled.span`
+const ComparisonBadge = styled.span`
   background-color: #f3f4f6;
+  color: #374151;
   padding: 2px 6px;
   border-radius: 4px;
-  font-size: 12px;
   font-weight: 500;
 `;
 
 const WebsiteSegments = ({ onBack }) => {
   const [activeTab, setActiveTab] = useState('my-segments');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [comparisonSearch, setComparisonSearch] = useState('');
+  const [comparisonTab, setComparisonTab] = useState('my-comparisons');
 
-  const segmentsData = [
+  const segmentTabs = [
+    { id: 'my-segments', label: 'My Segments (2)' },
+    { id: 'shared-segments', label: 'Shared Segments (26460)' },
+    { id: 'predefined-segments', label: 'Predefined Segments (623)' }
+  ];
+
+  const comparisonTabs = [
+    { id: 'my-comparisons', label: 'My Comparisons' },
+    { id: 'accessible-comparisons', label: 'Accessible In Market Analysis' }
+  ];
+
+  const segments = [
     {
       id: 1,
       domain: 'terminalx.com',
@@ -287,34 +311,17 @@ const WebsiteSegments = ({ onBack }) => {
     }
   ];
 
-  const comparisonsData = [
+  const comparisons = [
     {
       id: 1,
-      name: 'appl',
-      sites: [
-        { name: 'apple.com', tag: 'A' },
-        { name: 'Apple TV', tag: 'N' }
-      ]
+      title: 'appl',
+      details: 'apple.com vs Apple TV'
     },
     {
       id: 2,
-      name: 'Omer Test',
-      sites: [
-        { name: 'idp.wework...', tag: 'W' },
-        { name: 'WeWork M...', tag: '1' }
-      ]
+      title: 'Omer Test',
+      details: 'idp.wework... vs WeWork M...'
     }
-  ];
-
-  const tabs = [
-    { id: 'my-segments', label: 'My Segments (2)' },
-    { id: 'shared-segments', label: 'Shared Segments (26460)' },
-    { id: 'predefined-segments', label: 'Predefined Segments (623)' }
-  ];
-
-  const comparisonTabs = [
-    { id: 'my-comparisons', label: 'My Comparisons' },
-    { id: 'accessible-comparisons', label: 'Accessible In Market Analysis' }
   ];
 
   return (
@@ -323,7 +330,7 @@ const WebsiteSegments = ({ onBack }) => {
         <Title>Website Segments</Title>
       </Header>
 
-      {/* Website Segments Section */}
+      {/* Website Segments Card */}
       <Card>
         <CardHeader>
           <CardTitle>Website Segments</CardTitle>
@@ -337,7 +344,7 @@ const WebsiteSegments = ({ onBack }) => {
         </CardHeader>
 
         <TabsContainer>
-          {tabs.map(tab => (
+          {segmentTabs.map(tab => (
             <Tab 
               key={tab.id}
               active={activeTab === tab.id}
@@ -346,128 +353,92 @@ const WebsiteSegments = ({ onBack }) => {
               {tab.label}
             </Tab>
           ))}
-          <div style={{ marginLeft: 'auto', padding: '8px 0' }}>
-            <SearchContainer>
-              <SearchIcon>
-                <Search size={16} />
-              </SearchIcon>
-              <SearchInput 
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </SearchContainer>
-          </div>
         </TabsContainer>
 
-        <TableContainer>
-          <Table>
-            <thead>
-              <tr>
-                <TableHeader style={{ width: '40px' }}></TableHeader>
-                <TableHeader>#</TableHeader>
-                <TableHeader>DOMAIN & SEGMENT NAME</TableHeader>
-                <TableHeader style={{ textAlign: 'right' }}>DATE MODIFIED</TableHeader>
-              </tr>
-            </thead>
-            <tbody>
-              {segmentsData.map((segment, index) => (
-                <TableRow key={segment.id}>
-                  <TableCell>
-                    <Checkbox type="checkbox" />
-                  </TableCell>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <DomainIcon />
-                      <div>
-                        <DomainName>{segment.domain}</DomainName>
-                        <SegmentName>{segment.segment}</SegmentName>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'right' }}>
-                    <DateText>{segment.dateModified}</DateText>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </TableContainer>
+        <SearchContainer>
+          <SearchIcon />
+          <SearchInput placeholder="Search..." />
+        </SearchContainer>
+
+        <Table>
+          <TableHeader>
+            <span></span>
+            <span>#</span>
+            <span>Domain & Segment Name</span>
+            <span>Date Modified</span>
+          </TableHeader>
+          
+          {segments.map((segment) => (
+            <TableRow key={segment.id}>
+              <Checkbox type="checkbox" />
+              <span>{segment.id}</span>
+              <DomainInfo>
+                <DomainName>
+                  <Globe size={16} />
+                  {segment.domain}
+                </DomainName>
+                <SegmentName>{segment.segment}</SegmentName>
+              </DomainInfo>
+              <DateModified>{segment.dateModified}</DateModified>
+            </TableRow>
+          ))}
+        </Table>
 
         <Pagination>
-          <PaginationInfo>1 out of 1</PaginationInfo>
-          <PaginationControls>
-            <PaginationButton disabled>
-              <ChevronLeft size={14} />
-            </PaginationButton>
-            <PaginationButton disabled>
-              <ChevronRight size={14} />
-            </PaginationButton>
-          </PaginationControls>
+          <span>1 out of 1</span>
+          <PaginationButtons>
+            <PaginationButton disabled>‹</PaginationButton>
+            <PaginationButton disabled>›</PaginationButton>
+          </PaginationButtons>
         </Pagination>
       </Card>
 
-      {/* Segments Comparisons Section */}
+      {/* Segments Comparisons Card */}
       <Card>
         <CardHeader>
           <CardTitle>Segments Comparisons</CardTitle>
-          <Button>New comparison</Button>
+          <Button primary>New comparison</Button>
         </CardHeader>
 
         <TabsContainer>
           {comparisonTabs.map(tab => (
             <Tab 
               key={tab.id}
-              active={tab.id === 'my-comparisons'}
-              onClick={() => {}}
+              active={comparisonTab === tab.id}
+              onClick={() => setComparisonTab(tab.id)}
             >
               {tab.label}
             </Tab>
           ))}
-          <div style={{ marginLeft: 'auto', padding: '8px 0' }}>
-            <SearchContainer>
-              <SearchIcon>
-                <Search size={16} />
-              </SearchIcon>
-              <SearchInput 
-                placeholder="Search..."
-                value={comparisonSearch}
-                onChange={(e) => setComparisonSearch(e.target.value)}
-              />
-            </SearchContainer>
-          </div>
         </TabsContainer>
 
-        <div>
-          {comparisonsData.map((comparison) => (
-            <ComparisonRow key={comparison.id}>
-              <ComparisonName>{comparison.name}</ComparisonName>
-              <ComparisonSites>
-                {comparison.sites.map((site, index) => (
-                  <React.Fragment key={index}>
-                    <SiteTag>{site.tag}</SiteTag>
-                    <span>{site.name}</span>
-                    {index < comparison.sites.length - 1 && (
-                      <span style={{ margin: '0 8px', color: '#d1d5db' }}>vs</span>
-                    )}
-                  </React.Fragment>
-                ))}
-              </ComparisonSites>
-            </ComparisonRow>
-          ))}
-        </div>
+        <SearchContainer>
+          <SearchIcon />
+          <SearchInput placeholder="Search..." />
+        </SearchContainer>
+
+        {comparisons.map((comparison) => (
+          <ComparisonRow key={comparison.id}>
+            <ComparisonTitle>{comparison.title}</ComparisonTitle>
+            <ComparisonDetails>
+              <ComparisonBadge>W</ComparisonBadge>
+              {comparison.details}
+              <ComparisonBadge>VS</ComparisonBadge>
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+              <span>+5</span>
+            </ComparisonDetails>
+          </ComparisonRow>
+        ))}
 
         <Pagination>
-          <PaginationInfo>1 out of 1</PaginationInfo>
-          <PaginationControls>
-            <PaginationButton disabled>
-              <ChevronLeft size={14} />
-            </PaginationButton>
-            <PaginationButton disabled>
-              <ChevronRight size={14} />
-            </PaginationButton>
-          </PaginationControls>
+          <span>1 out of 1</span>
+          <PaginationButtons>
+            <PaginationButton disabled>‹</PaginationButton>
+            <PaginationButton disabled>›</PaginationButton>
+          </PaginationButtons>
         </Pagination>
       </Card>
     </MainContainer>
