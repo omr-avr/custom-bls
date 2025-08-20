@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { ArrowLeft, Info, BarChart3, FolderOpen, Eye, Globe } from 'lucide-react';
+import { Info, BarChart3, FolderOpen, Eye, Globe } from 'lucide-react';
 
 const MainContainer = styled.div`
   flex: 1;
@@ -14,27 +14,6 @@ const Header = styled.div`
   padding: 28px 32px 20px 32px;
   max-width: 1360px;
   margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-const BackButton = styled.button`
-  background-color: transparent;
-  color: #6b7280;
-  border: none;
-  padding: 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background-color: #f3f4f6;
-    color: #374151;
-  }
 `;
 
 const Title = styled.h1`
@@ -50,28 +29,15 @@ const Content = styled.div`
   margin: 0 auto;
 `;
 
-const Card = styled.div`
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 0;
-  margin-bottom: 20px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-`;
 
-const CardHeader = styled.div`
-  padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
-`;
-
-const CardContent = styled.div`
-  padding: 20px;
-`;
 
 const TabsContainer = styled.div`
   display: flex;
   border-bottom: 1px solid #e5e7eb;
+  padding: 0 32px;
+  max-width: 1360px;
+  margin: 0 auto;
+  background-color: #ffffff;
 `;
 
 const Tab = styled.button`
@@ -90,30 +56,11 @@ const Tab = styled.button`
   }
 `;
 
-const MetadataContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-`;
 
-const MetadataItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #6b7280;
-`;
-
-const MetadataIcon = styled.img`
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
-`;
 
 const WidgetsContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
   margin-top: 20px;
 `;
@@ -124,6 +71,7 @@ const Widget = styled.div`
   padding: 20px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  width: 100%;
 `;
 
 const WidgetHeader = styled.div`
@@ -244,7 +192,7 @@ const SegmentWidget = styled.div`
   padding: 20px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  grid-column: 1 / -1;
+  width: 100%;
 `;
 
 const SegmentHeader = styled.div`
@@ -349,190 +297,168 @@ const WebsiteAnalysis = ({ onBack }) => {
   return (
     <MainContainer>
       <Header>
-        <BackButton onClick={onBack}>
-          <ArrowLeft size={20} />
-        </BackButton>
         <Title>Website Analysis > Website Content</Title>
       </Header>
 
+      <TabsContainer>
+        {tabs.map(tab => {
+          const IconComponent = tab.icon;
+          return (
+            <Tab 
+              key={tab.id}
+              active={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <IconComponent size={16} style={{ marginRight: '8px' }} />
+              {tab.label}
+            </Tab>
+          );
+        })}
+      </TabsContainer>
+
       <Content>
-        <Card>
-          <CardHeader>
-            <MetadataContainer>
-              <MetadataItem>
-                <MetadataIcon src="/Images/Calander.png" alt="Time" />
-                Apr 2024 - Mar 2025
-              </MetadataItem>
-              <MetadataItem>
-                <MetadataIcon src="/Images/Worldwide.png" alt="Country" />
-                Worldwide
-              </MetadataItem>
-              <MetadataItem>
-                <MetadataIcon src="/Images/All Traffic.png" alt="Traffic source" />
-                All traffic
-              </MetadataItem>
-            </MetadataContainer>
-            
-            <TabsContainer>
-              {tabs.map(tab => {
-                const IconComponent = tab.icon;
-                return (
-                  <Tab 
-                    key={tab.id}
-                    active={activeTab === tab.id}
-                    onClick={() => setActiveTab(tab.id)}
+        {activeTab === 'business-lines' && (
+          <WidgetsContainer>
+            {/* Total visits by business line widget */}
+            <Widget>
+              <WidgetHeader>
+                <WidgetTitle>
+                  Total visits by business line
+                  <InfoIcon>
+                    <Info size={14} />
+                  </InfoIcon>
+                </WidgetTitle>
+                <WidgetActions>
+                  <ToggleButton 
+                    active={viewMode === 'percentage'}
+                    onClick={() => setViewMode('percentage')}
                   >
-                    <IconComponent size={16} style={{ marginRight: '8px' }} />
-                    {tab.label}
-                  </Tab>
-                );
-              })}
-            </TabsContainer>
-          </CardHeader>
+                    %
+                  </ToggleButton>
+                  <ToggleButton 
+                    active={viewMode === 'numbers'}
+                    onClick={() => setViewMode('numbers')}
+                  >
+                    #
+                  </ToggleButton>
+                </WidgetActions>
+              </WidgetHeader>
+              
+              {businessLinesData.map((item, index) => (
+                <BusinessLineItem key={index}>
+                  <BusinessLineInfo>
+                    <BusinessLineName>{item.name}</BusinessLineName>
+                    <BusinessLineStats>
+                      <span>{item.visits}</span>
+                      <GrowthIndicator positive={item.isPositive}>
+                        {item.isPositive ? '↑' : '↓'} {Math.abs(item.growth)}% MoM
+                      </GrowthIndicator>
+                    </BusinessLineStats>
+                  </BusinessLineInfo>
+                  <ProgressBar>
+                    <ProgressFill style={{ width: `${item.percentage}%` }} />
+                  </ProgressBar>
+                  <VisitsValue>
+                    {viewMode === 'percentage' ? `${item.percentage}%` : item.visits}
+                  </VisitsValue>
+                </BusinessLineItem>
+              ))}
+            </Widget>
 
-          <CardContent>
-            {activeTab === 'business-lines' && (
-              <>
-                <WidgetsContainer>
-                  {/* Total visits by business line widget */}
-                  <Widget>
-                    <WidgetHeader>
-                      <WidgetTitle>
-                        Total visits by business line
-                        <InfoIcon>
-                          <Info size={14} />
-                        </InfoIcon>
-                      </WidgetTitle>
-                      <WidgetActions>
-                        <ToggleButton 
-                          active={viewMode === 'percentage'}
-                          onClick={() => setViewMode('percentage')}
-                        >
-                          %
-                        </ToggleButton>
-                        <ToggleButton 
-                          active={viewMode === 'numbers'}
-                          onClick={() => setViewMode('numbers')}
-                        >
-                          #
-                        </ToggleButton>
-                      </WidgetActions>
-                    </WidgetHeader>
-                    
-                    {businessLinesData.map((item, index) => (
-                      <BusinessLineItem key={index}>
-                        <BusinessLineInfo>
-                          <BusinessLineName>{item.name}</BusinessLineName>
-                          <BusinessLineStats>
-                            <span>{item.visits}</span>
-                            <GrowthIndicator positive={item.isPositive}>
-                              {item.isPositive ? '↑' : '↓'} {Math.abs(item.growth)}% MoM
-                            </GrowthIndicator>
-                          </BusinessLineStats>
-                        </BusinessLineInfo>
-                        <ProgressBar>
-                          <ProgressFill style={{ width: `${item.percentage}%` }} />
-                        </ProgressBar>
-                        <VisitsValue>
-                          {viewMode === 'percentage' ? `${item.percentage}%` : item.visits}
-                        </VisitsValue>
-                      </BusinessLineItem>
-                    ))}
-                  </Widget>
-
-                  {/* Visits over time widget */}
-                  <Widget>
-                    <WidgetHeader>
-                      <WidgetTitle>
-                        Visits over time by business line for 
-                        <Select style={{ marginLeft: '8px', padding: '4px 8px', fontSize: '14px' }}>
-                          <option>Women's Clothing</option>
-                          <option>Men's Clothing</option>
-                          <option>Footwear</option>
-                          <option>Children's Clothing</option>
-                        </Select>
-                        <InfoIcon style={{ marginLeft: '8px' }}>
-                          <Info size={14} />
-                        </InfoIcon>
-                      </WidgetTitle>
-                      <WidgetActions>
-                        <ToggleButton active={true}>
-                          #
-                        </ToggleButton>
-                        <ToggleButton active={false}>
-                          %
-                        </ToggleButton>
-                      </WidgetActions>
-                    </WidgetHeader>
-                    
-                    <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>
-                      [Chart visualization would go here]
-                    </div>
-                  </Widget>
-                </WidgetsContainer>
-
-                {/* Create custom segment widget */}
-                <SegmentWidget>
-                  <SegmentHeader>
-                    <WidgetTitle>
-                      Create a custom segment
-                      <span style={{ 
-                        marginLeft: '8px', 
-                        fontSize: '12px', 
-                        fontWeight: '500', 
-                        color: '#3E74FE',
-                        backgroundColor: '#f0f9ff',
-                        padding: '2px 8px',
-                        borderRadius: '4px'
-                      }}>
-                        AI-POWERED
-                      </span>
-                    </WidgetTitle>
-                  </SegmentHeader>
-                  
-                  <p style={{ color: '#6b7280', marginBottom: '20px', fontSize: '14px' }}>
-                    Simply describe what you're looking for and let AI build your segment automatically
-                  </p>
-                  
-                  <SegmentForm>
-                    <FormGroup>
-                      <Select>
-                        <option>macys.com</option>
-                      </Select>
-                    </FormGroup>
-                    <FormGroup>
-                      <Select>
-                        <option>Women's Clothing</option>
-                        <option>Men's Clothing</option>
-                        <option>Footwear</option>
-                        <option>Children's Clothing</option>
-                      </Select>
-                    </FormGroup>
-                    <FormGroup>
-                      <Input placeholder="Enter granular business lines" />
-                    </FormGroup>
-                    <GenerateButton>
-                      ✨ Generate Segment
-                    </GenerateButton>
-                  </SegmentForm>
-                </SegmentWidget>
-              </>
-            )}
-
-            {activeTab !== 'business-lines' && (
-              <div style={{ 
-                height: '400px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                color: '#6b7280',
-                fontSize: '16px'
-              }}>
-                {tabs.find(tab => tab.id === activeTab)?.label} content coming soon...
+            {/* Visits over time widget */}
+            <Widget>
+              <WidgetHeader>
+                <WidgetTitle>
+                  Visits over time by business line for 
+                  <Select style={{ marginLeft: '8px', padding: '4px 8px', fontSize: '14px' }}>
+                    <option>Women's Clothing</option>
+                    <option>Men's Clothing</option>
+                    <option>Footwear</option>
+                    <option>Children's Clothing</option>
+                  </Select>
+                  <InfoIcon style={{ marginLeft: '8px' }}>
+                    <Info size={14} />
+                  </InfoIcon>
+                </WidgetTitle>
+                <WidgetActions>
+                  <ToggleButton active={true}>
+                    #
+                  </ToggleButton>
+                  <ToggleButton active={false}>
+                    %
+                  </ToggleButton>
+                </WidgetActions>
+              </WidgetHeader>
+              
+              <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>
+                [Chart visualization would go here]
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </Widget>
+
+            {/* Create custom segment widget */}
+            <SegmentWidget>
+              <SegmentHeader>
+                <WidgetTitle>
+                  Create a custom segment
+                  <span style={{ 
+                    marginLeft: '8px', 
+                    fontSize: '12px', 
+                    fontWeight: '500', 
+                    color: '#3E74FE',
+                    backgroundColor: '#f0f9ff',
+                    padding: '2px 8px',
+                    borderRadius: '4px'
+                  }}>
+                    AI-POWERED
+                  </span>
+                </WidgetTitle>
+              </SegmentHeader>
+              
+              <p style={{ color: '#6b7280', marginBottom: '20px', fontSize: '14px' }}>
+                Simply describe what you're looking for and let AI build your segment automatically
+              </p>
+              
+              <SegmentForm>
+                <FormGroup>
+                  <Select>
+                    <option>macys.com</option>
+                  </Select>
+                </FormGroup>
+                <FormGroup>
+                  <Select>
+                    <option>Women's Clothing</option>
+                    <option>Men's Clothing</option>
+                    <option>Footwear</option>
+                    <option>Children's Clothing</option>
+                  </Select>
+                </FormGroup>
+                <FormGroup>
+                  <Input placeholder="Enter granular business lines" />
+                </FormGroup>
+                <GenerateButton>
+                  ✨ Generate Segment
+                </GenerateButton>
+              </SegmentForm>
+            </SegmentWidget>
+          </WidgetsContainer>
+        )}
+
+        {activeTab !== 'business-lines' && (
+          <div style={{ 
+            height: '400px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            color: '#6b7280',
+            fontSize: '16px',
+            backgroundColor: '#ffffff',
+            borderRadius: '8px',
+            border: '1px solid #e5e7eb',
+            margin: '20px 0'
+          }}>
+            {tabs.find(tab => tab.id === activeTab)?.label} content coming soon...
+          </div>
+        )}
       </Content>
     </MainContainer>
   );
