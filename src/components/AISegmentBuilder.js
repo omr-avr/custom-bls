@@ -1155,8 +1155,10 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
         setGranularBusinessLines(initialData.granularBusinessLines);
       }
       
-      // Set flag to auto-trigger generate after all state updates
-      shouldAutoGenerate.current = true;
+      // Only set flag to auto-trigger generate if coming from the banner
+      if (initialData.fromBanner) {
+        shouldAutoGenerate.current = true;
+      }
     }
   }, [initialData]);
 
@@ -1767,7 +1769,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
     }, loadingTime);
   };
 
-  // Auto-trigger generation when coming from Website Analysis banner
+  // Auto-trigger generation only when coming from Create custom segment banner
   useEffect(() => {
     if (shouldAutoGenerate.current && 
         websiteInput && 

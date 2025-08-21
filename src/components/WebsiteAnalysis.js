@@ -612,7 +612,8 @@ const WebsiteAnalysis = ({ onBack, onNavigateToAIBuilder }) => {
       website: websites[selectedWebsite].url,
       websiteWithProtocol: `www.${websites[selectedWebsite].url}`, // AI Builder expects www. prefix
       selectedBusinessLines: selectedBusinessLines,
-      granularBusinessLines: granularBusinessLines
+      granularBusinessLines: granularBusinessLines,
+      fromBanner: true // Flag to indicate this came from the Create custom segment banner
     };
 
     // Navigate to AI Segment Builder with form data
