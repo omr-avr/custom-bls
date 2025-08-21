@@ -14,9 +14,6 @@ const Header = styled.div`
   padding: 28px 32px 20px 32px;
   max-width: 1360px;
   margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 16px;
 `;
 
 const BackButton = styled.button`
@@ -33,6 +30,23 @@ const BackButton = styled.button`
 
   &:hover {
     background-color: #f3f4f6;
+    color: #374151;
+  }
+`;
+
+const Breadcrumbs = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #6b7280;
+`;
+
+const BreadcrumbItem = styled.span`
+  color: #6b7280;
+  cursor: pointer;
+  
+  &:hover {
     color: #374151;
   }
 `;
@@ -1075,7 +1089,7 @@ const SecondaryButton = styled(ModalButton)`
   }
 `;
 
-const AISegmentBuilder = ({ onBack, initialData }) => {
+const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) => {
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [websiteInput, setWebsiteInput] = useState('');
@@ -1863,9 +1877,13 @@ const AISegmentBuilder = ({ onBack, initialData }) => {
   return (
     <MainContainer>
       <Header>
-        <BackButton onClick={onBack}>
-          <ArrowLeft size={20} />
-        </BackButton>
+        <Breadcrumbs>
+          <BreadcrumbItem 
+            onClick={onNavigateToWebsiteSegments}
+          >
+            Website Segments
+          </BreadcrumbItem>
+        </Breadcrumbs>
         <Title>AI Segment Builder</Title>
       </Header>
 

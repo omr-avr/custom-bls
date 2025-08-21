@@ -16,6 +16,28 @@ const Header = styled.div`
   margin: 0 auto;
 `;
 
+const Breadcrumbs = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #6b7280;
+`;
+
+const BreadcrumbItem = styled.span`
+  color: #6b7280;
+  cursor: pointer;
+  
+  &:hover {
+    color: #374151;
+  }
+`;
+
+const BreadcrumbSeparator = styled.span`
+  margin: 0 8px;
+  color: #d1d5db;
+`;
+
 const Title = styled.h1`
   font-size: 24px;
   font-weight: 600;
@@ -88,6 +110,9 @@ const Tab = styled.button`
   cursor: pointer;
   border-bottom: 2px solid ${props => props.active ? '#3E74FE' : 'transparent'};
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   &:hover {
     color: #3E74FE;
@@ -697,7 +722,10 @@ const WebsiteAnalysis = ({ onBack, onNavigateToAIBuilder }) => {
   return (
     <MainContainer>
       <Header>
-        <Title>Website Analysis > Website Content</Title>
+        <Breadcrumbs>
+          <BreadcrumbItem>Website Analysis</BreadcrumbItem>
+        </Breadcrumbs>
+        <Title>Website Content</Title>
         <WebsiteItems>
           {websites.map((website, index) => (
             <WebsiteItem key={index}>

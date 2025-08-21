@@ -35,7 +35,7 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'ai-segment-builder':
-        return <AISegmentBuilder onBack={handleBackToMain} initialData={aiBuilderInitialData} />;
+        return <AISegmentBuilder onBack={handleBackToMain} initialData={aiBuilderInitialData} onNavigateToWebsiteSegments={handleWebsiteSegmentsClick} />;
       case 'website-analysis':
         return <WebsiteAnalysis onBack={handleBackToMain} onNavigateToAIBuilder={handleAISegmentBuilderClick} />;
       case 'website-segments':
