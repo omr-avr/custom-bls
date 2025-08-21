@@ -2163,7 +2163,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                           />
                         </SearchField>
                       <CTAButton 
-                        disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged())}
+                        disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged()) || isLoading}
                         onClick={generateMetrics}
                             style={{ marginTop: '0' }}
                       >
