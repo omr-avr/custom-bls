@@ -2082,7 +2082,6 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                       <CTAButton 
                         disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged()) || isLoading}
                         onClick={generateMetrics}
-                        style={{ width: '100%' }}
                       >
                         <Sparkles size={14} />
                         {hasGenerated ? 'Regenerate' : 'Generate Segment'}
