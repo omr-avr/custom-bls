@@ -835,88 +835,9 @@ const BuildSuggestionsTitle = styled.div`
   margin-bottom: 12px;
 `;
 
-const LabelContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`;
 
-const HelpText = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: #6b7280;
-  cursor: pointer;
-  position: relative;
-  
-  &:hover {
-    color: #374151;
-  }
-`;
 
-const HelpTooltip = styled.div`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  transform: translateY(8px);
-  background-color: #1f2937;
-  color: white;
-  padding: 16px;
-  border-radius: 8px;
-  font-size: 12px;
-  line-height: 1.4;
-  width: 280px;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s, visibility 0.2s;
-  
-  ${HelpText}:hover & {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    right: 20px;
-    width: 12px;
-    height: 12px;
-    background-color: #1f2937;
-    transform: rotate(45deg);
-  }
-`;
 
-const TooltipSection = styled.div`
-  margin-bottom: 12px;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-const TooltipTitle = styled.div`
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #ffffff;
-`;
-
-const TooltipList = styled.ul`
-  margin: 0;
-  padding-left: 16px;
-  
-  li {
-    margin-bottom: 2px;
-    color: #d1d5db;
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-`;
 
 const BuildSuggestionsGrid = styled.div`
   display: flex;
@@ -2109,44 +2030,17 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                     <FieldContainer>
                       <SearchContainer>
                         <SearchLabel>
-                          <LabelContainer>
-                            <div>
-                              Granular Business Lines
-                              {showSuggestionLoader && (
-                                <>
-                                  <span> • </span>
-                                  <GeneratingSuggestionsText>Generating suggestions</GeneratingSuggestionsText>
-                                </>
-                              )}
-                            </div>
-                            <HelpText>
-                              Need help?
-                              <Info size={14} />
-                              <HelpTooltip>
-                                <TooltipSection>
-                                  <TooltipTitle>Use for:</TooltipTitle>
-                                  <TooltipList>
-                                    <li>Product categories</li>
-                                    <li>Granular business lines</li>
-                                    <li>Clear, focused terms</li>
-                                    <li>Write in the site's language</li>
-                                  </TooltipList>
-                                </TooltipSection>
-                                <TooltipSection>
-                                  <TooltipTitle>Avoid:</TooltipTitle>
-                                  <TooltipList>
-                                    <li>Brands</li>
-                                    <li>Funnel steps</li>
-                                    <li>Blog/content pages, logged-in areas, short-term campaigns</li>
-                                    <li>Don't use exclusions</li>
-                                  </TooltipList>
-                                </TooltipSection>
-                              </HelpTooltip>
-                            </HelpText>
-                          </LabelContainer>
+                          <div>
+                            Granular Business Lines
+                            {showSuggestionLoader && (
+                              <>
+                                <span> • </span>
+                                <GeneratingSuggestionsText>Generating suggestions</GeneratingSuggestionsText>
+                              </>
+                            )}
+                          </div>
                         </SearchLabel>
-                        <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                          <SearchField style={{ flex: 1 }}>
+                        <SearchField>
                           <SearchInput 
                             placeholder={selectedBusinessLines.length === 0 ? "Select business lines first..." : "Enter granular business lines..."}
                             disabled={selectedBusinessLines.length === 0}
@@ -2162,15 +2056,9 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                             }}
                           />
                         </SearchField>
-                      <CTAButton 
-                        disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged()) || isLoading}
-                        onClick={generateMetrics}
-                            style={{ marginTop: '0' }}
-                      >
-                        <Sparkles size={14} />
-                            {hasGenerated ? 'Regenerate' : 'Generate Segment'}
-                      </CTAButton>
-                        </div>
+                        <ExplainerText>
+                          ✅ Use: clear focused terms, site's language, product categories and granular business lines • ❌ Avoid: brands, funnel, blog, log-in, short-term campaigns, and exclusions.
+                        </ExplainerText>
                         
                         {/* Build Section Suggestions */}
                         {showBuildSuggestions && (
@@ -2188,6 +2076,17 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                           </BuildSuggestionsContainer>
                         )}
                       </SearchContainer>
+                    </FieldContainer>
+
+                    <FieldContainer>
+                      <CTAButton 
+                        disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged()) || isLoading}
+                        onClick={generateMetrics}
+                        style={{ width: '100%' }}
+                      >
+                        <Sparkles size={14} />
+                        {hasGenerated ? 'Regenerate' : 'Generate Segment'}
+                      </CTAButton>
                     </FieldContainer>
                   </SectionContent>
                 </LeftSection>
