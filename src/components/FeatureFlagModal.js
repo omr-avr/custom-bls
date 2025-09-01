@@ -185,6 +185,21 @@ const features = [
     id: 'topUrlsPreview',
     title: 'Top URLs Preview',
     description: 'Display preview of top URLs in the segment preview section on the AI Segment Builder page'
+  },
+  {
+    id: 'businessLinesDropdownSearch',
+    title: 'Parent Business Lines search',
+    description: 'Enable search functionality inside the Parent Business Lines dropdown'
+  },
+  {
+    id: 'businessLinesSingleSelect',
+    title: 'Single select mode',
+    description: 'Toggle between single and multi-select for Parent Business Lines (off = multi-select, on = single-select)'
+  },
+  {
+    id: 'businessLinesVisitsShare',
+    title: 'Visits share display',
+    description: 'Show visits share percentage for each business line in the dropdown'
   }
 ];
 

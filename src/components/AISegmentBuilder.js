@@ -1360,12 +1360,29 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
   const handleBusinessLineToggle = (line) => {
     const lineName = typeof line === 'string' ? line : line.name;
     let newSelectedLines;
-    if (selectedBusinessLines.includes(lineName)) {
-      newSelectedLines = selectedBusinessLines.filter(item => item !== lineName);
+    
+    if (isFeatureEnabled('businessLinesSingleSelect')) {
+      // Single select mode
+      if (selectedBusinessLines.includes(lineName)) {
+        newSelectedLines = []; // Deselect if clicking the same item
+      } else {
+        newSelectedLines = [lineName]; // Select only this item
+      }
     } else {
-      newSelectedLines = [...selectedBusinessLines, lineName];
+      // Multi select mode (default)
+      if (selectedBusinessLines.includes(lineName)) {
+        newSelectedLines = selectedBusinessLines.filter(item => item !== lineName);
+      } else {
+        newSelectedLines = [...selectedBusinessLines, lineName];
+      }
     }
     setSelectedBusinessLines(newSelectedLines);
+    
+    // Close dropdown in single select mode after selection
+    if (isFeatureEnabled('businessLinesSingleSelect') && newSelectedLines.length > 0) {
+      setIsDropdownOpen(false);
+      setBusinessLineSearch('');
+    }
     
     // Trigger suggestions loader if we have website + business lines and feature is enabled
     if (isFeatureEnabled('granularBusinessLinesSuggestions') && websiteInput && newSelectedLines.length > 0) {
@@ -1916,7 +1933,11 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1 }}>
                               {selectedBusinessLines.length === 0 ? (
                                 <span style={{ color: websiteInput.length === 0 ? '#9ca3af' : '#6b7280' }}>
-                                  {websiteInput.length === 0 ? 'Enter website first...' : 'Select business lines...'}
+                                  {websiteInput.length === 0 
+                                    ? 'Enter website first...' 
+                                    : isFeatureEnabled('businessLinesSingleSelect') 
+                                      ? 'Select a business line...' 
+                                      : 'Select business lines...'}
                                 </span>
                               ) : (
                                 selectedBusinessLines.map((line) => (
@@ -1952,36 +1973,38 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                               zIndex: 10,
                               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
                             }}>
-                              {/* Search input */}
-                              <div style={{
-                                padding: '12px 16px',
-                                borderBottom: '1px solid #f3f4f6',
-                                position: 'sticky',
-                                top: 0,
-                                backgroundColor: '#ffffff',
-                                zIndex: 1
-                              }}>
-                                <input
-                                  type="text"
-                                  placeholder="Search business lines..."
-                                  value={businessLineSearch}
-                                  onChange={(e) => setBusinessLineSearch(e.target.value)}
-                                  style={{
-                                    width: '100%',
-                                    padding: '8px 12px',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '4px',
-                                    fontSize: '14px',
-                                    outline: 'none'
-                                  }}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Escape') {
-                                      setIsDropdownOpen(false);
-                                      setBusinessLineSearch('');
-                                    }
-                                  }}
-                                />
-                              </div>
+                              {/* Search input - conditional based on feature flag */}
+                              {isFeatureEnabled('businessLinesDropdownSearch') && (
+                                <div style={{
+                                  padding: '12px 16px',
+                                  borderBottom: '1px solid #f3f4f6',
+                                  position: 'sticky',
+                                  top: 0,
+                                  backgroundColor: '#ffffff',
+                                  zIndex: 1
+                                }}>
+                                  <input
+                                    type="text"
+                                    placeholder="Search business lines..."
+                                    value={businessLineSearch}
+                                    onChange={(e) => setBusinessLineSearch(e.target.value)}
+                                    style={{
+                                      width: '100%',
+                                      padding: '8px 12px',
+                                      border: '1px solid #d1d5db',
+                                      borderRadius: '4px',
+                                      fontSize: '14px',
+                                      outline: 'none'
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Escape') {
+                                        setIsDropdownOpen(false);
+                                        setBusinessLineSearch('');
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              )}
                               {filteredBusinessLines.map((line, index) => (
                                 <div
                                   key={line.name}
@@ -2010,9 +2033,10 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                                   }}
                                 >
                                   <input
-                                    type="checkbox"
+                                    type={isFeatureEnabled('businessLinesSingleSelect') ? 'radio' : 'checkbox'}
                                     checked={selectedBusinessLines.includes(line.name)}
                                     onChange={() => {}}
+                                    name={isFeatureEnabled('businessLinesSingleSelect') ? 'businessLine' : undefined}
                                     style={{
                                       width: '16px',
                                       height: '16px',
@@ -2020,7 +2044,9 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                                     }}
                                   />
                                   <span style={{ flex: 1 }}>{line.name}</span>
-                                  <VisitsShare>{line.visitsShare}%</VisitsShare>
+                                  {isFeatureEnabled('businessLinesVisitsShare') && (
+                                    <VisitsShare>{line.visitsShare}%</VisitsShare>
+                                  )}
                                 </div>
                               ))}
                             </div>

@@ -14,6 +14,9 @@ export const FeatureFlagProvider = ({ children }) => {
   const [featureFlags, setFeatureFlags] = useState({
     granularBusinessLinesSuggestions: true,
     topUrlsPreview: true,
+    businessLinesDropdownSearch: true,
+    businessLinesSingleSelect: false,
+    businessLinesVisitsShare: true,
   });
 
   const [isFeatureFlagModalOpen, setIsFeatureFlagModalOpen] = useState(false);
