@@ -62,11 +62,11 @@ const ModalIcon = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: linear-gradient(90deg, #3E74FE 0%, #2AD3AB 100%);
+  background-color: #f3f4f6;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #6b7280;
 `;
 
 const CloseButton = styled.button`
@@ -94,22 +94,18 @@ const ModalBody = styled.div`
 const FeatureList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 0;
 `;
 
 const FeatureItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background-color: #f9fafb;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: #f3f4f6;
-    border-color: #d1d5db;
+  padding: 16px 0;
+  border-bottom: 1px solid #f3f4f6;
+  
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
