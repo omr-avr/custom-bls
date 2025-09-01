@@ -4,6 +4,9 @@ import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import AISegmentBuilder from './components/AISegmentBuilder';
 import WebsiteAnalysis from './components/WebsiteAnalysis';
+import FeatureFlagButton from './components/FeatureFlagButton';
+import FeatureFlagModal from './components/FeatureFlagModal';
+import { FeatureFlagProvider } from './contexts/FeatureFlagContext';
 
 const AppContainer = styled.div`
   display: flex;
@@ -46,14 +49,18 @@ function App() {
   };
 
   return (
-    <AppContainer>
-      <Sidebar 
-        onWebsiteAnalysisClick={handleWebsiteAnalysisClick} 
-        onWebsiteSegmentsClick={handleWebsiteSegmentsClick}
-        currentPage={currentPage} 
-      />
-      {renderPage()}
-    </AppContainer>
+    <FeatureFlagProvider>
+      <AppContainer>
+        <Sidebar 
+          onWebsiteAnalysisClick={handleWebsiteAnalysisClick} 
+          onWebsiteSegmentsClick={handleWebsiteSegmentsClick}
+          currentPage={currentPage} 
+        />
+        {renderPage()}
+        <FeatureFlagButton />
+        <FeatureFlagModal />
+      </AppContainer>
+    </FeatureFlagProvider>
   );
 }
 

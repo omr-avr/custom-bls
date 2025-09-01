@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus, Check, PieChart } from 'lucide-react';
+import { useFeatureFlags } from '../contexts/FeatureFlagContext';
 
 const MainContainer = styled.div`
   flex: 1;
@@ -1011,6 +1012,7 @@ const SecondaryButton = styled(ModalButton)`
 `;
 
 const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) => {
+  const { isFeatureEnabled } = useFeatureFlags();
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [websiteInput, setWebsiteInput] = useState('');
@@ -1365,8 +1367,8 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
     }
     setSelectedBusinessLines(newSelectedLines);
     
-    // Trigger suggestions loader if we have website + business lines
-    if (websiteInput && newSelectedLines.length > 0) {
+    // Trigger suggestions loader if we have website + business lines and feature is enabled
+    if (isFeatureEnabled('granularBusinessLinesSuggestions') && websiteInput && newSelectedLines.length > 0) {
       setShowSuggestionLoader(true);
       setShowBuildSuggestions(false);
       
@@ -2032,7 +2034,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                         <SearchLabel>
                           <div>
                             Granular Business Lines
-                            {showSuggestionLoader && (
+                            {isFeatureEnabled('granularBusinessLinesSuggestions') && showSuggestionLoader && (
                               <>
                                 <span> • </span>
                                 <GeneratingSuggestionsText>Generating suggestions</GeneratingSuggestionsText>
@@ -2061,7 +2063,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                         </ExplainerText>
                         
                         {/* Build Section Suggestions */}
-                        {showBuildSuggestions && (
+                        {isFeatureEnabled('granularBusinessLinesSuggestions') && showBuildSuggestions && (
                           <BuildSuggestionsContainer>
                             <BuildSuggestionsGrid>
                               {getSuggestions().slice(0, 5).map((suggestion, index) => (
@@ -2178,94 +2180,96 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                       </MetricCard>
 
                       {/* Top URLs Preview */}
-                      <MetricCard>
-                        <UrlListTitle>Top URLs Preview</UrlListTitle>
-                        <div style={{ position: 'relative' }}>
-                          <UrlListGradient />
-                          {topUrls.length > 0 ? (
-                            topUrls.map((urlItem, index) => (
-                              <UrlListItem key={index}>
-                                <UrlText>{urlItem.url}</UrlText>
-                                <UrlShare>{urlItem.share}%</UrlShare>
-                              </UrlListItem>
-                            ))
-                          ) : (
-                            // Skeleton for URLs list
-                            <>
-                              <UrlListItem>
-                                <div style={{ 
-                                  width: '70%', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                                <div style={{ 
-                                  width: '30px', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                              </UrlListItem>
-                              <UrlListItem>
-                                <div style={{ 
-                                  width: '65%', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                                <div style={{ 
-                                  width: '25px', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                              </UrlListItem>
-                              <UrlListItem>
-                                <div style={{ 
-                                  width: '60%', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                                <div style={{ 
-                                  width: '20px', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                              </UrlListItem>
-                              <UrlListItem>
-                                <div style={{ 
-                                  width: '55%', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                                <div style={{ 
-                                  width: '15px', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                              </UrlListItem>
-                              <UrlListItem>
-                                <div style={{ 
-                                  width: '50%', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                                <div style={{ 
-                                  width: '12px', 
-                                  height: '12px', 
-                                  backgroundColor: '#f3f4f6', 
-                                  borderRadius: '4px' 
-                                }} />
-                              </UrlListItem>
-                            </>
-                          )}
-                        </div>
-                      </MetricCard>
+                      {isFeatureEnabled('topUrlsPreview') && (
+                        <MetricCard>
+                          <UrlListTitle>Top URLs Preview</UrlListTitle>
+                          <div style={{ position: 'relative' }}>
+                            <UrlListGradient />
+                            {topUrls.length > 0 ? (
+                              topUrls.map((urlItem, index) => (
+                                <UrlListItem key={index}>
+                                  <UrlText>{urlItem.url}</UrlText>
+                                  <UrlShare>{urlItem.share}%</UrlShare>
+                                </UrlListItem>
+                              ))
+                            ) : (
+                              // Skeleton for URLs list
+                              <>
+                                <UrlListItem>
+                                  <div style={{ 
+                                    width: '70%', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                  <div style={{ 
+                                    width: '30px', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                </UrlListItem>
+                                <UrlListItem>
+                                  <div style={{ 
+                                    width: '65%', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                  <div style={{ 
+                                    width: '25px', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                </UrlListItem>
+                                <UrlListItem>
+                                  <div style={{ 
+                                    width: '60%', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                  <div style={{ 
+                                    width: '20px', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                </UrlListItem>
+                                <UrlListItem>
+                                  <div style={{ 
+                                    width: '55%', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                  <div style={{ 
+                                    width: '15px', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                </UrlListItem>
+                                <UrlListItem>
+                                  <div style={{ 
+                                    width: '50%', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                  <div style={{ 
+                                    width: '12px', 
+                                    height: '12px', 
+                                    backgroundColor: '#f3f4f6', 
+                                    borderRadius: '4px' 
+                                  }} />
+                                </UrlListItem>
+                              </>
+                            )}
+                          </div>
+                        </MetricCard>
+                      )}
                     </MetricsContainer>
                     )}
                     
