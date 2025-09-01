@@ -188,17 +188,17 @@ const features = [
   },
   {
     id: 'businessLinesDropdownSearch',
-    title: 'Parent Business Lines search',
+    title: 'Business Lines / Search',
     description: 'Enable search functionality inside the Parent Business Lines dropdown'
   },
   {
     id: 'businessLinesSingleSelect',
-    title: 'Single select mode',
+    title: 'Business Lines / Single select',
     description: 'Toggle between single and multi-select for Parent Business Lines (off = multi-select, on = single-select)'
   },
   {
     id: 'businessLinesVisitsShare',
-    title: 'Visits share display',
+    title: 'Business Lines / Visits share',
     description: 'Show visits share percentage for each business line in the dropdown'
   }
 ];
