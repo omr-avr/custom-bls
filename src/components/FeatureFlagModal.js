@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { X, Settings, ToggleLeft, ToggleRight } from 'lucide-react';
+import { X, Settings } from 'lucide-react';
 import { useFeatureFlags } from '../contexts/FeatureFlagContext';
 
 const ModalOverlay = styled.div`
@@ -134,25 +134,49 @@ const FeatureDescription = styled.p`
   line-height: 1.4;
 `;
 
-const ToggleButton = styled.button`
-  background: none;
+const ToggleContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+`;
+
+const ToggleTrack = styled.button`
+  width: 60px;
+  height: 32px;
+  border-radius: 16px;
   border: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  border-radius: 4px;
-  padding: 4px;
-
-  &:hover {
-    background-color: rgba(62, 116, 254, 0.1);
+  position: relative;
+  transition: all 0.3s ease;
+  background-color: ${props => props.enabled ? '#3E74FE' : '#9ca3af'};
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(62, 116, 254, 0.2);
   }
 `;
 
-const ToggleIcon = styled.div`
+const ToggleKnob = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: white;
+  position: absolute;
+  top: 4px;
+  left: ${props => props.enabled ? '32px' : '4px'};
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+`;
+
+const ToggleLabel = styled.span`
+  font-size: 12px;
+  font-weight: 600;
   color: ${props => props.enabled ? '#3E74FE' : '#9ca3af'};
-  transition: color 0.2s;
+  transition: color 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const features = [
@@ -207,18 +231,18 @@ const FeatureFlagModal = () => {
                   <FeatureTitle>{feature.title}</FeatureTitle>
                   <FeatureDescription>{feature.description}</FeatureDescription>
                 </FeatureInfo>
-                <ToggleButton 
-                  onClick={() => toggleFeatureFlag(feature.id)}
-                  title={`${featureFlags[feature.id] ? 'Disable' : 'Enable'} ${feature.title}`}
-                >
-                  <ToggleIcon enabled={featureFlags[feature.id]}>
-                    {featureFlags[feature.id] ? (
-                      <ToggleRight size={32} />
-                    ) : (
-                      <ToggleLeft size={32} />
-                    )}
-                  </ToggleIcon>
-                </ToggleButton>
+                <ToggleContainer>
+                  <ToggleTrack 
+                    enabled={featureFlags[feature.id]}
+                    onClick={() => toggleFeatureFlag(feature.id)}
+                    title={`${featureFlags[feature.id] ? 'Disable' : 'Enable'} ${feature.title}`}
+                  >
+                    <ToggleKnob enabled={featureFlags[feature.id]} />
+                  </ToggleTrack>
+                  <ToggleLabel enabled={featureFlags[feature.id]}>
+                    {featureFlags[feature.id] ? 'On' : 'Off'}
+                  </ToggleLabel>
+                </ToggleContainer>
               </FeatureItem>
             ))}
           </FeatureList>
