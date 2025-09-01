@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Settings } from 'lucide-react';
+import { Flag } from 'lucide-react';
 import { useFeatureFlags } from '../contexts/FeatureFlagContext';
 
 const FloatingButton = styled.button`
@@ -38,7 +38,7 @@ const FeatureFlagButton = () => {
 
   return (
     <FloatingButton onClick={openFeatureFlagModal} title="Feature Flags">
-      <Settings size={18} />
+      <Flag size={18} />
     </FloatingButton>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { X, Settings } from 'lucide-react';
+import { X, Flag } from 'lucide-react';
 import { useFeatureFlags } from '../contexts/FeatureFlagContext';
 
 const ModalOverlay = styled.div`
@@ -139,13 +139,13 @@ const ToggleContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 `;
 
 const ToggleTrack = styled.button`
-  width: 60px;
-  height: 32px;
-  border-radius: 16px;
+  width: 48px;
+  height: 26px;
+  border-radius: 13px;
   border: none;
   cursor: pointer;
   position: relative;
@@ -159,19 +159,19 @@ const ToggleTrack = styled.button`
 `;
 
 const ToggleKnob = styled.div`
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background-color: white;
   position: absolute;
-  top: 4px;
-  left: ${props => props.enabled ? '32px' : '4px'};
+  top: 3px;
+  left: ${props => props.enabled ? '25px' : '3px'};
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const ToggleLabel = styled.span`
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: ${props => props.enabled ? '#3E74FE' : '#9ca3af'};
   transition: color 0.3s ease;
@@ -214,7 +214,7 @@ const FeatureFlagModal = () => {
         <ModalHeader>
           <ModalTitle>
             <ModalIcon>
-              <Settings size={20} />
+              <Flag size={20} />
             </ModalIcon>
             Feature Flags
           </ModalTitle>
