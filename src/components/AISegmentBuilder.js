@@ -2023,6 +2023,21 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                       </SearchContainer>
                     </FieldContainer>
 
+                    {/* Unsupported Website Banner */}
+                    {isWebsiteUnsupported(websiteInput) && (
+                      <UnsupportedBanner>
+                        <BannerContent>
+                          <BannerTitle>{websiteInput} doesn't support Business Lines</BannerTitle>
+                          <BannerDescription>
+                            You can select another business lines supported website or use the Manual Builder to create custom segments.
+                          </BannerDescription>
+                        </BannerContent>
+                        <BannerButton onClick={() => {/* TODO: Navigate to Manual Builder */}}>
+                          Manual Builder
+                        </BannerButton>
+                      </UnsupportedBanner>
+                    )}
+
                     <FieldContainer>
                       <DropdownContainer>
                         <DropdownLabel>Parent Business Lines</DropdownLabel>
@@ -2233,21 +2248,6 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                         {hasGenerated ? 'Regenerate' : 'Generate Segment'}
                       </CTAButton>
                     </FieldContainer>
-
-                    {/* Unsupported Website Banner */}
-                    {isWebsiteUnsupported(websiteInput) && (
-                      <UnsupportedBanner>
-                        <BannerContent>
-                          <BannerTitle>{websiteInput} doesn't support Business Lines</BannerTitle>
-                          <BannerDescription>
-                            This website doesn't support business line segmentation. You can select another business lines supported website or use the Manual Builder to create custom segments.
-                          </BannerDescription>
-                        </BannerContent>
-                        <BannerButton onClick={() => {/* TODO: Navigate to Manual Builder */}}>
-                          Manual Builder
-                        </BannerButton>
-                      </UnsupportedBanner>
-                    )}
                   </SectionContent>
                 </LeftSection>
 
