@@ -960,6 +960,79 @@ const BannerButton = styled.button`
   }
 `;
 
+// Info Banner Components
+const InfoBanner = styled.div`
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const InfoIcon = styled.div`
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+`;
+
+const InfoContent = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+`;
+
+const InfoText = styled.div`
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.4;
+`;
+
+const InfoActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+`;
+
+const InfoButton = styled.button`
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const InfoCloseButton = styled.button`
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: #f1f5f9;
+    color: #475569;
+  }
+`;
+
 // Modal Styled Components
 const ModalOverlay = styled.div`
   position: fixed;
@@ -1090,6 +1163,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [websiteInput, setWebsiteInput] = useState('');
+  const [showInfoBanner, setShowInfoBanner] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const dropdownRef = useRef(null);
@@ -1933,6 +2007,27 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
       </Header>
 
       <Content>
+        {/* Info Banner */}
+        {showInfoBanner && (
+          <InfoBanner>
+            <InfoIcon>
+              <Info size={16} />
+            </InfoIcon>
+            <InfoContent>
+              <InfoText>
+                The AI Segment Builder is based on websites that support Similarweb Business Lines
+              </InfoText>
+              <InfoActions>
+                <InfoButton onClick={() => {/* TODO: Navigate to learn more */}}>
+                  Learn more
+                </InfoButton>
+                <InfoCloseButton onClick={() => setShowInfoBanner(false)}>
+                  <X size={16} />
+                </InfoCloseButton>
+              </InfoActions>
+            </InfoContent>
+          </InfoBanner>
+        )}
         <Section>
           <Card>
                         <CardContent>
@@ -2029,7 +2124,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                         <BannerContent>
                           <BannerTitle>{websiteInput} doesn't support Business Lines</BannerTitle>
                           <BannerDescription>
-                            You can select another business lines supported website or use the Manual Builder to create custom segments.
+                            Select another business lines supported website or use the Manual Builder to create custom segments.
                           </BannerDescription>
                         </BannerContent>
                         <BannerButton onClick={() => {/* TODO: Navigate to Manual Builder */}}>
