@@ -138,7 +138,7 @@ const Sidebar = ({ onWebsiteAnalysisClick, onWebsiteSegmentsClick, currentPage }
           <IconWrapper><BarChart3 size={16} /></IconWrapper>
           Website Rankings
         </NavItem>
-        <NavItem onClick={onWebsiteSegmentsClick} active={currentPage === 'website-segments' || currentPage === 'ai-segment-builder'}>
+        <NavItem onClick={onWebsiteSegmentsClick} active={currentPage === 'website-segments' || currentPage === 'ai-segment-builder' || currentPage === 'segment-report'}>
           <IconWrapper><PieChart size={16} /></IconWrapper>
           Website Segments
         </NavItem>

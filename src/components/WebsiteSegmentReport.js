@@ -287,7 +287,7 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
             Website Segments
           </BreadcrumbItem>
         </Breadcrumbs>
-        <Title>Website Segment Report</Title>
+        <Title>{segmentData?.name || 'Website Segment Report'}</Title>
       </Header>
 
       <Content>
