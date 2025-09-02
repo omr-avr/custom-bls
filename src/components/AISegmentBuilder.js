@@ -1033,113 +1033,7 @@ const InfoCloseButton = styled.button`
   }
 `;
 
-// Promotional Banner Components
-const PromoBanner = styled.div`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    animation: sparkle 20s linear infinite;
-    pointer-events: none;
-  }
-  
-  @keyframes sparkle {
-    0% { transform: rotate(0deg) translate(0, 0); }
-    100% { transform: rotate(360deg) translate(0, 0); }
-  }
-`;
 
-const PromoIcon = styled.div`
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 8px;
-  backdrop-filter: blur(10px);
-`;
-
-const PromoContent = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const PromoTitle = styled.div`
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-  line-height: 1.3;
-`;
-
-const PromoSubtitle = styled.div`
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.4;
-`;
-
-const PromoActions = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-`;
-
-const PromoButton = styled.button`
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.4);
-    transform: translateY(-1px);
-  }
-`;
-
-const PromoCloseButton = styled.button`
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.8);
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: #ffffff;
-  }
-`;
 
 // Modal Styled Components
 const ModalOverlay = styled.div`
@@ -1272,7 +1166,6 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [websiteInput, setWebsiteInput] = useState('');
   const [showInfoBanner, setShowInfoBanner] = useState(true);
-  const [showPromoBanner, setShowPromoBanner] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const dropdownRef = useRef(null);
@@ -2138,30 +2031,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
           </InfoBanner>
         )}
 
-        {/* Promotional Banner */}
-        {showPromoBanner && (
-          <PromoBanner>
-            <PromoIcon>
-              <Sparkles size={20} />
-            </PromoIcon>
-            <PromoContent>
-              <PromoTitle>
-                New! Enhanced AI Segment Builder
-              </PromoTitle>
-              <PromoSubtitle>
-                Experience our upgraded AI-powered segmentation with improved accuracy and faster results
-              </PromoSubtitle>
-            </PromoContent>
-            <PromoActions>
-              <PromoButton onClick={() => {/* TODO: Navigate to learn more */}}>
-                Learn more
-              </PromoButton>
-              <PromoCloseButton onClick={() => setShowPromoBanner(false)}>
-                <X size={16} />
-              </PromoCloseButton>
-            </PromoActions>
-          </PromoBanner>
-        )}
+
         <Section>
           <Card>
                         <CardContent>
