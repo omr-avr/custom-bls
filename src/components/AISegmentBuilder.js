@@ -1160,7 +1160,7 @@ const SecondaryButton = styled(ModalButton)`
   }
 `;
 
-const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) => {
+const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments, onNavigateToSegmentReport }) => {
   const { isFeatureEnabled } = useFeatureFlags();
   const [selectedBusinessLines, setSelectedBusinessLines] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -1947,7 +1947,24 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
   const handleAnalyzeSegment = () => {
     console.log('Analyzing segment:', segmentName);
     setShowSaveModal(false);
-    // TODO: Navigate to segment analysis
+    
+    // Create segment data to pass to the report
+    const segmentData = {
+      name: segmentName,
+      website: websiteInput,
+      businessLines: selectedBusinessLines,
+      granularBusinessLines: granularBusinessLines,
+      metrics: {
+        segmentShare: segmentShare,
+        monthlyVisits: monthlyVisits,
+        matchingUrls: matchingUrls
+      }
+    };
+    
+    // Navigate to segment report
+    if (onNavigateToSegmentReport) {
+      onNavigateToSegmentReport(segmentData);
+    }
   };
 
   const handleAddToCustomIndustry = () => {

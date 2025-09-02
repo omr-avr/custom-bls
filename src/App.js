@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import AISegmentBuilder from './components/AISegmentBuilder';
 import WebsiteAnalysis from './components/WebsiteAnalysis';
+import WebsiteSegmentReport from './components/WebsiteSegmentReport';
 import FeatureFlagButton from './components/FeatureFlagButton';
 import FeatureFlagModal from './components/FeatureFlagModal';
 import { FeatureFlagProvider } from './contexts/FeatureFlagContext';
@@ -17,6 +18,7 @@ const AppContainer = styled.div`
 function App() {
   const [currentPage, setCurrentPage] = useState('website-segments');
   const [aiBuilderInitialData, setAiBuilderInitialData] = useState(null);
+  const [segmentReportData, setSegmentReportData] = useState(null);
 
   const handleAISegmentBuilderClick = (initialData = null) => {
     setAiBuilderInitialData(initialData);
@@ -31,6 +33,11 @@ function App() {
     setCurrentPage('website-segments');
   };
 
+  const handleSegmentReportClick = (segmentData = null) => {
+    setSegmentReportData(segmentData);
+    setCurrentPage('segment-report');
+  };
+
   const handleBackToMain = () => {
     setCurrentPage('main');
   };
@@ -38,9 +45,11 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'ai-segment-builder':
-        return <AISegmentBuilder onBack={handleBackToMain} initialData={aiBuilderInitialData} onNavigateToWebsiteSegments={handleWebsiteSegmentsClick} />;
+        return <AISegmentBuilder onBack={handleBackToMain} initialData={aiBuilderInitialData} onNavigateToWebsiteSegments={handleWebsiteSegmentsClick} onNavigateToSegmentReport={handleSegmentReportClick} />;
       case 'website-analysis':
         return <WebsiteAnalysis onBack={handleBackToMain} onNavigateToAIBuilder={handleAISegmentBuilderClick} />;
+      case 'segment-report':
+        return <WebsiteSegmentReport onBack={handleBackToMain} onNavigateToWebsiteSegments={handleWebsiteSegmentsClick} segmentData={segmentReportData} />;
       case 'website-segments':
         return <MainContent onAISegmentBuilderClick={handleAISegmentBuilderClick} />;
       default:
