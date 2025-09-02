@@ -75,6 +75,13 @@ const MainCard = styled.div`
 const ReportHeader = styled.div`
   padding: 20px 20px 16px 20px;
   border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+const ReportHeaderLeft = styled.div`
+  flex: 1;
 `;
 
 const ReportTitle = styled.h2`
@@ -88,6 +95,14 @@ const ReportMeta = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+  font-size: 14px;
+  color: #6b7280;
+`;
+
+const ReportHeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   color: #6b7280;
 `;
@@ -107,7 +122,7 @@ const MetricsGrid = styled.div`
 
 const MetricCard = styled.div`
   padding: 16px;
-  text-align: center;
+  text-align: right;
   cursor: pointer;
   transition: all 0.2s;
   border-bottom: 2px solid transparent;
@@ -151,34 +166,6 @@ const MetricChange = styled.div`
 
 const ChartContainer = styled.div`
   padding: 24px;
-`;
-
-const ChartHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const ChartTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-  margin: 0;
-`;
-
-const ChartControls = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const TimeSelector = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #6b7280;
 `;
 
 const ToggleSwitch = styled.div`
@@ -374,21 +361,32 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
       <Content>
         <MainCard>
           <ReportHeader>
-            <ReportTitle>Traffic and engagement over time</ReportTitle>
-            <ReportMeta>
-              <MetaItem>
-                <Calendar size={14} />
-                Feb 2025 - Jul 2025
-              </MetaItem>
-              <MetaItem>
-                <Globe size={14} />
-                United States
-              </MetaItem>
-              <MetaItem>
-                <TrendingUp size={14} />
-                All traffic
-              </MetaItem>
-            </ReportMeta>
+            <ReportHeaderLeft>
+              <ReportTitle>Traffic and engagement over time</ReportTitle>
+              <ReportMeta>
+                <MetaItem>
+                  <Calendar size={14} />
+                  Feb 2025 - Jul 2025
+                </MetaItem>
+                <MetaItem>
+                  <Globe size={14} />
+                  United States
+                </MetaItem>
+                <MetaItem>
+                  <TrendingUp size={14} />
+                  All traffic
+                </MetaItem>
+              </ReportMeta>
+            </ReportHeaderLeft>
+            <ReportHeaderRight>
+              <ToggleSwitch>
+                <span>Month-to-date</span>
+                <Switch 
+                  active={isMonthToDate} 
+                  onClick={() => setIsMonthToDate(!isMonthToDate)}
+                />
+              </ToggleSwitch>
+            </ReportHeaderRight>
           </ReportHeader>
 
           <MetricsGrid>
@@ -411,22 +409,6 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
           </MetricsGrid>
 
           <ChartContainer>
-            <ChartHeader>
-              <ChartTitle>Traffic and engagement over time</ChartTitle>
-              <ChartControls>
-                <TimeSelector>
-                  <Calendar size={14} />
-                  Feb 2025 - Jul 2025
-                </TimeSelector>
-                <ToggleSwitch>
-                  <span>Month-to-date</span>
-                  <Switch 
-                    active={isMonthToDate} 
-                    onClick={() => setIsMonthToDate(!isMonthToDate)}
-                  />
-                </ToggleSwitch>
-              </ChartControls>
-            </ChartHeader>
             <ChartArea>
               <ChartSvg viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
                 {/* Grid lines */}
