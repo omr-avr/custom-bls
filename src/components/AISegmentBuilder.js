@@ -962,14 +962,14 @@ const BannerButton = styled.button`
 
 // Info Banner Components
 const InfoBanner = styled.div`
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background-color: #EDF2F7;
   border-radius: 8px;
   padding: 12px 16px;
   margin-bottom: 24px;
   display: flex;
   align-items: center;
   gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 `;
 
 const InfoBannerIcon = styled.div`
