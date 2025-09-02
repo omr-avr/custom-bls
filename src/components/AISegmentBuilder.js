@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus, Check, PieChart } from 'lucide-react';
+import { ArrowLeft, Search, Globe, ChevronDown, Sparkles, TrendingUp, Users, Link, Info, Calendar, Brain, Plus, Check, PieChart, X } from 'lucide-react';
 import { useFeatureFlags } from '../contexts/FeatureFlagContext';
 
 const MainContainer = styled.div`
