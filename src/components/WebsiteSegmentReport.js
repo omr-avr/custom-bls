@@ -64,13 +64,17 @@ const Content = styled.div`
   margin: 0 auto;
 `;
 
-const ReportHeader = styled.div`
+const MainCard = styled.div`
   background-color: #ffffff;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+`;
+
+const ReportHeader = styled.div`
+  padding: 20px 20px 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
 `;
 
 const ReportTitle = styled.h2`
@@ -97,17 +101,25 @@ const MetaItem = styled.div`
 const MetricsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 0;
+  border-bottom: 1px solid #e5e7eb;
 `;
 
 const MetricCard = styled.div`
-  background-color: #ffffff;
-  border-radius: 8px;
   padding: 16px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+  
+  ${props => props.active && `
+    border-bottom-color: #3E74FE;
+    background-color: #f8fafc;
+  `}
+  
+  &:hover {
+    background-color: #f8fafc;
+  }
 `;
 
 const MetricLabel = styled.div`
@@ -138,12 +150,7 @@ const MetricChange = styled.div`
 `;
 
 const ChartContainer = styled.div`
-  background-color: #ffffff;
-  border-radius: 8px;
   padding: 24px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
 `;
 
 const ChartHeader = styled.div`
@@ -252,6 +259,7 @@ const ChartValue = styled.text`
 
 const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData }) => {
   const [isMonthToDate, setIsMonthToDate] = useState(true);
+  const [activeTab, setActiveTab] = useState('monthlyVisits');
 
   // Mock chart data - traffic over time (in millions)
   const chartData = [
@@ -293,6 +301,7 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
   // Mock data based on the attached image
   const metrics = [
     {
+      id: 'monthlyVisits',
       label: 'Monthly Visits',
       value: '14.08M',
       change: '15.31%',
@@ -300,6 +309,7 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
       icon: <Users size={14} />
     },
     {
+      id: 'segmentShare',
       label: 'Segment Share',
       value: '4.19%',
       change: '11.37%',
@@ -307,6 +317,7 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
       icon: <TrendingUp size={14} />
     },
     {
+      id: 'uniqueVisitors',
       label: 'Unique Visitors',
       value: '6.241M',
       change: '18.50%',
@@ -314,6 +325,7 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
       icon: <Eye size={14} />
     },
     {
+      id: 'pageViews',
       label: 'Page Views',
       value: '34.25M',
       change: '8.68%',
@@ -321,6 +333,7 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
       icon: <MousePointer size={14} />
     },
     {
+      id: 'pagesPerVisit',
       label: 'Pages Per Visit',
       value: '2.43',
       change: '5.74%',
@@ -328,6 +341,7 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
       icon: <Globe size={14} />
     },
     {
+      id: 'visitDuration',
       label: 'Visit Duration',
       value: '00:02:40',
       change: '8.97%',
@@ -335,6 +349,7 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
       icon: <Clock size={14} />
     },
     {
+      id: 'bounceRate',
       label: 'Bounce Rate',
       value: '57%',
       change: '2.70%',
@@ -357,115 +372,121 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
       </Header>
 
       <Content>
-        <ReportHeader>
-          <ReportTitle>Traffic and engagement over time</ReportTitle>
-          <ReportMeta>
-            <MetaItem>
-              <Calendar size={14} />
-              Feb 2025 - Jul 2025
-            </MetaItem>
-            <MetaItem>
-              <Globe size={14} />
-              United States
-            </MetaItem>
-            <MetaItem>
-              <TrendingUp size={14} />
-              All traffic
-            </MetaItem>
-          </ReportMeta>
-        </ReportHeader>
-
-        <MetricsGrid>
-          {metrics.map((metric, index) => (
-            <MetricCard key={index}>
-              <MetricLabel>
-                {metric.icon}
-                {metric.label}
-              </MetricLabel>
-              <MetricValue>{metric.value}</MetricValue>
-              <MetricChange positive={metric.positive}>
-                {metric.positive ? '↗' : '↘'} {metric.change}
-              </MetricChange>
-            </MetricCard>
-          ))}
-        </MetricsGrid>
-
-        <ChartContainer>
-          <ChartHeader>
-            <ChartTitle>Traffic and engagement over time</ChartTitle>
-            <ChartControls>
-              <TimeSelector>
+        <MainCard>
+          <ReportHeader>
+            <ReportTitle>Traffic and engagement over time</ReportTitle>
+            <ReportMeta>
+              <MetaItem>
                 <Calendar size={14} />
                 Feb 2025 - Jul 2025
-              </TimeSelector>
-              <ToggleSwitch>
-                <span>Month-to-date</span>
-                <Switch 
-                  active={isMonthToDate} 
-                  onClick={() => setIsMonthToDate(!isMonthToDate)}
+              </MetaItem>
+              <MetaItem>
+                <Globe size={14} />
+                United States
+              </MetaItem>
+              <MetaItem>
+                <TrendingUp size={14} />
+                All traffic
+              </MetaItem>
+            </ReportMeta>
+          </ReportHeader>
+
+          <MetricsGrid>
+            {metrics.map((metric) => (
+              <MetricCard 
+                key={metric.id} 
+                active={activeTab === metric.id}
+                onClick={() => setActiveTab(metric.id)}
+              >
+                <MetricLabel>
+                  {metric.icon}
+                  {metric.label}
+                </MetricLabel>
+                <MetricValue>{metric.value}</MetricValue>
+                <MetricChange positive={metric.positive}>
+                  {metric.positive ? '↗' : '↘'} {metric.change}
+                </MetricChange>
+              </MetricCard>
+            ))}
+          </MetricsGrid>
+
+          <ChartContainer>
+            <ChartHeader>
+              <ChartTitle>Traffic and engagement over time</ChartTitle>
+              <ChartControls>
+                <TimeSelector>
+                  <Calendar size={14} />
+                  Feb 2025 - Jul 2025
+                </TimeSelector>
+                <ToggleSwitch>
+                  <span>Month-to-date</span>
+                  <Switch 
+                    active={isMonthToDate} 
+                    onClick={() => setIsMonthToDate(!isMonthToDate)}
+                  />
+                </ToggleSwitch>
+              </ChartControls>
+            </ChartHeader>
+            <ChartArea>
+              <ChartSvg viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
+                {/* Grid lines */}
+                {yGridLines.map((value, i) => (
+                  <ChartGrid
+                    key={i}
+                    x1={padding.left}
+                    y1={yScale(value)}
+                    x2={padding.left + innerWidth}
+                    y2={yScale(value)}
+                  />
+                ))}
+                
+                {/* Y-axis labels */}
+                {yGridLines.map((value, i) => (
+                  <ChartValue
+                    key={i}
+                    x={padding.left - 10}
+                    y={yScale(value) + 4}
+                    textAnchor="end"
+                  >
+                    {value.toFixed(1)}M
+                  </ChartValue>
+                ))}
+                
+                {/* X-axis labels */}
+                {chartData.map((d, i) => (
+                  <ChartLabel
+                    key={i}
+                    x={xScale(i)}
+                    y={chartHeight - padding.bottom + 20}
+                    textAnchor="middle"
+                  >
+                    {d.label}
+                  </ChartLabel>
+                ))}
+                
+                {/* Main line */}
+                <ChartLine d={createPath()} />
+                
+                {/* Data points */}
+                {chartData.map((d, i) => (
+                  <ChartDot
+                    key={i}
+                    cx={xScale(i)}
+                    cy={yScale(d.value)}
+                    r="4"
+                  />
+                ))}
+                
+                {/* Dashed line for future projection */}
+                <ChartLine 
+                  d={`M ${xScale(5)} ${yScale(15.2)} L ${xScale(6)} ${yScale(13.2)}`}
+                  strokeDasharray="4,4"
+                  opacity="0.7"
                 />
-              </ToggleSwitch>
-            </ChartControls>
-          </ChartHeader>
-          <ChartArea>
-            <ChartSvg viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
-              {/* Grid lines */}
-              {yGridLines.map((value, i) => (
-                <ChartGrid
-                  key={i}
-                  x1={padding.left}
-                  y1={yScale(value)}
-                  x2={padding.left + innerWidth}
-                  y2={yScale(value)}
-                />
-              ))}
-              
-              {/* Y-axis labels */}
-              {yGridLines.map((value, i) => (
-                <ChartValue
-                  key={i}
-                  x={padding.left - 10}
-                  y={yScale(value) + 4}
-                  textAnchor="end"
-                >
-                  {value.toFixed(1)}M
-                </ChartValue>
-              ))}
-              
-              {/* X-axis labels */}
-              {chartData.map((d, i) => (
-                <ChartLabel
-                  key={i}
-                  x={xScale(i)}
-                  y={chartHeight - padding.bottom + 20}
-                  textAnchor="middle"
-                >
-                  {d.label}
-                </ChartLabel>
-              ))}
-              
-              {/* Main line */}
-              <ChartLine d={createPath()} />
-              
-              {/* Data points */}
-              {chartData.map((d, i) => (
-                <ChartDot
-                  key={i}
-                  cx={xScale(i)}
-                  cy={yScale(d.value)}
-                  r="4"
-                />
-              ))}
-              
-              {/* Dashed line for future projection */}
-              <ChartLine 
-                d={`M ${xScale(5)} ${yScale(15.2)} L ${xScale(6)} ${yScale(13.2)}`}
-                strokeDasharray="4,4"
-                opacity="0.7"
-              />
-            </ChartSvg>
-          </ChartArea>
-        </ChartContainer>
+              </ChartSvg>
+            </ChartArea>
+          </ChartContainer>
+        </MainCard>
       </Content>
     </MainContainer>
   );
