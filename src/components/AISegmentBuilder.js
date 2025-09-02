@@ -934,7 +934,8 @@ const BannerDescription = styled.div`
 `;
 
 const BannerButton = styled.button`
-  background: linear-gradient(90deg, #3E74FE 0%, #2AD3AB 100%);
+  padding: 8px 12px;
+  background-color: #3E74FE;
   color: #ffffff;
   border: none;
   border-radius: 100px;
@@ -942,19 +943,20 @@ const BannerButton = styled.button`
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  height: 44px;
-  padding: 8px 16px;
+  height: 36px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  width: fit-content;
   white-space: nowrap;
 
   &:hover {
-    opacity: 0.9;
+    background-color: #1d4ed8;
   }
 
   &:disabled {
-    background: #f3f4f6;
+    background-color: #f3f4f6;
     color: #6b7280;
     cursor: not-allowed;
   }
@@ -2238,7 +2240,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                     {isWebsiteUnsupported(websiteInput) && (
                       <UnsupportedBanner>
                         <BannerContent>
-                          <BannerTitle>Website not supported</BannerTitle>
+                          <BannerTitle>{websiteInput} doesn't support Business Lines</BannerTitle>
                           <BannerDescription>
                             This website doesn't support business line segmentation. Use the Manual Builder to create custom segments.
                           </BannerDescription>
