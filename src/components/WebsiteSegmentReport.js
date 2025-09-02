@@ -122,7 +122,7 @@ const MetricsGrid = styled.div`
 
 const MetricCard = styled.div`
   padding: 16px;
-  text-align: right;
+  text-align: left;
   cursor: pointer;
   transition: all 0.2s;
   border-bottom: 2px solid transparent;
