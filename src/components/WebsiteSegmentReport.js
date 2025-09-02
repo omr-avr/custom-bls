@@ -143,7 +143,7 @@ const MetricLabel = styled.div`
   margin-bottom: 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 4px;
 `;
 
