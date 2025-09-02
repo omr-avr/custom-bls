@@ -17,6 +17,7 @@ export const FeatureFlagProvider = ({ children }) => {
     businessLinesDropdownSearch: true,
     businessLinesSingleSelect: false,
     businessLinesVisitsShare: true,
+    unsupportedWebsites: true,
   });
 
   const [isFeatureFlagModalOpen, setIsFeatureFlagModalOpen] = useState(false);

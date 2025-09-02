@@ -200,6 +200,11 @@ const features = [
     id: 'businessLinesVisitsShare',
     title: 'Business Lines / Visits share',
     description: 'Show visits share percentage for each business line in the dropdown'
+  },
+  {
+    id: 'unsupportedWebsites',
+    title: 'Unsupported websites detection',
+    description: 'Show banner and disable fields when user selects a website that doesn\'t support business lines'
   }
 ];
 

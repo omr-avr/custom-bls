@@ -886,6 +886,55 @@ const GeneratingSuggestionsText = styled.span`
   }
 `;
 
+// Unsupported Website Banner Components
+const UnsupportedBanner = styled.div`
+  background-color: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+`;
+
+const BannerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+`;
+
+const BannerTitle = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: #92400e;
+`;
+
+const BannerDescription = styled.div`
+  font-size: 13px;
+  color: #a16207;
+  line-height: 1.4;
+`;
+
+const BannerButton = styled.button`
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #d97706;
+  }
+`;
+
 // Modal Styled Components
 const ModalOverlay = styled.div`
   position: fixed;
@@ -1151,6 +1200,22 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
     { bls: 'Digital Cameras', suggestions: ['DSLR Cameras', 'Mirrorless Cameras', 'Point-and-Shoot Cameras', 'Action Cameras', 'Camcorders'] }
   ];
 
+  // List of websites that don't support business lines
+  const unsupportedWebsites = [
+    'www.youtube.com',
+    'www.facebook.com', 
+    'www.instagram.com',
+    'www.twitter.com',
+    'www.linkedin.com',
+    'www.tiktok.com',
+    'www.snapchat.com',
+    'www.pinterest.com',
+    'www.reddit.com',
+    'www.wikipedia.org',
+    'www.netflix.com',
+    'www.spotify.com'
+  ];
+
   const businessLinesMap = {
     'www.nike.com': ['Footwear', 'Men\'s Clothing', 'Women\'s Clothing', 'Children\'s Clothing', 'Bags & Packs'],
     'www.amazon.com': ['Computer Electronics', 'Home Appliances', 'Household Supplies', 'Toys & Games', 'Pet Food & Supplies'],
@@ -1175,6 +1240,11 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
   };
 
   const [businessLines, setBusinessLines] = useState([]);
+
+  // Check if website is unsupported
+  const isWebsiteUnsupported = (website) => {
+    return isFeatureEnabled('unsupportedWebsites') && unsupportedWebsites.includes(website.toLowerCase());
+  };
 
   // Generate business lines with stable visits share data when website changes
   useEffect(() => {
@@ -1253,6 +1323,8 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
     setWebsiteInput(value);
     // Reset selected business lines when website changes
     setSelectedBusinessLines([]);
+    // Reset granular business lines when website changes
+    setGranularBusinessLines('');
     // Reset suggestions when website changes
     setShowBuildSuggestions(false);
     setShowSuggestionLoader(false);
@@ -1919,7 +1991,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                         <DropdownField ref={dropdownRef}>
                           <DropdownInput 
                             onClick={() => {
-                              if (websiteInput.length > 0) {
+                              if (websiteInput.length > 0 && !isWebsiteUnsupported(websiteInput)) {
                                 setIsDropdownOpen(!isDropdownOpen);
                                 if (!isDropdownOpen) {
                                   setBusinessLineSearch('');
@@ -1927,17 +1999,19 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                               }
                             }}
                             onKeyDown={handleBusinessLineKeyDown}
-                            disabled={websiteInput.length === 0}
-                            tabIndex={websiteInput.length > 0 ? 0 : -1}
+                            disabled={websiteInput.length === 0 || isWebsiteUnsupported(websiteInput)}
+                            tabIndex={websiteInput.length > 0 && !isWebsiteUnsupported(websiteInput) ? 0 : -1}
                           >
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1 }}>
                               {selectedBusinessLines.length === 0 ? (
-                                <span style={{ color: websiteInput.length === 0 ? '#9ca3af' : '#6b7280' }}>
+                                <span style={{ color: websiteInput.length === 0 || isWebsiteUnsupported(websiteInput) ? '#9ca3af' : '#6b7280' }}>
                                   {websiteInput.length === 0 
                                     ? 'Enter website first...' 
-                                    : isFeatureEnabled('businessLinesSingleSelect') 
-                                      ? 'Select a business line...' 
-                                      : 'Select business lines...'}
+                                    : isWebsiteUnsupported(websiteInput)
+                                      ? 'Website not supported...'
+                                      : isFeatureEnabled('businessLinesSingleSelect') 
+                                        ? 'Select a business line...' 
+                                        : 'Select business lines...'}
                                 </span>
                               ) : (
                                 selectedBusinessLines.map((line) => (
@@ -2070,8 +2144,14 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                         </SearchLabel>
                         <SearchField>
                           <SearchInput 
-                            placeholder={selectedBusinessLines.length === 0 ? "Select business lines first..." : "Enter granular business lines..."}
-                            disabled={selectedBusinessLines.length === 0}
+                            placeholder={
+                              isWebsiteUnsupported(websiteInput) 
+                                ? "Website not supported..." 
+                                : selectedBusinessLines.length === 0 
+                                  ? "Select business lines first..." 
+                                  : "Enter granular business lines..."
+                            }
+                            disabled={selectedBusinessLines.length === 0 || isWebsiteUnsupported(websiteInput)}
                             value={granularBusinessLines}
                             onChange={(e) => setGranularBusinessLines(e.target.value)}
                             onKeyDown={(e) => {
@@ -2108,13 +2188,28 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
 
                     <FieldContainer>
                       <CTAButton 
-                        disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged()) || isLoading}
+                        disabled={!websiteInput || selectedBusinessLines.length === 0 || !granularBusinessLines || (hasGenerated && !hasFormChanged()) || isLoading || isWebsiteUnsupported(websiteInput)}
                         onClick={generateMetrics}
                       >
                         <Sparkles size={14} />
                         {hasGenerated ? 'Regenerate' : 'Generate Segment'}
                       </CTAButton>
                     </FieldContainer>
+
+                    {/* Unsupported Website Banner */}
+                    {isWebsiteUnsupported(websiteInput) && (
+                      <UnsupportedBanner>
+                        <BannerContent>
+                          <BannerTitle>Website not supported</BannerTitle>
+                          <BannerDescription>
+                            This website doesn't support business line segmentation. Use the Manual Builder to create custom segments.
+                          </BannerDescription>
+                        </BannerContent>
+                        <BannerButton onClick={() => {/* TODO: Navigate to Manual Builder */}}>
+                          Manual Builder
+                        </BannerButton>
+                      </UnsupportedBanner>
+                    )}
                   </SectionContent>
                 </LeftSection>
 
