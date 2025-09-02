@@ -965,7 +965,7 @@ const InfoBanner = styled.div`
   background-color: #EDF2F7;
   border-radius: 8px;
   padding: 12px 16px;
-  margin-bottom: 24px;
+  margin-top: 20px;
   display: flex;
   align-items: center;
   gap: 12px;
