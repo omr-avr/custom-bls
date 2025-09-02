@@ -903,8 +903,7 @@ const GeneratingSuggestionsText = styled.span`
 
 // Unsupported Website Banner Components
 const UnsupportedBanner = styled.div`
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background-color: #eff6ff;
   border-radius: 8px;
   padding: 16px;
   margin-top: 20px;
@@ -2242,7 +2241,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                         <BannerContent>
                           <BannerTitle>{websiteInput} doesn't support Business Lines</BannerTitle>
                           <BannerDescription>
-                            This website doesn't support business line segmentation. Use the Manual Builder to create custom segments.
+                            This website doesn't support business line segmentation. You can select another business lines supported website or use the Manual Builder to create custom segments.
                           </BannerDescription>
                         </BannerContent>
                         <BannerButton onClick={() => {/* TODO: Navigate to Manual Builder */}}>
