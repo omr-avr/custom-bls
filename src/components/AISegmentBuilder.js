@@ -80,7 +80,7 @@ const Card = styled.div`
 `;
 
 const CardContent = styled.div`
-  height: calc(100vh - 120px);
+  height: calc(100vh - 200px);
   display: flex;
   flex-direction: column;
   position: relative;
