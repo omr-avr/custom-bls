@@ -2006,9 +2006,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
           </BreadcrumbItem>
         </Breadcrumbs>
         <Title>AI Segment Builder</Title>
-      </Header>
-
-      <Content>
+        
         {/* Info Banner */}
         {showInfoBanner && (
           <InfoBanner>
@@ -2030,6 +2028,9 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
             </InfoContent>
           </InfoBanner>
         )}
+      </Header>
+
+      <Content>
 
 
         <Section>
