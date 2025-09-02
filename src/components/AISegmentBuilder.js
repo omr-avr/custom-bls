@@ -731,6 +731,7 @@ const SuggestionItem = styled.div`
   border-bottom: 1px solid #f3f4f6;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   
   &:hover {
@@ -745,6 +746,20 @@ const SuggestionItem = styled.div`
     background-color: #f0f9ff;
     color: #3E74FE;
   `}
+`;
+
+const SuggestionContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+`;
+
+const SupportIndicator = styled.span`
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+  flex-shrink: 0;
 `;
 
 const SuggestionFavicon = styled.img`
@@ -1297,6 +1312,7 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
   };
 
   const websiteSuggestions = [
+    // Supported websites
     { url: 'www.nike.com', favicon: 'https://www.google.com/s2/favicons?domain=nike.com&sz=16' },
     { url: 'www.amazon.com', favicon: 'https://www.google.com/s2/favicons?domain=amazon.com&sz=16' },
     { url: 'www.apple.com', favicon: 'https://www.google.com/s2/favicons?domain=apple.com&sz=16' },
@@ -1316,7 +1332,12 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
     { url: 'www.petsmart.com', favicon: 'https://www.google.com/s2/favicons?domain=petsmart.com&sz=16' },
     { url: 'www.rei.com', favicon: 'https://www.google.com/s2/favicons?domain=rei.com&sz=16' },
     { url: 'www.gamestop.com', favicon: 'https://www.google.com/s2/favicons?domain=gamestop.com&sz=16' },
-    { url: 'www.staples.com', favicon: 'https://www.google.com/s2/favicons?domain=staples.com&sz=16' }
+    { url: 'www.staples.com', favicon: 'https://www.google.com/s2/favicons?domain=staples.com&sz=16' },
+    // Unsupported websites (for demonstration)
+    { url: 'www.youtube.com', favicon: 'https://www.google.com/s2/favicons?domain=youtube.com&sz=16' },
+    { url: 'www.facebook.com', favicon: 'https://www.google.com/s2/favicons?domain=facebook.com&sz=16' },
+    { url: 'www.instagram.com', favicon: 'https://www.google.com/s2/favicons?domain=instagram.com&sz=16' },
+    { url: 'www.netflix.com', favicon: 'https://www.google.com/s2/favicons?domain=netflix.com&sz=16' }
   ];
 
   const handleWebsiteChange = (value) => {
@@ -1969,14 +1990,21 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
                                   onClick={() => handleSuggestionClick(suggestion)}
                                   focused={focusedSuggestionIndex === index}
                                 >
-                                  <SuggestionFavicon 
-                                    src={suggestion.favicon} 
-                                    alt={`${suggestion.url} favicon`}
-                                    onError={(e) => {
-                                      e.target.style.display = 'none';
-                                    }}
-                                  />
-                                  {suggestion.url}
+                                  <SuggestionContent>
+                                    <SuggestionFavicon 
+                                      src={suggestion.favicon} 
+                                      alt={`${suggestion.url} favicon`}
+                                      onError={(e) => {
+                                        e.target.style.display = 'none';
+                                      }}
+                                    />
+                                    {suggestion.url}
+                                  </SuggestionContent>
+                                  {isFeatureEnabled('unsupportedWebsites') && (
+                                    <SupportIndicator>
+                                      {unsupportedWebsites.includes(suggestion.url.toLowerCase()) ? 'Not supported' : 'Supported'}
+                                    </SupportIndicator>
+                                  )}
                                 </SuggestionItem>
                               ))}
                             </SuggestionsContainer>
