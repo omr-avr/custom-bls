@@ -903,8 +903,8 @@ const GeneratingSuggestionsText = styled.span`
 
 // Unsupported Website Banner Components
 const UnsupportedBanner = styled.div`
-  background-color: #fef3c7;
-  border: 1px solid #f59e0b;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 16px;
   margin-top: 20px;
@@ -924,29 +924,39 @@ const BannerContent = styled.div`
 const BannerTitle = styled.div`
   font-size: 14px;
   font-weight: 600;
-  color: #92400e;
+  color: #374151;
 `;
 
 const BannerDescription = styled.div`
   font-size: 13px;
-  color: #a16207;
+  color: #6b7280;
   line-height: 1.4;
 `;
 
 const BannerButton = styled.button`
-  background-color: #f59e0b;
-  color: white;
+  background: linear-gradient(90deg, #3E74FE 0%, #2AD3AB 100%);
+  color: #ffffff;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 100px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
+  height: 44px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   white-space: nowrap;
 
   &:hover {
-    background-color: #d97706;
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    background: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
   }
 `;
 
