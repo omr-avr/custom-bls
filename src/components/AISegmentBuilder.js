@@ -906,7 +906,6 @@ const UnsupportedBanner = styled.div`
   background-color: #eff6ff;
   border-radius: 8px;
   padding: 16px;
-  margin-top: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
