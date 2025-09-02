@@ -972,7 +972,7 @@ const InfoBanner = styled.div`
   gap: 12px;
 `;
 
-const InfoIcon = styled.div`
+const InfoBannerIcon = styled.div`
   color: #64748b;
   display: flex;
   align-items: center;
@@ -2119,9 +2119,9 @@ const AISegmentBuilder = ({ onBack, initialData, onNavigateToWebsiteSegments }) 
         {/* Info Banner */}
         {showInfoBanner && (
           <InfoBanner>
-            <InfoIcon>
+            <InfoBannerIcon>
               <Info size={16} />
-            </InfoIcon>
+            </InfoBannerIcon>
             <InfoContent>
               <InfoText>
                 The AI Segment Builder is based on websites that support Similarweb Business Lines
