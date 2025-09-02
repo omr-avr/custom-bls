@@ -210,19 +210,85 @@ const ChartArea = styled.div`
   background-color: #fafbfc;
   border-radius: 6px;
   padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
-const ChartPlaceholder = styled.div`
-  color: #9ca3af;
-  font-size: 14px;
-  text-align: center;
+const ChartSvg = styled.svg`
+  width: 100%;
+  height: 100%;
+`;
+
+const ChartLine = styled.path`
+  fill: none;
+  stroke: #3E74FE;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+`;
+
+const ChartDot = styled.circle`
+  fill: #3E74FE;
+  stroke: #ffffff;
+  stroke-width: 2;
+`;
+
+const ChartGrid = styled.line`
+  stroke: #e5e7eb;
+  stroke-width: 1;
+  stroke-dasharray: 2,2;
+`;
+
+const ChartLabel = styled.text`
+  fill: #6b7280;
+  font-size: 12px;
+  font-family: system-ui, -apple-system, sans-serif;
+`;
+
+const ChartValue = styled.text`
+  fill: #374151;
+  font-size: 11px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 500;
 `;
 
 const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData }) => {
   const [isMonthToDate, setIsMonthToDate] = useState(true);
+
+  // Mock chart data - traffic over time (in millions)
+  const chartData = [
+    { month: 'Feb', value: 13.5, label: 'Feb' },
+    { month: 'Mar', value: 14.2, label: 'Mar' },
+    { month: 'Apr', value: 13.7, label: 'Apr' },
+    { month: 'May', value: 13.9, label: 'May' },
+    { month: 'Jun', value: 14.3, label: 'Jun' },
+    { month: 'Jul', value: 15.2, label: 'Jul' },
+    { month: 'Aug', value: 13.2, label: 'Aug' }
+  ];
+
+  // Chart dimensions
+  const chartWidth = 800;
+  const chartHeight = 240;
+  const padding = { top: 20, right: 40, bottom: 40, left: 60 };
+  const innerWidth = chartWidth - padding.left - padding.right;
+  const innerHeight = chartHeight - padding.top - padding.bottom;
+
+  // Calculate scales
+  const maxValue = Math.max(...chartData.map(d => d.value));
+  const minValue = Math.min(...chartData.map(d => d.value));
+  const valueRange = maxValue - minValue;
+  const yScale = (value) => padding.top + (1 - (value - minValue) / valueRange) * innerHeight;
+  const xScale = (index) => padding.left + (index / (chartData.length - 1)) * innerWidth;
+
+  // Create path string for the line
+  const createPath = () => {
+    return chartData.map((d, i) => {
+      const x = xScale(i);
+      const y = yScale(d.value);
+      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+    }).join(' ');
+  };
+
+  // Grid lines
+  const yGridLines = [13.0, 13.5, 14.0, 14.5, 15.0, 15.5];
 
   // Mock data based on the attached image
   const metrics = [
@@ -342,11 +408,62 @@ const WebsiteSegmentReport = ({ onBack, onNavigateToWebsiteSegments, segmentData
             </ChartControls>
           </ChartHeader>
           <ChartArea>
-            <ChartPlaceholder>
-              📈 Interactive chart would be rendered here
-              <br />
-              Showing traffic trends from Feb 2025 to Jul 2025
-            </ChartPlaceholder>
+            <ChartSvg viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
+              {/* Grid lines */}
+              {yGridLines.map((value, i) => (
+                <ChartGrid
+                  key={i}
+                  x1={padding.left}
+                  y1={yScale(value)}
+                  x2={padding.left + innerWidth}
+                  y2={yScale(value)}
+                />
+              ))}
+              
+              {/* Y-axis labels */}
+              {yGridLines.map((value, i) => (
+                <ChartValue
+                  key={i}
+                  x={padding.left - 10}
+                  y={yScale(value) + 4}
+                  textAnchor="end"
+                >
+                  {value.toFixed(1)}M
+                </ChartValue>
+              ))}
+              
+              {/* X-axis labels */}
+              {chartData.map((d, i) => (
+                <ChartLabel
+                  key={i}
+                  x={xScale(i)}
+                  y={chartHeight - padding.bottom + 20}
+                  textAnchor="middle"
+                >
+                  {d.label}
+                </ChartLabel>
+              ))}
+              
+              {/* Main line */}
+              <ChartLine d={createPath()} />
+              
+              {/* Data points */}
+              {chartData.map((d, i) => (
+                <ChartDot
+                  key={i}
+                  cx={xScale(i)}
+                  cy={yScale(d.value)}
+                  r="4"
+                />
+              ))}
+              
+              {/* Dashed line for future projection */}
+              <ChartLine 
+                d={`M ${xScale(5)} ${yScale(15.2)} L ${xScale(6)} ${yScale(13.2)}`}
+                strokeDasharray="4,4"
+                opacity="0.7"
+              />
+            </ChartSvg>
           </ChartArea>
         </ChartContainer>
       </Content>
